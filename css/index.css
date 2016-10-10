@@ -16,6 +16,7 @@
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
 .rdr-calendar .rdr-calendar-confirm-btn {
+  box-sizing: content-box;
   position: absolute;
   right: 10px;
   top: 0;
