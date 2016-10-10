@@ -1,14 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
 import parseInput from './utils/parseInput.js';
-import { defaultClasses } from './styles.js';
+import {predefinedRangesPrefix} from './utils/consts'
+const classnames = require('classnames')
 
 class PredefinedRanges extends Component {
 
   constructor(props, context) {
-    super(props, context);
-
-    this.styles = this.props.theme;
+    super(props, context)
   }
 
   handleSelect(name, event) {
@@ -18,65 +17,46 @@ class PredefinedRanges extends Component {
 
     this.props.onSelect({
       startDate : parseInput(range['startDate']),
-      endDate   : parseInput(range['endDate']),
-    }, PredefinedRanges);
+      endDate   : parseInput(range['endDate'])
+    },'ranges')
   }
 
-  renderRangeList(classes) {
-    const { ranges, range, onlyClasses } = this.props;
-    const { styles } = this;
+  renderRangeList() {
+    const { ranges, range } = this.props;
+    // const { styles } = this;
 
     return Object.keys(ranges).map(name => {
       const active = (
-        parseInput(ranges[name].startDate).isSame(range.startDate) &&
-        parseInput(ranges[name].endDate).isSame(range.endDate)
-      );
-
-      const style = {
-        ...styles['PredefinedRangesItem'],
-        ...(active ? styles['PredefinedRangesItemActive'] : {}),
-      };
+        parseInput(ranges[name].startDate).isSame(range.startDate,'day') &&
+        parseInput(ranges[name].endDate).isSame(range.endDate,'day')
+      ) ? 'active' : null
 
       return (
         <a
           href='#'
           key={'range-' + name}
-          className={classes.predefinedRangesItem + (active ? ' active' : '')}
-          style={ onlyClasses ? undefined : style }
+          className={classnames(`${predefinedRangesPrefix}-item`,active)}
+          // style={ onlyClasses ? undefined : style }
           onClick={this.handleSelect.bind(this, name)}
         >
           {name}
         </a>
       );
-    }.bind(this));
+    });
   }
 
   render() {
-    const { style, onlyClasses, classNames } = this.props;
-    const { styles } = this;
-
-    const classes = { ...defaultClasses, ...classNames };
-
     return (
-      <div
-        style={onlyClasses ? undefined : { ...styles['PredefinedRanges'], ...style }}
-        className={ classes.predefinedRanges }
-      >
-        { this.renderRangeList(classes) }
+      <div className={predefinedRangesPrefix}>
+        { this.renderRangeList() }
       </div>
     );
   }
 }
 
-PredefinedRanges.defaultProps = {
-  onlyClasses : false,
-  classNames  : {}
-};
 
 PredefinedRanges.propTypes = {
-  ranges      : PropTypes.object.isRequired,
-  onlyClasses : PropTypes.bool,
-  classNames  : PropTypes.object
+  ranges      : PropTypes.object.isRequired
 }
 
 export default PredefinedRanges;

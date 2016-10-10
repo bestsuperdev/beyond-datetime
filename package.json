@@ -1,36 +1,66 @@
 {
-  "name": "react-date-range",
-  "version": "0.2.4",
-  "description": "A React component for choosing dates and date ranges.",
+  "name": "beyond-datetime",
+  "version": "1.0.0",
+  "description": "react date time",
   "main": "lib/index.js",
+  "style": "css/index.css",
   "scripts": {
-    "start-dev": "babel ./src --watch --out-dir ./lib & cd demo && npm install && npm run start-dev",
-    "prebuild": "rm -rf lib/*",
-    "build": "babel ./src --out-dir ./lib",
-    "prepublish": "npm run build"
-  },
-  "keywords": [
-    "react",
-    "date",
-    "range",
-    "datepicker",
-    "rangepicker"
-  ],
-  "author": "Burak Can <neoberg@gmail.com>",
-  "license": "GPL-3.0",
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/Adphorus/react-date-range"
-  },
-  "bugs": {
-    "url": "http://github.com/Adphorus/react-date-range/issues"
+    "start": "node ./server.js",
+    "mock": "cd ./mock & json-server --watch db.json --routes routes.json --port 9001",
+    "lint": "eslint ./src",
+    "test": "karma start  --config karma.conf.js",
+    "clear": "rimraf lib",
+    "build": "npm run clear && cross-env NODE_ENV=production babel src --out-dir lib &&  webpack --config webpack.style.config.js",
+    "clear:example": "rimraf dist",
+    "build:example": "npm run clear:example && cross-env NODE_ENV=production webpack --config webpack.config.js"
   },
   "dependencies": {
-    "classnames": "^2.2.1",
-    "moment": "^2.10.6",
-    "react": ">=0.13.0"
+    "beyond-lib": "^0.6.5",
+    "classnames": "^2.2.5",
+    "moment": "^2.13.0",
+    "react": "^0.14.8",
+    "react-dom": "^0.14.8"
   },
   "devDependencies": {
-    "babel": "^5.8.23"
-  }
+    "autoprefixer": "^6.3.1",
+    "babel-cli": "^6.4.0",
+    "babel-core": "^6.2.1",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-transform-es3-member-expression-literals": "^6.3.13",
+    "babel-plugin-transform-es3-property-literals": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.1.18",
+    "babel-preset-react-hmre": "^1.1.0",
+    "babel-preset-stage-2": "^6.5.0",
+    "cross-env": "^1.0.7",
+    "css-loader": "^0.23.0",
+    "eslint": "^1.10.2",
+    "eslint-plugin-react": "^3.11.3",
+    "exports-loader": "^0.6.2",
+    "extract-text-webpack-plugin": "^0.9.1",
+    "file-loader": "^0.8.5",
+    "html-webpack-plugin": "^1.6.2",
+    "imports-loader": "^0.6.5",
+    "less": "^2.5.3",
+    "less-loader": "^2.2.2",
+    "opn": "^3.0.3",
+    "postcss-clearfix": "^0.2.0",
+    "postcss-loader": "^0.8.1",
+    "quick-local-ip": "^1.0.7",
+    "rimraf": "^2.5.2",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.6",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bestsuperdev/beyond-datetime.git"
+  },
+  "author": "Peng mingze <mingzepeng@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bestsuperdev/beyond-datetime/issues"
+  },
+  "homepage": "https://github.com/bestsuperdev/beyond-datetime"
 }

@@ -1,9 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
+require('moment/locale/zh-cn');
+import {dateFormat,calendarPrefix} from './utils/consts'
 import parseInput from './utils/parseInput.js';
 import DayCell from './DayCell.js';
-import getTheme, { defaultClasses } from './styles.js';
+import Time from './Time'
 
+
+moment.locale('zh-cn')
 function checkRange(dayMoment, range) {
   return (
     dayMoment.isBetween(range['startDate'], range['endDate']) ||
@@ -13,14 +17,14 @@ function checkRange(dayMoment, range) {
 
 function checkStartEdge(dayMoment, range) {
   const { startDate } = range;
-
-  return dayMoment.isSame(startDate);
+  return dayMoment.isSame(startDate,'day');
+  // return dayMoment.diff(startDate,'date') === 0;
 }
 
 function checkEndEdge(dayMoment, range) {
   const { endDate } = range;
-
-  return dayMoment.isSame(endDate);
+  return dayMoment.isSame(endDate,'day');
+  // return dayMoment.diff(endDate,'date') === 0;
 }
 
 function isOusideMinMax(dayMoment, minDate, maxDate, format) {
@@ -35,22 +39,33 @@ class Calendar extends Component {
   constructor(props, context) {
     super(props, context);
 
-    const { format, range, theme, offset, firstDayOfWeek } = props;
-
-    const date = parseInput(props.date, format)
-    const state = {
+    let {date, format, range, offset, firstDayOfWeek } = props;
+    // console.log(date)
+    date = parseInput(date, format)
+    this.state = {
       date,
       shownDate : (range && range['endDate'] || date).clone().add(offset, 'months'),
-      firstDayOfWeek: (firstDayOfWeek || moment.localeData().firstDayOfWeek()),
+      firstDayOfWeek: (firstDayOfWeek || moment.localeData().firstDayOfWeek())
     }
 
-    this.state  = state;
-    this.styles = getTheme(theme);
+    // this.state  = state;
+    // this.styles = getTheme(theme);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let {date,isInvalid,format} = nextProps
+    if (date != null) {
+      date = parseInput(date,format)
+      if (typeof isInvalid !== 'function' || !isInvalid(date) ) {
+        this.setState((state, props) => ({date}))
+      }
+    }
   }
 
   componentDidMount() {
-    const { onInit } = this.props;
-    onInit && onInit(this.state.date);
+    const { onInit,format } = this.props;
+    const {date} = this.state
+    onInit && onInit(date)
   }
 
   getShownDate() {
@@ -61,15 +76,33 @@ class Calendar extends Component {
     return shownDate;
   }
 
-  handleSelect(newDate) {
-    const { link, onChange } = this.props;
-    const { date } = this.state;
+  handlerConfirm(event){
+    event.preventDefault()
+    const {onConfirm} = this.props
+    const {date} = this.state
+    onConfirm && onConfirm(date)
+  }
 
-    onChange && onChange(newDate, Calendar);
-
-    if (!link) {
-      this.setState({ date : newDate });
+  handlerSelect(newDate,type) {
+    const { link, onChange } = this.props
+    let result = null
+    if (type !== 'time') {
+      let {date} = this.state
+      newDate.hours(date.hours())
+      newDate.minutes(date.minutes())
+      newDate.seconds(date.seconds())
     }
+    // let date = newDate.
+    // const { date } = this.state;
+    if (typeof onChange === 'function') {
+        result = onChange(newDate.clone(), type)
+    }
+    // onChange && ;
+
+    if (!link && result !== false) {
+        this.setState({ date : newDate });
+    }
+    return false
   }
 
   changeMonth(direction, event) {
@@ -88,62 +121,101 @@ class Calendar extends Component {
     });
   }
 
-  renderMonthAndYear(classes) {
-    const shownDate       = this.getShownDate();
-    const month           = moment.months(shownDate.month());
-    const year            = shownDate.year();
-    const { styles }      = this;
-    const { onlyClasses } = this.props;
+  changeYear(direction, event) {
+    event.preventDefault();
+    const { link, linkCB } = this.props;
 
+    if (link && linkCB) {
+      return linkCB(direction);
+    }
+
+    const current  = this.state.shownDate.year();
+    const shownDate = this.state.shownDate.clone().add(direction, 'years');
+
+    this.setState({shownDate})
+  }
+
+  handlerChangeShownMonth(event){
+    let month = +event.target.value
+    let shownDate = this.getShownDate()
+    shownDate = shownDate.clone().month(month)
+    this.setState((state, props) => ({shownDate}))
+  }
+
+  handlerChangeShownYear(event){
+    let year = +event.target.value
+    let shownDate = this.getShownDate()
+    shownDate = shownDate.clone().year(year)
+    this.setState((state, props) => ({shownDate}))
+  }
+
+  renderMonthAndYear() {
+    const shownDate       = this.getShownDate();
+    const currentYear = moment().year()
+    const currentShownYear = shownDate.year()
+    const prefix = `${calendarPrefix}-month-and-year`
+    const months = []
+    const years = []
+    for(let i = 0; i < 12; i++){
+      months.push(<option key={i} value={i}>{moment.months(i)}</option>)
+    }
+    let startYear = currentYear - 45
+    let endYear = currentYear + 10
+    if (currentShownYear < startYear) {
+      years.push(<option key={currentShownYear} value={currentShownYear}>{currentShownYear}</option>)
+    }
+    for(let i = startYear; i <= endYear; i++ ){
+      years.push(<option key={i} value={i}>{i}</option>)
+    }
+    if (currentShownYear > endYear) {
+      years.push(<option key={currentShownYear} value={currentShownYear}>{currentShownYear}</option>)
+    }
+    let style = {width : '50%',display : 'inline-block',verticalAlign: 'top'}
     return (
-      <div style={onlyClasses ? undefined : styles['MonthAndYear']} className={classes.monthAndYearWrapper}>
-        <button
-          style={onlyClasses ? undefined : { ...styles['MonthButton'], float : 'left' }}
-          className={classes.prevButton}
-          onClick={this.changeMonth.bind(this, -1)}>
-          <i style={onlyClasses ? undefined : { ...styles['MonthArrow'], ...styles['MonthArrowPrev'] }}></i>
-        </button>
-        <span>
-          <span className={classes.month}>{month}</span>
-          <span className={classes.monthAndYearDivider}> - </span>
-          <span className={classes.year}>{year}</span>
-        </span>
-        <button
-          style={onlyClasses ? undefined : { ...styles['MonthButton'], float : 'right' }}
-          className={classes.nextButton}
-          onClick={this.changeMonth.bind(this, +1)}>
-          <i style={onlyClasses ? undefined : { ...styles['MonthArrow'], ...styles['MonthArrowNext'] }}></i>
-        </button>
+      <div className={prefix}>
+        <div style={style}>
+          <button className={`${prefix}-button ${prefix}-prev-button`} onClick={this.changeMonth.bind(this, -1)}><i></i></button>
+          <select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.month()}>
+            {months}
+          </select>
+          <button className={`${prefix}-button ${prefix}-next-button`} onClick={this.changeMonth.bind(this, 1)}><i></i></button>
+        </div>
+        <div style={style}>
+          <button className={`${prefix}-button ${prefix}-prev-button`} onClick={this.changeYear.bind(this, -1)}><i></i></button>
+          <select value={shownDate.year()} onChange={this.handlerChangeShownYear.bind(this)}>
+            {years}
+          </select>
+          <button className={`${prefix}-button ${prefix}-next-button`} onClick={this.changeYear.bind(this, 1)}><i></i></button>
+        </div>
       </div>
     )
   }
 
-  renderWeekdays(classes) {
+  renderWeekdays() {
     const dow             = this.state.firstDayOfWeek;
     const weekdays        = [];
-    const { styles }      = this;
-    const { onlyClasses } = this.props;
+    // const { styles }      = this;
+    // const { onlyClasses } = this.props;
 
     for (let i = dow; i < 7 + dow; i++) {
       const day = moment.weekdaysMin(i);
 
       weekdays.push(
-        <span style={onlyClasses ? undefined : styles['Weekday']} className={classes.weekDay} key={day}>{day}</span>
+        <span key={day}>{day}</span>
       );
     }
 
-    return weekdays;
+    return <div className={`${calendarPrefix}-weekdays`}>{weekdays}</div>
   }
 
-  renderDays(classes) {
+  renderDays() {
     // TODO: Split this logic into smaller chunks
-    const { styles }               = this;
+    // const { styles }               = this;
 
-    const { range, minDate, maxDate, format, onlyClasses } = this.props;
+    const { range, minDate, maxDate, format, isInvalid } = this.props;
 
     const shownDate                = this.getShownDate();
     const { date, firstDayOfWeek } = this.state;
-    const dateUnix                 = date.unix();
 
     const monthNumber              = shownDate.month();
     const dayCount                 = shownDate.daysInMonth();
@@ -178,57 +250,74 @@ class Calendar extends Component {
       days.push({ dayMoment, isPassive : true });
     }
 
-    const today = moment().startOf('day');
+    const today = moment()//.startOf('day');
     return days.map((data, index) => {
       const { dayMoment, isPassive } = data;
-      const isSelected    = !range && (dayMoment.unix() === dateUnix);
+      const isSelected    = !range && (dayMoment.isSame(date ,'day'));
+      //用于范围选择
       const isInRange     = range && checkRange(dayMoment, range);
       const isStartEdge   = range && checkStartEdge(dayMoment, range);
       const isEndEdge     = range && checkEndEdge(dayMoment, range);
       const isEdge        = isStartEdge || isEndEdge;
-      const isToday       = today.isSame(dayMoment);
-      const isOutsideMinMax = isOusideMinMax(dayMoment, minDate, maxDate, format);
+     
 
+      const isToday       = today.isSame(dayMoment,'day');
+      const invalid       = isInvalid ? isInvalid(dayMoment) : false
+      const isOutsideMinMax = isOusideMinMax(dayMoment, minDate, maxDate, format)
+      // console.log(isOutsideMinMax)
+      // console.log(isEdge)
       return (
         <DayCell
-          onSelect={ this.handleSelect.bind(this) }
+          onSelect={ this.handlerSelect.bind(this) }
           { ...data }
-          theme={ styles }
+          // theme={ styles }
+          //用于范围选择
           isStartEdge = { isStartEdge }
           isEndEdge = { isEndEdge }
           isSelected={ isSelected || isEdge }
           isInRange={ isInRange }
+        
           isToday={ isToday }
           key={ index }
-          isPassive = { isPassive || isOutsideMinMax }
-          onlyClasses = { onlyClasses }
-          classNames = { classes }
+          isPassive = { isPassive  }
+          isInvalid={invalid || isOutsideMinMax}
+          // onlyClasses = { onlyClasses }
+          classNames = { `${calendarPrefix}-day` }
         />
       );
     })
   }
 
+  renderTime(){
+    let {time,hour,minute,second,timeConfirm} = this.props
+    if (time) {
+      return (
+          <div style={{position : 'relative'}}>
+            <Time date={this.state.date} hour={hour} minute={minute} second={second} onChange={this.handlerSelect.bind(this)}  />
+            {timeConfirm && <a href="#" onClick={this.handlerConfirm.bind(this)} className={`${calendarPrefix}-confirm-btn`}>确定</a>}
+          </div>
+        )
+    }
+  }
+
   render() {
-    const { styles } = this;
-    const { onlyClasses, classNames } = this.props;
-
-    const classes = { ...defaultClasses, ...classNames };
-
     return (
-      <div style={onlyClasses ? undefined : { ...styles['Calendar'], ...this.props.style }} className={classes.calendar}>
-        <div className={classes.monthAndYear}>{ this.renderMonthAndYear(classes) }</div>
-        <div className={classes.weekDays}>{ this.renderWeekdays(classes) }</div>
-        <div className={classes.days}>{ this.renderDays(classes) }</div>
+      <div className={`${calendarPrefix}`}>
+        { this.renderMonthAndYear() }
+        { this.renderWeekdays() }
+        <div>{ this.renderDays() }</div>
+        {this.renderTime()}
       </div>
     )
   }
 }
 
 Calendar.defaultProps = {
-  format      : 'DD/MM/YYYY',
-  theme       : {},
-  onlyClasses : false,
-  classNames  : {}
+  format      : dateFormat,
+  classNames  : {},
+  hour : true,
+  minute : true,
+  second : true
 }
 
 Calendar.propTypes = {
@@ -244,14 +333,16 @@ Calendar.propTypes = {
   firstDayOfWeek : PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   onChange       : PropTypes.func,
   onInit         : PropTypes.func,
+  isInvalid      : PropTypes.func,
   link           : PropTypes.oneOfType([PropTypes.shape({
     startDate    : PropTypes.object,
     endDate      : PropTypes.object,
   }), PropTypes.bool]),
   linkCB         : PropTypes.func,
-  theme          : PropTypes.object,
-  onlyClasses    : PropTypes.bool,
-  classNames     : PropTypes.object
+  // theme          : PropTypes.object,
+  // onlyClasses    : PropTypes.bool,
+  classNames     : PropTypes.object,
+  time : PropTypes.bool
 }
 
 export default Calendar;

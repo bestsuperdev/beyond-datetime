@@ -1,7 +1,4 @@
-node_modules/
-.DS_Store
-*.log
-dist/
-.idea
-*.orig
-
+node_modules
+*.sublime-project
+*.sublime-workspace
+npm-debug.log

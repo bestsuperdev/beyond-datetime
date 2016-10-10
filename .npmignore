@@ -1,7 +1,9 @@
-node_modules/
-.DS_Store
-*.log
+server.js
+.babelrc
+.npmignore
 .gitignore
-.git/
-src/
-demo/
+webpack.config.js
+webpack.dev.config.js
+webpack.style.config.js
+examples
+dist

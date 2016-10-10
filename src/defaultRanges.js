@@ -1,5 +1,5 @@
 export default {
-  'Today'         : {
+  '今天'         : {
     startDate     : (now) => {
       return now;
     },
@@ -8,7 +8,7 @@ export default {
     }
   },
 
-  'Yesterday'     : {
+  '昨天'     : {
     startDate     : (now) => {
       return now.add(-1, 'days');
     },
@@ -17,18 +17,18 @@ export default {
     }
   },
 
-  'Last 7 Days'   : {
+  '最近7天'   : {
     startDate     : (now) => {
-      return now.add(-7, 'days');
+      return now.add(-6, 'days');
     },
     endDate       : (now) => {
       return now;
     }
   },
 
-  'Last 30 Days'  : {
+  '最近30天'  : {
     startDate     : (now) => {
-      return now.add(-30, 'days');
+      return now.add(-29, 'days');
     },
     endDate       : (now) => {
       return now;
