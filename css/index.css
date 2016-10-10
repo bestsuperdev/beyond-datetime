@@ -5,6 +5,7 @@
   min-width: 564px;
 }
 .rdr-calendar {
+  box-sizing: content-box;
   width: 260px;
   padding: 10px;
   background: #ffffff;
@@ -41,6 +42,10 @@
   line-height: 18px;
 }
 .rdr-calendar .rdr-calendar-month-and-year select {
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
   height: 20px;
   outline: none;
   vertical-align: middle;
@@ -158,6 +163,7 @@
   color: #ffffff;
 }
 .rdr-predefined-ranges {
+  box-sizing: content-box;
   background: white;
   width: 140px;
   display: inline-block;
@@ -185,6 +191,7 @@
 }
 .rdr-time > .rdr-time-mini-cell,
 .rdr-time > .rdr-time-cell {
+  box-sizing: content-box;
   padding: 4px;
   text-align: center;
   font-size: 14px;
@@ -204,17 +211,6 @@
   cursor: pointer;
   font-size: inherit;
   font-family: inherit;
-}
-.rdr-time > .rdr-time-cell > .rdr-time-text {
-  font-size: inherit;
-  font-family: inherit;
-  display: inline-block;
-  width: 100%;
-  height: 20px;
-  line-height: 20px;
-  box-sizing: border-box;
-  padding-left: 5px;
-  text-align: left;
 }
 .rdr-time > .rdr-time-mini-cell {
   width: 10px;
