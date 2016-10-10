@@ -82,7 +82,7 @@ class Trigger extends Component {
 		let {showCalendar,position,inputHeight} = this.state
 		let {calendar} = this.props
 		if (showCalendar && calendar) {
-			let {timeConfirm,onConfirm,time} = calendar.props
+			let {timeConfirm,onConfirm,onChange,time} = calendar.props
 			if (time && timeConfirm == null) {
 				timeConfirm = true
 			}
@@ -92,9 +92,13 @@ class Trigger extends Component {
 			}else if( position === 'bottom'){
 				calendarWrapStyle.bottom = inputHeight
 			}
+			let props = {timeConfirm, onConfirm : mergeFuncs(onConfirm,this.handlerHideCalendar) }
+			if (!time) {
+				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
+			}
 			return (
 				 <div style={assign({position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle)}>
-				 	{React.cloneElement(calendar,{timeConfirm, onConfirm : mergeFuncs(onConfirm,this.handlerHideCalendar)})}
+				 	{React.cloneElement(calendar,props)}
 			 	</div>
 			)
 		}

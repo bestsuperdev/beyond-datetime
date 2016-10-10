@@ -8,6 +8,7 @@
 	min-width : 564px;
 }
 .rdr-calendar{
+	box-sizing: content-box;
 	width: 260px;
 	padding: 10px;
 	background: #ffffff;
@@ -42,15 +43,13 @@
 		height: 38px;
 		line-height: 18px;
 		select{
-			// box-sizing: border-box;
+			box-sizing: border-box;
+			font-family: inherit;
+			font-size: inherit;
+			padding: 0;
 			height: 20px;
-			// line-height: 18px;
-			// border-color: transparent;
 			outline: none;
 			vertical-align: middle;
-		}
-		select:hover{
-			// border-color: rgb(169, 169, 169);
 		}
 	}
 	& &-month-and-year-button{
@@ -171,6 +170,7 @@
 }
 
 .rdr-predefined-ranges{
+	box-sizing: content-box;
 	background: white;
 	width         : 140px;
 	display       : inline-block;
@@ -197,6 +197,7 @@
 	display: table;
 	background-color: white;
 	&>&-mini-cell,&>&-cell{
+		box-sizing: content-box;
 		padding: 4px;
 		text-align: center;
 		font-size: 14px;
@@ -219,18 +220,6 @@
 		// border: 1px solid white;
 		// border-color: white;
 	}
-	&>&-cell>&-text{
-		font-size: inherit;
-		font-family: inherit;
-		display: inline-block;
-		width: 100%;
-		height: 20px;
-		line-height: 20px;
-		box-sizing: border-box;
-		padding-left: 5px;
-		text-align: left;
-	}
-
 	&>&-mini-cell{
 		width: 10px;
 	}

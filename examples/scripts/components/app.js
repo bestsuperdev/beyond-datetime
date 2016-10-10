@@ -11,6 +11,7 @@ class App extends React.Component {
 		this.state = {
 			date : null,
 			date2 : null,
+			date3 : null,
 			value : '',
 			startDate : null,
 			endDate : null
@@ -25,6 +26,11 @@ class App extends React.Component {
 
 	handlerTriggerChange(date2){
 		this.setState((state, props) => ({date2}));
+		return false
+	}
+
+	handlerTriggerChange3(date3){
+		this.setState((state, props) => ({date3}));
 		return false
 	}
 
@@ -45,7 +51,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		let {date,value,date2} = this.state
+		let {date,value,date2,date3} = this.state
 		return (
 			<div className='app'>
 				<Time />
@@ -74,9 +80,14 @@ class App extends React.Component {
 					// endDate={this.state.endDate}
 					onChange={this.handlerRangeChange.bind(this)} 
 					ranges={defaultRanges} />
-				<Trigger calendar={<Calendar date={this.state.date2} time onChange={this.handlerTriggerChange.bind(this)} />}>
-					<input type="text" value={date2 ? date2.format('YYYY.MM.DD HH:mm:ss') : '' }/>
-				</Trigger>
+				<div>
+					<Trigger calendar={<Calendar date={this.state.date2}  onChange={this.handlerTriggerChange.bind(this)} />}>
+						<input type="text" value={date2 ? date2.format('YYYY.MM.DD') : '' }/>
+					</Trigger>
+					<Trigger calendar={<Calendar time date={this.state.date3}  onConfirm={this.handlerTriggerChange3.bind(this)} />}>
+						<input type="text" value={date3 ? date3.format('YYYY.MM.DD HH:mm:ss') : '' }/>
+					</Trigger>
+				</div>
 			</div>
 		)
 	}
