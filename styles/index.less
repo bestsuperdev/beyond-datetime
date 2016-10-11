@@ -17,25 +17,7 @@
 	letter-spacing: 0;
 	color: #000000;
 	border: 1px solid rgba(0, 0, 0, 0.15);
-	& &-confirm-btn{
-		box-sizing: content-box;
-		position: absolute;
-		right: 10px;
-		top: 0;
-		bottom: 0;
-		margin-top: auto;
-		margin-bottom: auto;
-		font-size: 13px;
-		height: 18px;
-		line-height: 18px;
-		padding: 6px;
-		color:  #34495e ;
-		text-decoration: none;
-		background-color: #bdc3c7;
-		&:active{
-			transform     : scale(0.9);
-		}
-	}
+	
 	& &-month-and-year{
 		// text-align: center;
 		box-sizing: border-box;
@@ -197,6 +179,7 @@
 .rdr-time{
 	display: table;
 	background-color: white;
+	// min-width: 20px;
 	&>&-mini-cell,&>&-cell{
 		box-sizing: content-box;
 		padding: 4px;
@@ -223,5 +206,24 @@
 		padding-left: 0;
 		padding-right: 0;
 		width: 5px;
+	}
+	& &-confirm-btn{
+		box-sizing: border-box;
+		position: absolute;
+		right: 10px;
+		top: 0;
+		bottom: 0;
+		margin-top: auto;
+		margin-bottom: auto;
+		font-size: 13px;
+		height: 24px;
+		line-height: 24px;
+		padding: 0 6px;
+		color:  #34495e ;
+		text-decoration: none;
+		background-color: #bdc3c7;
+		&:active{
+			transform     : scale(0.9);
+		}
 	}
 }

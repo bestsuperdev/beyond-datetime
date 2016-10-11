@@ -64,6 +64,7 @@ class App extends React.Component {
 					<p>普通时间选择</p>
 					<Time second={false} onChange={this.log} />
 					<Time  onChange={this.log} />
+					<Time  confirm onChange={this.log} />
 				</div>
 				<div>
 					<p>受控时间选择</p>
@@ -123,6 +124,9 @@ class App extends React.Component {
 					</Trigger>
 					<Trigger calendar={<Calendar time date={this.state.date3}  onConfirm={this.handlerTriggerChange3.bind(this)} />}>
 						<input type="text" value={date3 ? date3.format('YYYY.MM.DD HH:mm:ss') : '' }/>
+					</Trigger>
+					<Trigger calendar={<Time confirm date={this.state.time2} onConfirm={this.handlerChange.bind(this,'time2')} />}>
+						<input type="text" value={this.state.time2 ? this.state.time2.format('HH:mm:ss') : '' }/>
 					</Trigger>
 				</div>
 			</div>

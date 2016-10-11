@@ -82,9 +82,9 @@ class Trigger extends Component {
 		let {showCalendar,position,inputHeight} = this.state
 		let {calendar} = this.props
 		if (showCalendar && calendar) {
-			let {timeConfirm,onConfirm,onChange,time} = calendar.props
-			if (time && timeConfirm == null) {
-				timeConfirm = true
+			let {confirm,onConfirm,onChange,time} = calendar.props
+			if (time && confirm == null) {
+				confirm = true
 			}
 			let calendarWrapStyle = {}
 			if (position === 'top') {
@@ -92,8 +92,8 @@ class Trigger extends Component {
 			}else if( position === 'bottom'){
 				calendarWrapStyle.bottom = inputHeight
 			}
-			let props = {timeConfirm, onConfirm : mergeFuncs(onConfirm,this.handlerHideCalendar) }
-			if (!time) {
+			let props = {confirm, onConfirm : mergeFuncs(onConfirm,this.handlerHideCalendar) }
+			if (!confirm) {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
 			return (

@@ -78,8 +78,8 @@ class Calendar extends Component {
     return shownDate;
   }
 
-  handlerConfirm(event){
-    event.preventDefault()
+  handlerConfirm(){
+    // event.preventDefault()
     const {onConfirm} = this.props
     const {date} = this.state
     onConfirm && onConfirm(date)
@@ -316,12 +316,18 @@ class Calendar extends Component {
   }
 
   renderTime(){
-    let {time,hour,minute,second,timeConfirm} = this.props
+    let {time,hour,minute,second,confirm} = this.props
     if (time) {
       return (
           <div style={{position : 'relative'}}>
-            <Time date={this.state.timeDate} hour={hour} minute={minute} second={second} onChange={this.handlerTimeSelect.bind(this)}  />
-            {timeConfirm && <a href="#" onClick={this.handlerConfirm.bind(this)} className={`${calendarPrefix}-confirm-btn`}>确定</a>}
+            <Time 
+              confirm={confirm}
+              date={this.state.timeDate} 
+              hour={hour} 
+              minute={minute} 
+              second={second} 
+              onChange={this.handlerTimeSelect.bind(this)}
+              onConfirm={this.handlerConfirm.bind(this)}  />
           </div>
         )
     }

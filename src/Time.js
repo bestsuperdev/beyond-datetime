@@ -7,13 +7,7 @@ import ReactDOM from 'react-dom'
 // import moment from 'moment'
 import {parseTimeInput} from './utils/parseInput';
 // import getPos from './utils/position';
-import {timePrefix} from './utils/consts'
-
-const texts = {
-	hour : '小时',
-	minute : '分钟',
-	second : '秒'
-}
+import {timePrefix,timeFormat} from './utils/consts'
 
 function toDoubleDigits(number){
 	return number < 10 ? `0${number}` : number
@@ -23,8 +17,8 @@ class Time extends Component {
 
 	constructor(props){
 		super(props)
-		let {date} = props
-		date = parseTimeInput(date,props.format)
+		let {date,format} = props
+		date = parseTimeInput(date,format)
 		this.state = { date }
 		this.mounted = false
 	}
@@ -61,12 +55,32 @@ class Time extends Component {
 		)
 	}
 
+	handlerConfirm(event){
+		event.preventDefault()
+		let {onConfirm} = this.props
+		let {date} = this.state
+		onConfirm && onConfirm(date)
+	}
+
+	getWidth(){
+		const {second,confirm} = this.props
+		let width = 133
+		if (second) {
+			width += 70
+		}
+		if (confirm) {
+			width += 63
+		}
+		return width
+	}
+
+
 	render() { 
-		const {hour,minute,second} = this.props
+		const {hour,minute,second,confirm} = this.props
 		// console.log(this.state)
 		const {date } = this.state
 		return (
-			<div className={timePrefix}>
+			<div className={timePrefix} style={{width : this.getWidth()}}>
 				{hour && (
 					<div className={`${timePrefix}-cell`}>
 						{this.renderSelector('hour',24,date.hour())}
@@ -84,6 +98,11 @@ class Time extends Component {
 						{this.renderSelector('second',60,date.second())}
 					</div>
 				)}
+				{confirm && (
+					<div className={`${timePrefix}-cell`}>
+						<a href="#" onClick={this.handlerConfirm.bind(this)} className={`${timePrefix}-confirm-btn`}>确定</a>
+					</div>
+				)}
 			</div>
 		)
 	}
@@ -94,7 +113,8 @@ Time.defaultProps = {
 	onChange : function () {},
 	hour : true,
 	minute : true,
-	second : true
+	second : true,
+	format : timeFormat
 }
 
 export default Time

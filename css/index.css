@@ -15,26 +15,6 @@
   color: #000000;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
-.rdr-calendar .rdr-calendar-confirm-btn {
-  box-sizing: content-box;
-  position: absolute;
-  right: 10px;
-  top: 0;
-  bottom: 0;
-  margin-top: auto;
-  margin-bottom: auto;
-  font-size: 13px;
-  height: 18px;
-  line-height: 18px;
-  padding: 6px;
-  color: #34495e ;
-  text-decoration: none;
-  background-color: #bdc3c7;
-}
-.rdr-calendar .rdr-calendar-confirm-btn:active {
-  -webkit-transform: scale(0.9);
-          transform: scale(0.9);
-}
 .rdr-calendar .rdr-calendar-month-and-year {
   box-sizing: border-box;
   font-size: 12px;
@@ -217,4 +197,24 @@
   padding-left: 0;
   padding-right: 0;
   width: 5px;
+}
+.rdr-time .rdr-time-confirm-btn {
+  box-sizing: border-box;
+  position: absolute;
+  right: 10px;
+  top: 0;
+  bottom: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 13px;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 6px;
+  color: #34495e ;
+  text-decoration: none;
+  background-color: #bdc3c7;
+}
+.rdr-time .rdr-time-confirm-btn:active {
+  -webkit-transform: scale(0.9);
+          transform: scale(0.9);
 }
