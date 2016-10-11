@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
 require('moment/locale/zh-cn');
 import {dateFormat,calendarPrefix} from './utils/consts'
-import parseInput from './utils/parseInput.js';
+import parseInput , {parseTimeInput} from './utils/parseInput.js';
 import DayCell from './DayCell.js';
 import Time from './Time'
 
@@ -39,12 +39,14 @@ class Calendar extends Component {
   constructor(props, context) {
     super(props, context);
 
-    let {date, format, range, offset, firstDayOfWeek } = props;
+    let {date, format, range, offset, firstDayOfWeek, time } = props;
     // console.log(date)
+    // date = 
     date = parseInput(date, format)
     this.state = {
       date,
-      shownDate : (range && range['endDate'] || date).clone().add(offset, 'months'),
+      timeDate : time ? date : null,
+      shownDate : ((range && range['endDate']) || date || moment()).clone().add(offset, 'months'),
       firstDayOfWeek: (firstDayOfWeek || moment.localeData().firstDayOfWeek())
     }
 
@@ -53,11 +55,11 @@ class Calendar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let {date,isInvalid,format} = nextProps
+    let {date,isInvalid,format, time} = nextProps
     if (date != null) {
-      date = parseInput(date,format)
+      // date = parseInput(date,format)
       if (typeof isInvalid !== 'function' || !isInvalid(date) ) {
-        this.setState((state, props) => ({date}))
+        this.setState((state, props) => ({date : parseInput(date,format), timeDate : time ? parseTimeInput(date,format) : null  }))
       }
     }
   }
@@ -83,24 +85,49 @@ class Calendar extends Component {
     onConfirm && onConfirm(date)
   }
 
-  handlerSelect(newDate,type) {
-    const { link, onChange } = this.props
+  handlerDateSelect(newDate,type) {
+    const { link, onChange, time } = this.props
     let result = null
-    if (type !== 'time') {
-      let {date} = this.state
-      newDate.hours(date.hours())
-      newDate.minutes(date.minutes())
-      newDate.seconds(date.seconds())
-    }
-    // let date = newDate.
-    // const { date } = this.state;
+    let {date,timeDate} = this.state
+
+    newDate.hours(timeDate ? timeDate.hours() : 0)
+    newDate.minutes(timeDate ? timeDate.minutes() : 0)
+    newDate.seconds(timeDate ? timeDate.seconds() : 0)
+
     if (typeof onChange === 'function') {
         result = onChange(newDate.clone(), type)
     }
-    // onChange && ;
 
     if (!link && result !== false) {
         this.setState({ date : newDate });
+    }
+
+    return false
+  }
+
+  handlerTimeSelect(newDate,type) {
+    const { link, onChange, time } = this.props
+    let result = null
+    let {date,timeDate} = this.state
+    if (date == null) {
+      this.setState((state, props) => ({timeDate : newDate}))
+    }else{
+      // newDate =
+      let date = this.state.date.clone()
+
+      date.hours(newDate ? newDate.hours() : 0)
+      date.minutes(newDate ? newDate.minutes() : 0)
+      date.seconds(newDate ? newDate.seconds() : 0)
+      // let date = newDate.
+      // const { date } = this.state;
+      if (typeof onChange === 'function') {
+          result = onChange(date.clone(), type)
+      }
+      // onChange && ;
+
+      if (!link && result !== false) {
+          this.setState({ date,timeDate : newDate });
+      }
     }
     return false
   }
@@ -268,7 +295,7 @@ class Calendar extends Component {
       // console.log(isEdge)
       return (
         <DayCell
-          onSelect={ this.handlerSelect.bind(this) }
+          onSelect={ this.handlerDateSelect.bind(this) }
           { ...data }
           // theme={ styles }
           //用于范围选择
@@ -293,7 +320,7 @@ class Calendar extends Component {
     if (time) {
       return (
           <div style={{position : 'relative'}}>
-            <Time date={this.state.date} hour={hour} minute={minute} second={second} onChange={this.handlerSelect.bind(this)}  />
+            <Time date={this.state.timeDate} hour={hour} minute={minute} second={second} onChange={this.handlerTimeSelect.bind(this)}  />
             {timeConfirm && <a href="#" onClick={this.handlerConfirm.bind(this)} className={`${calendarPrefix}-confirm-btn`}>确定</a>}
           </div>
         )

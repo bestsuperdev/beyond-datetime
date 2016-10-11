@@ -4,10 +4,16 @@
 
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import moment from 'moment'
-import parseInput from './utils/parseInput';
+// import moment from 'moment'
+import {parseTimeInput} from './utils/parseInput';
 // import getPos from './utils/position';
 import {timePrefix} from './utils/consts'
+
+const texts = {
+	hour : '小时',
+	minute : '分钟',
+	second : '秒'
+}
 
 function toDoubleDigits(number){
 	return number < 10 ? `0${number}` : number
@@ -18,7 +24,7 @@ class Time extends Component {
 	constructor(props){
 		super(props)
 		let {date} = props
-		date = parseInput(date,props.format)
+		date = parseTimeInput(date,props.format)
 		this.state = { date }
 		this.mounted = false
 	}
@@ -26,15 +32,19 @@ class Time extends Component {
 	componentWillReceiveProps(nextProps) {
 		let {date,format} = nextProps
 		if (date != null) {
-			date = parseInput(date,format)
+			date = parseTimeInput(date,format)
 			this.setState((state, props) => ({date}))
 		}
 	}
 
 	handlerChange(type,event){
+		let {second} = this.props
 		let date = this.state.date.clone()
 		let number = +event.target.value
 		date[`${type}`](number)
+		if (!second) {
+			date.second(0)
+		}
 		let result = this.props.onChange(date, 'time')
 		if (result !== false) {
 			this.setState((state, props) => ({date}))
