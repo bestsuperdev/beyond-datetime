@@ -114,18 +114,17 @@ class App extends React.Component {
 
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate}  onChange={this.handlerRangeChange.bind(this)} />
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
-					<DateRange startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate} time second={false} onChange={this.handlerRangeChange.bind(this)} />
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div>
-					<Trigger calendar={<Calendar date={this.state.date2}  onChange={this.handlerTriggerChange.bind(this)} />}>
+					<Trigger calendar={<Calendar date={this.state.date2 || ''}  onConfirm={this.handlerTriggerChange.bind(this)} />}>
 						<input type="text" value={date2 ? date2.format('YYYY.MM.DD') : '' }/>
 					</Trigger>
 					<Trigger calendar={<Calendar time date={this.state.date3}  onConfirm={this.handlerTriggerChange3.bind(this)} />}>
 						<input type="text" value={date3 ? date3.format('YYYY.MM.DD HH:mm:ss') : '' }/>
 					</Trigger>
-					<Trigger calendar={<Time confirm date={this.state.time2} onConfirm={this.handlerChange.bind(this,'time2')} />}>
+					<Trigger calendar={<Time date={this.state.time2} onConfirm={this.handlerChange.bind(this,'time2')} />}>
 						<input type="text" value={this.state.time2 ? this.state.time2.format('HH:mm:ss') : '' }/>
 					</Trigger>
 				</div>

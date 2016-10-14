@@ -80,10 +80,10 @@ class Trigger extends Component {
 
 	renderCalendar(){
 		let {showCalendar,position,inputHeight} = this.state
-		let {calendar} = this.props
+		let {calendar,wrapStyle} = this.props
 		if (showCalendar && calendar) {
-			let {confirm,onConfirm,onChange,time} = calendar.props
-			if (time && confirm == null) {
+			let {confirm,onConfirm,onChange} = calendar.props
+			if (confirm == null) {
 				confirm = true
 			}
 			let calendarWrapStyle = {}
@@ -97,7 +97,7 @@ class Trigger extends Component {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
 			return (
-				 <div style={assign({position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle)}>
+				 <div style={assign({position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
 				 	{React.cloneElement(calendar,props)}
 			 	</div>
 			)

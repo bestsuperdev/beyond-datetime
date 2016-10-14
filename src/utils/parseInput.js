@@ -2,10 +2,10 @@ import moment from 'moment'
 
 export default function parseInput(input, format, isStrict = false) {
 	let output = null
-
+	
 	if (input instanceof Date) {
 		output = moment(input)
-	} else if (typeof input === 'string') {
+	} else if (input && typeof input === 'string') {
 		output = moment(input, format, isStrict)
 	} else if (typeof input === 'function') {
 		output = parseInput(input(moment()), format)

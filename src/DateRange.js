@@ -166,6 +166,7 @@ class DateRange extends Component {
                 offset={ i-1 }
                 link={ linkedCalendars && link }
                 linkCB={ this.handleLinkChange.bind(this) }
+                rangeKey={ i === 0 ? 'startDate' : 'endDate'}
                 range={ range }
                 format={ format }
                 firstDayOfWeek={ firstDayOfWeek }
@@ -177,9 +178,6 @@ class DateRange extends Component {
                 hour={hour}
                 minute={minute}
                 second={second}
-
-		// onlyClasses={ onlyClasses }
-                // classNames={ classes }
                 onChange={ this.handleSelect.bind(this,i) }  />
             );
           }
@@ -198,7 +196,6 @@ DateRange.propTypes = {
   format          : PropTypes.string,
   time : PropTypes.bool,
   firstDayOfWeek  : PropTypes.number,
-  // calendars       : PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   startDate       : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
   endDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
   minDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
@@ -206,12 +203,9 @@ DateRange.propTypes = {
   dateLimit       : PropTypes.func,
   ranges          : PropTypes.object,
   linkedCalendars : PropTypes.bool,
-  // theme           : PropTypes.object,
   onInit          : PropTypes.func,
   onChange        : PropTypes.func,
   isInvalid       : PropTypes.func,
-  // onlyClasses     : PropTypes.bool,
-  // classNames      : PropTypes.object
 }
 
 export default DateRange;

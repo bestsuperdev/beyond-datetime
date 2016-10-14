@@ -39,13 +39,13 @@ class Calendar extends Component {
   constructor(props, context) {
     super(props, context);
 
-    let {date, format, range, offset, firstDayOfWeek, time } = props;
+    let {date, format, range, rangeKey, offset, firstDayOfWeek, time } = props;
     // console.log(date)
     // date = 
     date = parseInput(date, format)
     this.state = {
-      date,
-      timeDate : time ? date : null,
+      date, 
+      timeDate : time ? (range && rangeKey ? range[rangeKey] : date) : null,
       shownDate : ((range && range['endDate']) || date || moment()).clone().add(offset, 'months'),
       firstDayOfWeek: (firstDayOfWeek || moment.localeData().firstDayOfWeek())
     }
@@ -55,12 +55,17 @@ class Calendar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let {date,isInvalid,format, time} = nextProps
-    if (date != null) {
-      // date = parseInput(date,format)
-      if (typeof isInvalid !== 'function' || !isInvalid(date) ) {
-        this.setState((state, props) => ({date : parseInput(date,format), timeDate : time ? parseTimeInput(date,format) : null  }))
-      }
+    let {date,isInvalid,format, time, range, rangeKey} = nextProps
+    let nextState = null
+
+    if (date != null && (typeof isInvalid !== 'function' || !isInvalid(date)) ) {
+      nextState = {date : parseInput(date,format), timeDate : time ? parseTimeInput(date,format) : null }
+    }else if( range && rangeKey ){
+      nextState = {timeDate : time ? range[rangeKey] : null  }
+    }
+
+    if (nextState) {
+      this.setState((state, props) => nextState)
     }
   }
 
@@ -86,7 +91,7 @@ class Calendar extends Component {
   }
 
   handlerDateSelect(newDate,type) {
-    const { link, onChange, time } = this.props
+    const { link, onChange, time, onConfirm } = this.props
     let result = null
     let {date,timeDate} = this.state
 
@@ -99,7 +104,8 @@ class Calendar extends Component {
     }
 
     if (!link && result !== false) {
-        this.setState({ date : newDate });
+        this.setState({ date : newDate })
+        onConfirm && onConfirm(newDate)
     }
 
     return false
@@ -201,18 +207,18 @@ class Calendar extends Component {
     return (
       <div className={prefix}>
         <div style={style}>
-          <button className={`${prefix}-button ${prefix}-prev-button`} onClick={this.changeMonth.bind(this, -1)}><i></i></button>
-          <select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.month()}>
-            {months}
-          </select>
-          <button className={`${prefix}-button ${prefix}-next-button`} onClick={this.changeMonth.bind(this, 1)}><i></i></button>
-        </div>
-        <div style={style}>
           <button className={`${prefix}-button ${prefix}-prev-button`} onClick={this.changeYear.bind(this, -1)}><i></i></button>
           <select value={shownDate.year()} onChange={this.handlerChangeShownYear.bind(this)}>
             {years}
           </select>
           <button className={`${prefix}-button ${prefix}-next-button`} onClick={this.changeYear.bind(this, 1)}><i></i></button>
+        </div>
+        <div style={style}>
+          <button className={`${prefix}-button ${prefix}-prev-button`} onClick={this.changeMonth.bind(this, -1)}><i></i></button>
+          <select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.month()}>
+            {months}
+          </select>
+          <button className={`${prefix}-button ${prefix}-next-button`} onClick={this.changeMonth.bind(this, 1)}><i></i></button>
         </div>
       </div>
     )
