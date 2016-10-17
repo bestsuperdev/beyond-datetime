@@ -62,9 +62,7 @@ class Trigger extends Component {
 	}
 
 	render() {
-		let {children,calendar,wrapStyle} = this.props//.children
-		let {showCalendar,value} = this.state
-
+		let {children,wrapStyle} = this.props
 		
 		if (children) {
 			let props = children.props
@@ -80,9 +78,9 @@ class Trigger extends Component {
 
 	renderCalendar(){
 		let {showCalendar,position,inputHeight} = this.state
-		let {calendar,wrapStyle} = this.props
-		if (showCalendar && calendar) {
-			let {confirm,onConfirm,onChange} = calendar.props
+		let {target,wrapStyle} = this.props
+		if (showCalendar && target) {
+			let {confirm,onConfirm,onChange} = target.props
 			if (confirm == null) {
 				confirm = true
 			}
@@ -98,7 +96,7 @@ class Trigger extends Component {
 			}
 			return (
 				 <div style={assign({position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
-				 	{React.cloneElement(calendar,props)}
+				 	{React.cloneElement(target,props)}
 			 	</div>
 			)
 		}

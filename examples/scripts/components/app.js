@@ -53,7 +53,11 @@ class App extends React.Component {
 	}
 
 	log(v){
-		console.log(v)
+		if (v && (v.startDate || v.endDate) ) {
+			console.log(v.startDate && v.startDate.format(formatStr),v.endDate && v.endDate.format(formatStr))
+		}else if(v.format) {
+			console.log(v.format(formatStr))
+		}
 	}
 
 	render() {
@@ -75,12 +79,9 @@ class App extends React.Component {
 				<div style={{height : '20px'}}></div>
 				<div >
 					<p>普通日期选择</p>
-
-				
-
-					<Calendar  onChange={this.log} />
 					<Calendar time second={false}  onChange={this.log} />
 					<Calendar time  onChange={this.log} />
+					<Calendar  onChange={this.log} />
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div >
@@ -99,9 +100,9 @@ class App extends React.Component {
 
 				<div>
 					<p>普通日期范围选择</p>
-					<DateRange  onChange={this.log} />
 					<DateRange time  onChange={this.log} />
 					<DateRange time second={false} onChange={this.log} />
+					<DateRange  onChange={this.log} />
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div>
@@ -111,21 +112,29 @@ class App extends React.Component {
 						{'-'}
 						{this.state.endDate ? this.state.endDate.format('YYYY.MM.DD HH:mm:ss') : ''}
 					</p>
-
-					<DateRange startDate={this.state.startDate} endDate={this.state.endDate}  onChange={this.handlerRangeChange.bind(this)} />
+					<DateRange ranges={defaultRanges} startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate} time second={false} onChange={this.handlerRangeChange.bind(this)} />
+					<DateRange startDate={this.state.startDate} endDate={this.state.endDate}  onChange={this.handlerRangeChange.bind(this)} />
+
+
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div>
-					<Trigger calendar={<Calendar date={this.state.date2 || ''}  onConfirm={this.handlerTriggerChange.bind(this)} />}>
+					<Trigger target={<Calendar date={this.state.date2 || ''}  onConfirm={this.handlerTriggerChange.bind(this)} />}>
 						<input type="text" value={date2 ? date2.format('YYYY.MM.DD') : '' }/>
 					</Trigger>
-					<Trigger calendar={<Calendar time date={this.state.date3}  onConfirm={this.handlerTriggerChange3.bind(this)} />}>
+					<Trigger target={<Calendar time date={this.state.date3}  onConfirm={this.handlerTriggerChange3.bind(this)} />}>
 						<input type="text" value={date3 ? date3.format('YYYY.MM.DD HH:mm:ss') : '' }/>
 					</Trigger>
-					<Trigger calendar={<Time date={this.state.time2} onConfirm={this.handlerChange.bind(this,'time2')} />}>
+					<Trigger target={<Time date={this.state.time2} onConfirm={this.handlerChange.bind(this,'time2')} />}>
 						<input type="text" value={this.state.time2 ? this.state.time2.format('HH:mm:ss') : '' }/>
+					</Trigger>
+					<Trigger target={<DateRange time startDate={this.state.startDate} endDate={this.state.endDate} onConfirm={this.handlerRangeChange.bind(this)} />}>
+						<input type="text" value={(this.state.startDate && this.state.endDate) ? `${this.state.startDate.format(formatStr)}-${this.state.endDate.format(formatStr)}` : '' }/>
+					</Trigger>
+					<Trigger target={<DateRange startDate={this.state.startDate} endDate={this.state.endDate} onConfirm={this.handlerRangeChange.bind(this)} />}>
+						<input type="text" value={(this.state.startDate && this.state.endDate) ? `${this.state.startDate.format(formatStr)}-${this.state.endDate.format(formatStr)}` : '' }/>
 					</Trigger>
 				</div>
 			</div>
