@@ -48,17 +48,24 @@ class DateRange extends Component {
 
 	setTime(range,timeRange){
 		let {startDate,endDate} = range
-		let {startTime,endTime} = timeRange
-		startDate = startDate.clone()
-		endDate = endDate.clone()
-		
-		startDate.hour(startTime ? startTime.hour() : 0)
-		startDate.minute(startTime ? startTime.minute() : 0)
-		startDate.second(startTime ? startTime.second() : 0)
+		let startTime = null
+		let endTime = null
+		if (timeRange) {
+			startTime = timeRange.startTime
+			endTime = timeRange.endTime
+		}
+		if (startDate && endDate) {
+			startDate = startDate.clone()
+			endDate = endDate.clone()
+			
+			startDate.hour(startTime ? startTime.hour() : 0)
+			startDate.minute(startTime ? startTime.minute() : 0)
+			startDate.second(startTime ? startTime.second() : 0)
 
-		endDate.hour(endTime ? endTime.hour() : 0)
-		endDate.minute(endTime ? endTime.minute() : 0)
-		endDate.second(endTime ? endTime.second() : 0)
+			endDate.hour(endTime ? endTime.hour() : 0)
+			endDate.minute(endTime ? endTime.minute() : 0)
+			endDate.second(endTime ? endTime.second() : 0)
+		}
 		return {startDate,endDate}
 	}
 
@@ -133,6 +140,14 @@ class DateRange extends Component {
 		return false
 	}
 
+	handlerConfirm(){
+		if (typeof this.props.onConfirm === 'function') {
+			let {timeRange,range} = this.state
+			range = this.setTime(range,timeRange)
+			this.props.onConfirm(range)
+		}
+	}
+
 
 	componentWillReceiveProps(newProps) {
 		// Whenever date props changes, update state with parsed variant
@@ -195,6 +210,8 @@ class DateRange extends Component {
 								second={second}
 								onTimeChange={ this.handlerTimeChange.bind(this,i) }
 								onDateChange={ this.handlerDateChange.bind(this,i) }
+								onConfirm={ confirm && i === 1 ? this.handlerConfirm.bind(this) : void(0)}
+								confirm={confirm && i === 1}
 								/>
 						);
 					}

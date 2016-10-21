@@ -1,12 +1,55 @@
 // @calendar-width : 260px;
 // @cell-padding : 10px;
-.rdr-date-range{
-	display     : inline-block;
-	box-sizing  : border-box;
-	// background  : #ffffff;
-	border-radius  : 2px;
-	min-width : 564px;
+
+
+.rdr-time{
+	display: table;
+	background-color: white;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	// min-width: 20px;
+	&>&-mini-cell,&>&-cell{
+		box-sizing: content-box;
+		padding: 4px;
+		text-align: center;
+		font-size: 14px;
+		width: 55px;
+		display: table-cell;
+		vertical-align: middle;
+		color: #000000;
+		cursor: pointer;
+		position: relative;
+	}
+	&>&-cell>select{
+		padding: 0;
+		box-sizing: border-box;
+		height: 24px;
+		outline: none;
+		width: 100%;
+		cursor: pointer;
+		border-color: #ddd;
+	}
+	&>&-mini-cell{
+		padding-left: 0;
+		padding-right: 0;
+		width: 5px;
+	}
+	& &-confirm-btn{
+		font-size: 13px;
+		height: 24px;
+		line-height: 24px;
+		padding: 0;
+		margin: 0;
+		width: 55px;
+		// color:  inherit ;
+		text-decoration: none;
+		// background-color:#ecf0f1;
+		display: inline-block;
+		background : #2283D0;
+		color      : #ffffff;
+	}
 }
+
+
 .rdr-calendar{
 	box-sizing: content-box;
 	width: 260px;
@@ -20,7 +63,9 @@
 	font-family: 'Century';
 	font-size:13px;
 	box-shadow: 0 2px 4px rgba(0,0,0,.2);
-
+	.rdr-time{
+		border: none;
+	}
 	select{
 		box-sizing: border-box;
 			font-family: inherit;
@@ -163,6 +208,7 @@
 	}
 }
 
+
 .rdr-predefined-ranges{
 	box-sizing: content-box;
 	background: white;
@@ -187,51 +233,22 @@
 	}
 }
 
-.rdr-time{
-	display: table;
-	background-color: white;
-	// min-width: 20px;
-	&>&-mini-cell,&>&-cell{
-		box-sizing: content-box;
-		padding: 4px;
-		text-align: center;
-		font-size: 14px;
-		width: 55px;
-		display: table-cell;
-		vertical-align: middle;
-		color: #000000;
-		cursor: pointer;
-		position: relative;
-	}
-	&>&-cell>select{
-		padding: 0;
-		box-sizing: border-box;
-		height: 24px;
-		outline: none;
-		width: 100%;
-		cursor: pointer;
-		border-color: #ddd;
-	}
-	&>&-mini-cell{
-		padding-left: 0;
-		padding-right: 0;
-		width: 5px;
-	}
-	& &-confirm-btn{
-		box-sizing: border-box;
-		font-size: 13px;
-		height: 24px;
-		line-height: 24px;
-		padding: 0;
-		margin: 0;
-		width: 55px;
-		color:  inherit ;
-		text-decoration: none;
-		background-color:#ecf0f1;
-		display: inline-block;
-		// transition    : transform .1s ease;
-		// &:active{
-		// 	transform     : scale(0.5);
-		// }
+
+.rdr-date-range{
+	display     : inline-block;
+	box-sizing  : border-box;
+	border-radius  : 2px;
+	min-width : 564px;
+	position: relative;
+	box-shadow: 0 2px 4px rgba(0,0,0,.2);
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	.rdr-calendar{
+		box-shadow: none;
+		&:first-child{
+			border-right:none;
+		}
+		&:last-child{
+			border-left:none;
+		}
 	}
 }
