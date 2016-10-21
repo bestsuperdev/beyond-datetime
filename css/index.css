@@ -1,8 +1,46 @@
-.rdr-date-range {
-  display: inline-block;
+.rdr-time {
+  display: table;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+.rdr-time > .rdr-time-mini-cell,
+.rdr-time > .rdr-time-cell {
+  box-sizing: content-box;
+  padding: 4px;
+  text-align: center;
+  font-size: 14px;
+  width: 55px;
+  display: table-cell;
+  vertical-align: middle;
+  color: #000000;
+  cursor: pointer;
+  position: relative;
+}
+.rdr-time > .rdr-time-cell > select {
+  padding: 0;
   box-sizing: border-box;
-  border-radius: 2px;
-  min-width: 564px;
+  height: 24px;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+  border-color: #ddd;
+}
+.rdr-time > .rdr-time-mini-cell {
+  padding-left: 0;
+  padding-right: 0;
+  width: 5px;
+}
+.rdr-time .rdr-time-confirm-btn {
+  font-size: 13px;
+  height: 24px;
+  line-height: 24px;
+  padding: 0;
+  margin: 0;
+  width: 55px;
+  text-decoration: none;
+  display: inline-block;
+  background: #2283D0;
+  color: #ffffff;
 }
 .rdr-calendar {
   box-sizing: content-box;
@@ -14,6 +52,22 @@
   letter-spacing: 0;
   color: #000000;
   border: 1px solid rgba(0, 0, 0, 0.15);
+  font-family: 'Century';
+  font-size: 13px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.rdr-calendar .rdr-time {
+  border: none;
+}
+.rdr-calendar select {
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  height: 24px;
+  outline: none;
+  vertical-align: middle;
+  border-color: #ddd;
 }
 .rdr-calendar .rdr-calendar-month-and-year {
   box-sizing: border-box;
@@ -22,14 +76,11 @@
   height: 38px;
   line-height: 18px;
 }
+.rdr-calendar .rdr-calendar-month-and-year div:nth-child(2) {
+  text-align: right;
+}
 .rdr-calendar .rdr-calendar-month-and-year select {
-  box-sizing: border-box;
-  font-family: inherit;
-  font-size: inherit;
-  padding: 0;
-  height: 20px;
-  outline: none;
-  vertical-align: middle;
+  margin: 0px 5px;
 }
 .rdr-calendar .rdr-calendar-month-and-year-button {
   vertical-align: middle;
@@ -40,8 +91,8 @@
   padding: 0;
   margin: 0 5px;
   border: none;
-  background: #bdc3c7;
-  box-shadow: none;
+  background: #efefef;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   outline: none;
   border-radius: 50%;
   cursor: pointer;
@@ -64,12 +115,12 @@
 }
 .rdr-calendar .rdr-calendar-month-and-year-button.rdr-calendar-month-and-year-prev-button > i {
   border-right-width: 6px;
-  border-right-color: #34495e;
+  border-right-color: #000;
   margin-left: 1px;
 }
 .rdr-calendar .rdr-calendar-month-and-year-button.rdr-calendar-month-and-year-next-button > i {
   border-left-width: 6px;
-  border-left-color: #34495e;
+  border-left-color: #000;
   margin-left: 7px;
 }
 .rdr-calendar .rdr-calendar-weekdays > span {
@@ -77,7 +128,6 @@
   display: inline-block;
   letter-spacing: initial;
   text-align: center;
-  font-size: 12px;
   font-weight: bold;
   margin-bottom: 1px;
   width: 37px;
@@ -90,18 +140,17 @@
   display: inline-block;
   letter-spacing: initial;
   text-align: center;
-  font-size: 12px;
   cursor: pointer;
   -webkit-transition: -webkit-transform .1s ease;
   transition: -webkit-transform .1s ease;
   transition: transform .1s ease;
   transition: transform .1s ease, -webkit-transform .1s ease;
   width: 37px;
-  height: 34px;
-  line-height: 34px;
+  height: 32px;
+  line-height: 32px;
 }
 .rdr-calendar .rdr-calendar-day:hover {
-  background: #bdc3c7;
+  background: #ebebeb;
 }
 .rdr-calendar .rdr-calendar-day:active {
   background: #95a5a6;
@@ -110,7 +159,7 @@
           transform: scale(0.9);
 }
 .rdr-calendar .rdr-calendar-day.rdr-calendar-day-passive {
-  opacity: 0.6;
+  opacity: 0.3;
 }
 .rdr-calendar .rdr-calendar-day.rdr-calendar-day-invalid {
   opacity: 0.4;
@@ -131,16 +180,16 @@
   height: 0;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent  #e74c3c  #e74c3c transparent;
+  border-color: transparent  orangered  orangered transparent;
   right: 5px;
   bottom: 5px;
 }
 .rdr-calendar .rdr-calendar-day.rdr-calendar-day-inrange {
-  background: #34495e;
-  color: #95a5a6;
+  background: #EBF4FD;
+  color: #222;
 }
 .rdr-calendar .rdr-calendar-day.rdr-calendar-day-selected {
-  background: #e74c3c;
+  background: #2283D0;
   color: #ffffff;
 }
 .rdr-predefined-ranges {
@@ -166,55 +215,21 @@
 .rdr-predefined-ranges > .rdr-predefined-ranges-item.active {
   color: #E74C3C;
 }
-.rdr-time {
-  display: table;
-  background-color: white;
-}
-.rdr-time > .rdr-time-mini-cell,
-.rdr-time > .rdr-time-cell {
-  box-sizing: content-box;
-  padding: 4px;
-  text-align: center;
-  font-size: 14px;
-  width: 55px;
-  display: table-cell;
-  vertical-align: middle;
-  color: #000000;
-  cursor: pointer;
+.rdr-date-range {
+  display: inline-block;
+  box-sizing: border-box;
+  border-radius: 2px;
+  min-width: 564px;
   position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.15);
 }
-.rdr-time > .rdr-time-cell > select {
-  padding: 0;
-  box-sizing: border-box;
-  height: 24px;
-  outline: none;
-  width: 100%;
-  cursor: pointer;
-  font-size: inherit;
-  font-family: inherit;
+.rdr-date-range .rdr-calendar {
+  box-shadow: none;
 }
-.rdr-time > .rdr-time-mini-cell {
-  padding-left: 0;
-  padding-right: 0;
-  width: 5px;
+.rdr-date-range .rdr-calendar:first-child {
+  border-right: none;
 }
-.rdr-time .rdr-time-confirm-btn {
-  box-sizing: border-box;
-  position: absolute;
-  right: 10px;
-  top: 0;
-  bottom: 0;
-  margin-top: auto;
-  margin-bottom: auto;
-  font-size: 13px;
-  height: 24px;
-  line-height: 24px;
-  padding: 0 6px;
-  color: #34495e ;
-  text-decoration: none;
-  background-color: #bdc3c7;
-}
-.rdr-time .rdr-time-confirm-btn:active {
-  -webkit-transform: scale(0.9);
-          transform: scale(0.9);
+.rdr-date-range .rdr-calendar:last-child {
+  border-left: none;
 }
