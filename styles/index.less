@@ -172,12 +172,12 @@
 			transform     : scale(0.9);
 		}
 	}
-	& &-day&-day-passive{
-		opacity       : 0.3;
-	}
 	& &-day&-day-invalid{
 		opacity       : 0.4;
 		cursor        : not-allowed;
+	}
+	& &-day&-day-passive{
+		opacity       : 0.7;
 	}
 	& &-day&-day-invalid:hover,& &-day&-day-invalid:active{
 			background    : inherit;
@@ -217,7 +217,9 @@
 	vertical-align : top;
 	padding-left: 10px;
     padding-top: 10px;
-    margin-top: 1px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+    // margin-top: 1px;
 	&>&-item{
 		display       : block;
 		font-size      : 12px;
@@ -235,20 +237,43 @@
 
 
 .rdr-date-range{
+	background-color: white;
 	display     : inline-block;
 	box-sizing  : border-box;
 	border-radius  : 2px;
 	min-width : 564px;
 	position: relative;
 	box-shadow: 0 2px 4px rgba(0,0,0,.2);
-	border: 1px solid rgba(0, 0, 0, 0.15);
+	// border: 1px solid rgba(0, 0, 0, 0.15);
+	position: relative;
+	& &-confirm-btn{
+		font-size: 13px;
+		height: 24px;
+		line-height: 24px;
+		padding: 0;
+		margin: 0;
+		width: 55px;
+		text-align: center;
+		// color:  inherit ;
+		text-decoration: none;
+		// background-color:#ecf0f1;
+		display: inline-block;
+		background : #2283D0;
+		color      : #ffffff;
+	}
 	.rdr-calendar{
+		padding-bottom: 5px;
 		box-shadow: none;
-		&:first-child{
-			border-right:none;
-		}
-		&:last-child{
-			border-left:none;
-		}
+		border: none;
+		position: relative;
+		z-index: 2;
+	}
+	.rdr-predefined-ranges{
+		border-radius  : 2px;
+		z-index: 1;
+		position: absolute;
+		left: -148px;
+		top: -1px;
+		// border: none;
 	}
 }

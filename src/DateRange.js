@@ -140,7 +140,10 @@ class DateRange extends Component {
 		return false
 	}
 
-	handlerConfirm(){
+	handlerConfirm(event){
+		if (event && event.preventDefault) {
+			event.preventDefault()
+		}
 		if (typeof this.props.onConfirm === 'function') {
 			let {timeRange,range} = this.state
 			range = this.setTime(range,timeRange)
@@ -217,6 +220,11 @@ class DateRange extends Component {
 					}
 					return _calendars;
 				})()}
+				{(confirm && !time) && (
+					<div style={{padding : '4px 10px',textAlign : 'right'}}>
+						<a href="#" className={`${dateRangePrefix}-confirm-btn`} onClick={this.handlerConfirm.bind(this)}>确认</a>
+					</div>
+				)}
 			</div>
 		);
 	}
