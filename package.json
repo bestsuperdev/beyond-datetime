@@ -1,6 +1,6 @@
 {
   "name": "beyond-datetime",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "react date time",
   "main": "lib/index.js",
   "style": "css/index.css",
