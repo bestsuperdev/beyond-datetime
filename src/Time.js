@@ -18,7 +18,7 @@ class Time extends Component {
 	constructor(props){
 		super(props)
 		let {date,format} = props
-		date = parseTimeInput(date,format)
+		date = parseTimeInput(date,format,true)
 		this.state = { date }
 		this.mounted = false
 	}
@@ -26,7 +26,7 @@ class Time extends Component {
 	componentWillReceiveProps(nextProps) {
 		let {date,format} = nextProps
 		if (date != null) {
-			date = parseTimeInput(date,format)
+			date = parseTimeInput(date,format,true)
 			this.setState((state, props) => ({date}))
 		}
 	}

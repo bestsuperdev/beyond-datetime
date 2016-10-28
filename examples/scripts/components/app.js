@@ -66,6 +66,9 @@ class App extends React.Component {
 	}
 
 	handlerChange(field,value){
+		if (value.target) {
+			value = value.target.value
+		}
 		this.setState((state, props) => ({[field] : value}))
 		console.log(value)
 		return false
@@ -141,7 +144,7 @@ class App extends React.Component {
 				<div style={{height : '20px'}}></div>
 				<div>
 					<Trigger target={<Calendar isInvalid={isInValidDate} date={this.state.date1 || ''}  onConfirm={this.handlerTriggerChange1.bind(this)} />}>
-						<input type="text" value={date1 && date1.format ? date1.format('YYYY.MM.DD') : date1 }/>
+						<input type="text" value={date1 && date1.format ? date1.format('YYYY.MM.DD') : date1 } onChange={this.handlerChange.bind(this,'date1')} />
 					</Trigger>
 					<Trigger target={<Calendar date={this.state.date2 || ''}  onConfirm={this.handlerTriggerChange.bind(this)} />}>
 						<input type="text" value={date2 ? date2.format('YYYY.MM.DD') : '' }/>

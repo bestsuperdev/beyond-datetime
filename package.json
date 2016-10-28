@@ -1,6 +1,6 @@
 {
   "name": "beyond-datetime",
-  "version": "1.3.2",
+  "version": "1.3.4",
   "description": "react date time",
   "main": "lib/index.js",
   "style": "css/index.css",
@@ -18,8 +18,8 @@
     "beyond-lib": "^0.6.5",
     "classnames": "^2.2.5",
     "moment": "^2.13.0",
-    "react": "^0.14.8",
-    "react-dom": "^0.14.8"
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1",

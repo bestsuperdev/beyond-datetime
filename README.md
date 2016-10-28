@@ -16,7 +16,12 @@ $ npm install --save beyond-datetime
 
 ### Calendar
 #### 基本用法
+
+
+
+
 ```javascript
+require('beyond-datetime/css/index.css')
 import React, { Component } from 'react';
 import { Calendar } from 'beyond-datetime';
 
@@ -104,7 +109,7 @@ class MyComponent extends Component {
 
 
 ###### Calendar 属性 (props)
-* **date:** *(String, Moment.js object, Function)* - default: today
+* **date:** *(String, Moment.js object, Date, Function)* - default: null
 * **format:** *(String)*  如果 date 为字符串，比如 2016.01.01 这种格式，就需要提供date值的格式，以便moment可以正确解析，针对 2016.01.01,format 就是 YYYY.MM.DD，相关文档请查阅 [moment文档](http://momentjs.com/docs/#/displaying/format/)
 * **firstDayOfWeek** *(Number)* - default: [moment.localeData().firstDayOfWeek()](http://momentjs.com/docs/#/i18n/locale-data/)
 * **onInit:** *(Function)* default: null
@@ -117,11 +122,12 @@ class MyComponent extends Component {
 
 
 
-### DateRange(测试开发中)
+### DateRange
 
 #### 基本用法
 
 ```javascript
+require('beyond-datetime/css/index.css')
 import React, { Component } from 'react';
 import { DateRange } from 'beyond-datetime';
 
@@ -145,9 +151,10 @@ class MyComponent extends Component {
 }
 
 ```
-#### 使用预设选择范围
+#### 使用默认预设（包括今天，昨天，最近7天，最近30天）选择范围
 
 ```javascript
+require('beyond-datetime/css/index.css')
 import React, { Component } from 'react';
 import { DateRange,defaultRanges } from 'beyond-datetime';
 
@@ -181,6 +188,7 @@ class MyComponent extends Component {
 
 ### Trigger
 ```javascript
+require('beyond-datetime/css/index.css')
 import React, { Component } from 'react';
 import { Calendar,Trigger } from 'beyond-datetime';
 
@@ -200,7 +208,7 @@ class MyComponent extends Component {
 	render(){
 		return (
 			<div>
-				<Trigger calendar={<Calendar time onChange={this.handlerChange.bind(this)} />}>
+				<Trigger target={<Calendar time onChange={this.handlerChange.bind(this)} />}>
 					<input type="text" value={this.state.date ? date.format('YYYY.MM.DD HH:mm:ss') : '' } />
 				</Trigger>
 			</div>
@@ -211,4 +219,4 @@ class MyComponent extends Component {
 ```
 
 ###### Available Options (props)
-* **calendar:** *(Element)* Calendar DateRange 都可以
+* **target:** *(Element)* Calendar DateRange 都可以

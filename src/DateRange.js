@@ -11,10 +11,10 @@ class DateRange extends Component {
 		super(props, context);
 
 		const { format, linkedCalendars, theme, time } = props
-		const startDate = parseInput(props.startDate, format)
+		const startDate = parseInput(props.startDate, format,true)
 		const startTime = time ? parseTimeInput(startDate) : null
 
-		const endDate   = parseInput(props.endDate, format)
+		const endDate   = parseInput(props.endDate, format,true)
 		const endTime = time ? parseTimeInput(endDate) : null
 
 		this.state = {
@@ -155,10 +155,10 @@ class DateRange extends Component {
 	componentWillReceiveProps(newProps) {
 		// Whenever date props changes, update state with parsed variant
 		if (newProps.startDate || newProps.endDate) {
-			const startDate    = newProps.startDate   && parseInput(newProps.startDate, newProps.format);
-			const endDate      = newProps.endDate     && parseInput(newProps.endDate, newProps.format);
-			const oldStartDate = this.props.startDate && parseInput(this.props.startDate, this.props.format)
-			const oldEndDate   = this.props.endDate   && parseInput(this.props.endDate, this.props.format)
+			const startDate    = newProps.startDate   && parseInput(newProps.startDate, newProps.format,true);
+			const endDate      = newProps.endDate     && parseInput(newProps.endDate, newProps.format,true);
+			const oldStartDate = this.props.startDate && parseInput(this.props.startDate, this.props.format,true)
+			const oldEndDate   = this.props.endDate   && parseInput(this.props.endDate, this.props.format,true)
 
 			if (!startDate.isSame(oldStartDate) || !endDate.isSame(oldEndDate)) {
 				let state = {}

@@ -42,7 +42,7 @@ class Calendar extends Component {
 		let {date, format, range, rangeKey, offset, firstDayOfWeek, time, timeDate } = props;
 		// console.log(date)
 		// date = 
-		date = parseInput(date, format)
+		date = parseInput(date, format,true)
 		this.state = {
 			date, 
 			timeDate : timeDate ? timeDate : (time ? date : null),
@@ -59,7 +59,7 @@ class Calendar extends Component {
 		let nextState = null
 
 		if (date != null && (typeof isInvalid !== 'function' || !isInvalid(date)) ) {
-			nextState = {date : parseInput(date,format), timeDate : time ? parseTimeInput(date,format) : null }
+			nextState = {date : parseInput(date,format,true), timeDate : time ? parseTimeInput(date,format,true) : null }
 		}else if(range && timeDate){
 			nextState = {timeDate}
 		}
