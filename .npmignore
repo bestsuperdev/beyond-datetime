@@ -7,3 +7,4 @@ webpack.dev.config.js
 webpack.style.config.js
 examples
 dist
+deploy.bat

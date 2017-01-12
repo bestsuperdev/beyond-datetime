@@ -209,7 +209,7 @@ class MyComponent extends Component {
 		return (
 			<div>
 				<Trigger target={<Calendar time onChange={this.handlerChange.bind(this)} />}>
-					<input type="text" value={this.state.date ? date.format('YYYY.MM.DD HH:mm:ss') : '' } />
+					<input type="text" value={this.state.date ? this.state.date.format('YYYY.MM.DD HH:mm:ss') : '' } />
 				</Trigger>
 			</div>
 		)
@@ -219,4 +219,5 @@ class MyComponent extends Component {
 ```
 
 ###### Available Options (props)
-* **target:** *(Element)* Calendar DateRange 都可以
+* **target:** *(Element)* Calendar DateRange 都可以  
+* **wrapStyle:** *(Element)* Trigger 会默认生成一个 span{style="display:inline-block"}标签，使用wrapStyle 进行覆盖

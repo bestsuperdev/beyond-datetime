@@ -18,8 +18,8 @@
     "beyond-lib": "^0.6.5",
     "classnames": "^2.2.5",
     "moment": "^2.13.0",
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0"
+    "react": ">=0.14.0",
+    "react-dom": ">=0.14.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.1",
@@ -39,7 +39,7 @@
     "exports-loader": "^0.6.2",
     "extract-text-webpack-plugin": "^0.9.1",
     "file-loader": "^0.8.5",
-    "html-webpack-plugin": "^1.6.2",
+    "html-webpack-plugin": "^2.26.0",
     "imports-loader": "^0.6.5",
     "less": "^2.5.3",
     "less-loader": "^2.2.2",

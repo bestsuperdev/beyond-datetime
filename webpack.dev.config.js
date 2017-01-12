@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+// var ExtractTextPlugin = require("extract-text-webpack-plugin");
 // var autoprefixer = require('autoprefixer');
 // var precss = require('precss');
 // var cssgrace = require('cssgrace');
@@ -46,7 +46,7 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin("commons", "[name].bundle.js"),
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
-            template : 'examples/index.html',
+            template : path.join(__dirname,'examples/index.html') ,
             inject: true
             // filename: '../index.html',
         })

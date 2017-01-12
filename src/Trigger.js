@@ -26,15 +26,17 @@ class Trigger extends Component {
 	}
 
 	componentDidMount() {
-		if (this.refs.wrap) {
-			this.refs.wrap.addEventListener('click',this.handlerInnerClick)
+		let wrap = ReactDOM.findDOMNode(this)
+		if (wrap) {
+			wrap.addEventListener('click',this.handlerInnerClick)
 			document.addEventListener('click',this.handlerHideCalendar)
 		}
 	}
 
 	componentWillUnmount() {
-		if (this.refs.wrap) {
-			this.refs.wrap.removeEventListener('click',this.handlerInnerClick)
+		let wrap = ReactDOM.findDOMNode(this)
+		if (wrap) {
+			wrap.removeEventListener('click',this.handlerInnerClick)
 			document.removeEventListener('click',this.handlerHideCalendar)
 		}
 	}
@@ -68,7 +70,7 @@ class Trigger extends Component {
 			let props = children.props
 			children = React.cloneElement(children,{onClick : mergeFuncs(props.onClick,this.handlerClick.bind(this)) })
 			return (
-				<span ref="wrap" style={assign({display : 'inline-block',position : 'relative'},wrapStyle)}>
+				<span style={assign({display : 'inline-block',position : 'relative'},wrapStyle)}>
 					{children}
 					{this.renderCalendar()}
 				</span>
