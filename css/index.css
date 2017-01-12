@@ -158,12 +158,12 @@
   -webkit-transform: scale(0.9);
           transform: scale(0.9);
 }
+.rdr-calendar .rdr-calendar-day.rdr-calendar-day-passive {
+  opacity: 0.7;
+}
 .rdr-calendar .rdr-calendar-day.rdr-calendar-day-invalid {
   opacity: 0.4;
   cursor: not-allowed;
-}
-.rdr-calendar .rdr-calendar-day.rdr-calendar-day-passive {
-  opacity: 0.7;
 }
 .rdr-calendar .rdr-calendar-day.rdr-calendar-day-invalid:hover,
 .rdr-calendar .rdr-calendar-day.rdr-calendar-day-invalid:active {

@@ -1,6 +1,6 @@
 {
   "name": "beyond-datetime",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "react date time",
   "main": "lib/index.js",
   "style": "css/index.css",
@@ -27,7 +27,7 @@
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
     "babel-plugin-transform-es3-member-expression-literals": "^6.3.13",
-    "babel-plugin-transform-es3-property-literals": "^6.3.13",
+  "babel-plugin-transform-es3-property-literals": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.1.18",
     "babel-preset-react-hmre": "^1.1.0",
