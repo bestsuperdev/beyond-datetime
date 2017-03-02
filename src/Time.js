@@ -3,7 +3,7 @@
 */
 
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+// import ReactDOM from 'react-dom'
 // import moment from 'moment'
 import {parseTimeInput} from './utils/parseInput';
 // import getPos from './utils/position';

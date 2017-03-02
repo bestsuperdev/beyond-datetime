@@ -5,10 +5,10 @@
 */
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
-import Calendar from './Calendar.js'
+// import Calendar from './Calendar.js'
 import getPos from './utils/position'
-import parseInput from './utils/parseInput.js'
-import {dateFormat,timeFormat} from './utils/consts'
+// import parseInput from './utils/parseInput.js'
+// import {dateFormat,timeFormat} from './utils/consts'
 const mergeFuncs = require('beyond-lib/lib/utilities/mergeFuncs')
 const assign = require('beyond-lib/lib/assign')
 class Trigger extends Component {
@@ -97,9 +97,9 @@ class Trigger extends Component {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
 			return (
-				 <div style={assign({position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
-				 	{React.cloneElement(target,props)}
-			 	</div>
+				<div style={assign({position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
+					{React.cloneElement(target,props)}
+				</div>
 			)
 		}
 	}

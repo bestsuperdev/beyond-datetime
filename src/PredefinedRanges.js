@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import moment from 'moment';
 import parseInput from './utils/parseInput.js';
 import {predefinedRangesPrefix} from './utils/consts'
 const classnames = require('classnames')

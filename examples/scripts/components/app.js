@@ -158,7 +158,7 @@ class App extends React.Component {
 					<Trigger target={<DateRange time startDate={this.state.startDate} endDate={this.state.endDate} onConfirm={this.handlerRangeChange.bind(this)} />}>
 						<input type="text" value={(this.state.startDate && this.state.endDate) ? `${this.state.startDate.format(formatStr)}-${this.state.endDate.format(formatStr)}` : '' }/>
 					</Trigger>
-					<Trigger target={<DateRange startDate={this.state.startDate2} endDate={this.state.endDate2} onConfirm={this.handlerRangeChange2.bind(this)} />}>
+					<Trigger target={<DateRange ranges={defaultRanges} startDate={this.state.startDate2} endDate={this.state.endDate2} onConfirm={this.handlerRangeChange2.bind(this)} />}>
 						<input type="text" value={(this.state.startDate2 && this.state.endDate2) ? `${this.state.startDate2.format(formatStr)}-${this.state.endDate2.format(formatStr)}` : '' }/>
 					</Trigger>
 				</div>

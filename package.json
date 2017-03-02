@@ -1,6 +1,6 @@
 {
   "name": "beyond-datetime",
-  "version": "1.3.7",
+  "version": "1.3.8",
   "description": "react date time",
   "main": "lib/index.js",
   "style": "css/index.css",
@@ -15,7 +15,7 @@
     "build:example": "npm run clear:example && cross-env NODE_ENV=production webpack --config webpack.config.js"
   },
   "dependencies": {
-    "beyond-lib": "^0.6.5",
+    "beyond-lib": "^1.1.0",
     "classnames": "^2.2.5",
     "moment": "^2.13.0",
     "react": ">=0.14.0",
@@ -27,7 +27,7 @@
     "babel-core": "^6.2.1",
     "babel-loader": "^6.2.0",
     "babel-plugin-transform-es3-member-expression-literals": "^6.3.13",
-  "babel-plugin-transform-es3-property-literals": "^6.3.13",
+    "babel-plugin-transform-es3-property-literals": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.1.18",
     "babel-preset-react-hmre": "^1.1.0",

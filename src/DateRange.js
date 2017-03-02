@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import moment from 'moment';
 import parseInput,{parseTimeInput} from './utils/parseInput.js';
 import Calendar from './Calendar.js';
 import PredefinedRanges from './PredefinedRanges.js';
@@ -8,9 +7,9 @@ import {dateRangePrefix} from './utils/consts'
 class DateRange extends Component {
 
 	constructor(props, context) {
-		super(props, context);
+		super(props, context)
 
-		const { format, linkedCalendars, theme, time } = props
+		const { format, linkedCalendars, time } = props
 		const startDate = parseInput(props.startDate, format,true)
 		const startTime = time ? parseTimeInput(startDate) : null
 
@@ -20,7 +19,7 @@ class DateRange extends Component {
 		this.state = {
 			timeRange : (time && startTime && endTime) ? ({startTime,endTime}) : null,
 			range     : { startDate, endDate },
-			link      : linkedCalendars && endDate,
+			link      : linkedCalendars && endDate
 		}
 
 		this.step = 0;
@@ -177,8 +176,8 @@ class DateRange extends Component {
 
 
 	render() {
-		const { ranges, format, linkedCalendars, calendars, firstDayOfWeek, minDate, maxDate, isInvalid,time,hour,minute,second,confirm } = this.props;
-		const { range, link, timeRange } = this.state;
+		const { ranges, format, linkedCalendars,  firstDayOfWeek, minDate, maxDate, isInvalid,time,hour,minute,second,confirm } = this.props
+		const { range, link, timeRange } = this.state
 
 		return (
 			<div className={dateRangePrefix}>
@@ -191,7 +190,7 @@ class DateRange extends Component {
 				)}
 
 				{(()=>{
-					const _calendars = [];
+					const _calendars = []
 					// const len = 2 //Number(calendars)
 					for (let i = 0; i < 2; i++) {
 						_calendars.push(
@@ -216,9 +215,9 @@ class DateRange extends Component {
 								onConfirm={ confirm && i === 1 ? this.handlerConfirm.bind(this) : void(0)}
 								confirm={confirm && i === 1}
 								/>
-						);
+						)
 					}
-					return _calendars;
+					return _calendars
 				})()}
 				{(confirm && !time) && (
 					<div style={{padding : '4px 10px',textAlign : 'right'}}>
@@ -247,7 +246,7 @@ DateRange.propTypes = {
 	linkedCalendars : PropTypes.bool,
 	onInit          : PropTypes.func,
 	onChange        : PropTypes.func,
-	isInvalid       : PropTypes.func,
+	isInvalid       : PropTypes.func
 }
 
 export default DateRange;

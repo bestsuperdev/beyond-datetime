@@ -19,7 +19,7 @@ class DayCell extends Component {
 
   getClassNames() {
     const { classNames } = this.props;
-    const { isSelected, isInRange, isPassive,isInvalid, isStartEdge, isEndEdge, isToday } = this.props;
+    const { isSelected, isInRange, isPassive,isInvalid, isToday } = this.props;
 
     return classnames({
       [classNames]       : true,
