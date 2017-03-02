@@ -52,9 +52,8 @@
   letter-spacing: 0;
   color: #000000;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  font-family: 'Century';
   font-size: 13px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.2);
 }
 .rdr-calendar .rdr-time {
   border: none;
@@ -201,7 +200,7 @@
   padding-left: 10px;
   padding-top: 10px;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.2);
 }
 .rdr-predefined-ranges > .rdr-predefined-ranges-item {
   display: block;
@@ -222,7 +221,8 @@
   box-sizing: border-box;
   border-radius: 2px;
   min-width: 564px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.2);
   position: relative;
 }
 .rdr-date-range .rdr-date-range-confirm-btn {
