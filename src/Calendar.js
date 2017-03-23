@@ -1,28 +1,29 @@
-import React, { Component, PropTypes } from 'react';
-import moment from 'moment';
-require('moment/locale/zh-cn');
+import React, { Component, PropTypes } from 'react'
+import moment from 'moment'
+require('moment/locale/zh-cn')
 import {dateFormat,calendarPrefix} from './utils/consts'
-import parseInput , {parseTimeInput} from './utils/parseInput.js';
-import DayCell from './DayCell.js';
+import parseInput , {parseTimeInput} from './utils/parseInput.js'
+import DayCell from './DayCell.js'
 import Time from './Time'
 
 
 moment.locale('zh-cn')
+
 function checkRange(dayMoment, range) {
 	return (
-	dayMoment.isBetween(range['startDate'], range['endDate']) ||
-	dayMoment.isBetween(range['endDate'], range['startDate'])
+		dayMoment.isBetween(range['startDate'], range['endDate']) ||
+		dayMoment.isBetween(range['endDate'], range['startDate'])
 	)
 }
 
 function checkStartEdge(dayMoment, range) {
-	const { startDate } = range;
+	const { startDate } = range
 	return dayMoment.isSame(startDate,'day');
 	// return dayMoment.diff(startDate,'date') === 0;
 }
 
 function checkEndEdge(dayMoment, range) {
-	const { endDate } = range;
+	const { endDate } = range
 	return dayMoment.isSame(endDate,'day');
 	// return dayMoment.diff(endDate,'date') === 0;
 }
@@ -37,9 +38,9 @@ function isOusideMinMax(dayMoment, minDate, maxDate, format) {
 class Calendar extends Component {
 
 	constructor(props, context) {
-		super(props, context);
+		super(props, context)
 
-		let {date, format, range, rangeKey, offset, firstDayOfWeek, time, timeDate } = props;
+		let {date, format, range,  offset, firstDayOfWeek, time, timeDate } = props
 		// console.log(date)
 		// date = 
 		date = parseInput(date, format,true)
@@ -70,7 +71,7 @@ class Calendar extends Component {
 	}
 
 	componentDidMount() {
-		const { onInit,format } = this.props;
+		const { onInit } = this.props
 		const {date} = this.state
 		onInit && onInit(date)
 	}
