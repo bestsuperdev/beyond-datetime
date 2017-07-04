@@ -53,7 +53,15 @@ class DateRange extends Component {
 		const {range} = this.state
 		onInit && onInit(range)
 	}
-
+	componentWillUnmount(){
+		window.removeEventListener("resize",this.resize.bind(this))
+	}
+	// componentDidUpdate(){
+	// 	this.leftPosition = $(this.box).offset().left//box.getBoundingClientRect().left
+	// 	// console.log(this.leftPosition)
+	// 	this.boxWidth = this.box.clientWidth
+	// 	this.setState({leftPosition:this.leftPosition})	
+	// }
 	orderRange(range) {
 		const { startDate, endDate } = range;
 		if (startDate && endDate) {

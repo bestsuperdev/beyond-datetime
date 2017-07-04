@@ -97,7 +97,7 @@ class Trigger extends Component {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
 			return (
-				<div style={assign(calendarWrapStyle,wrapStyle)}>
+				<div style={assign( {position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
 					{React.cloneElement(target,props)}
 				</div>
 			)
