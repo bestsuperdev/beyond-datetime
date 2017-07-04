@@ -45,8 +45,10 @@ class PredefinedRanges extends Component {
   }
 
   render() {
+    // console.log(this.props.style)
+    let {extraClassName} = this.props
     return (
-      <div className={predefinedRangesPrefix}>
+      <div className={classnames(predefinedRangesPrefix,extraClassName)} style={this.props.style}>
         { this.renderRangeList() }
       </div>
     );

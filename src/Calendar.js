@@ -41,7 +41,8 @@ class Calendar extends Component {
 		super(props, context)
 
 		let {date, format, range,  offset, firstDayOfWeek, time, timeDate } = props
-		// console.log(date)
+		// console.log(moment.localeData())		
+		// console.log(moment.localeData().firstDayOfWeek())
 		// date = 
 		date = parseInput(date, format,true)
 		this.state = {
@@ -208,6 +209,13 @@ class Calendar extends Component {
 		}
 		let startYear = currentYear - 45
 		let endYear = currentYear + 10
+		if(this.props.yearLowerLimit > 0) {
+			startYear = this.props.yearLowerLimit
+		}		
+		if(this.props.yearUpperLimit > 0) {
+			endYear = this.props.yearUpperLimit
+		}
+
 		if (currentShownYear < startYear) {
 			years.push(<option key={currentShownYear} value={currentShownYear}>{currentShownYear}</option>)
 		}
@@ -263,24 +271,30 @@ class Calendar extends Component {
 
 		const shownDate                = this.getShownDate();
 		const { date, firstDayOfWeek } = this.state;
+		// console.log('；'+firstDayOfWeek)
 
 		const monthNumber              = shownDate.month();
 		const dayCount                 = shownDate.daysInMonth();
 		const startOfMonth             = shownDate.clone().startOf('month').isoWeekday();
+		// console.log(monthNumber+'；'+dayCount+'；'+startOfMonth)
 
 		const lastMonth                = shownDate.clone().month(monthNumber - 1);
 		const lastMonthNumber          = lastMonth.month();
 		const lastMonthDayCount        = lastMonth.daysInMonth();
+		// console.log(lastMonth+'；'+lastMonthNumber+'；'+lastMonthDayCount)
 
 		const nextMonth                = shownDate.clone().month(monthNumber + 1);
 		const nextMonthNumber          = nextMonth.month();
+		// console.log(nextMonth+'；'+nextMonthNumber)
 
 		const days                     = [];
 
 		// Previous month's days
 		const diff = (Math.abs(firstDayOfWeek - (startOfMonth + 7)) % 7);
+		// console.log(diff)
 		for (let i = diff-1; i >= 0; i--) {
 			const dayMoment  = lastMonth.clone().date(lastMonthDayCount - i);
+			// console.log(dayMoment)
 			days.push({ dayMoment, isPassive : true });
 		}
 
@@ -370,7 +384,9 @@ Calendar.defaultProps = {
 	classNames  : {},
 	hour : true,
 	minute : true,
-	second : true
+	second : true,
+	yearLowerLimit:-1,
+	yearUpperLimit:-1
 }
 
 Calendar.propTypes = {

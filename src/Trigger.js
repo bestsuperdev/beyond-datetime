@@ -97,7 +97,7 @@ class Trigger extends Component {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
 			return (
-				<div style={assign({position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
+				<div style={assign(calendarWrapStyle,wrapStyle)}>
 					{React.cloneElement(target,props)}
 				</div>
 			)
@@ -108,6 +108,6 @@ class Trigger extends Component {
 Trigger.defaultProps = {
 	onChange : function () {}
 }
-
+// {position : 'absolute',left : '0',zIndex : 999},
 
 export default Trigger

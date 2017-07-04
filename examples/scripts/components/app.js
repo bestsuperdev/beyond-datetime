@@ -66,6 +66,7 @@ class App extends React.Component {
 	}
 
 	handlerChange(field,value){
+		// console.log(arguments)
 		if (value.target) {
 			value = value.target.value
 		}
@@ -101,7 +102,7 @@ class App extends React.Component {
 				<div style={{height : '20px'}}></div>
 				<div >
 					<p>普通日期选择</p>
-					<Calendar isInvalid={isInValidDate} time second={false}  onChange={this.log} />
+					<Calendar yearLowerLimit={1991} yearUpperLimit={2040} isInvalid={isInValidDate} time second={false}  onChange={this.log} />
 					<Calendar time  onChange={this.log} />
 					<Calendar  onChange={this.log} />
 				</div>
@@ -111,7 +112,7 @@ class App extends React.Component {
 
 					<p>{date && date.format ? date.format(formatStr) : ''}</p>
 
-					<Calendar date={date} onChange={this.handlerChange.bind(this,'date')} />
+					<Calendar yearLowerLimit={1991} yearUpperLimit={2040} date={date} onChange={this.handlerChange.bind(this,'date')} />
 					<Calendar time second={false} date={date} onChange={this.handlerChange.bind(this,'date')} />
 					<Calendar time date={date} onChange={this.handlerChange.bind(this,'date')} />
 				</div>
@@ -122,7 +123,7 @@ class App extends React.Component {
 
 				<div>
 					<p>普通日期范围选择</p>
-					<DateRange time  onChange={this.log} />
+					<DateRange yearLowerLimit={1991} yearUpperLimit={2040} time  onChange={this.log} />
 					<DateRange time second={false} onChange={this.log} />
 					<DateRange  onChange={this.log} />
 				</div>
@@ -134,7 +135,7 @@ class App extends React.Component {
 						{'-'}
 						{this.state.endDate ? this.state.endDate.format('YYYY.MM.DD HH:mm:ss') : ''}
 					</p>
-					<DateRange ranges={defaultRanges} startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
+					<DateRange yearLowerLimit={1991} yearUpperLimit={2040} ranges={defaultRanges} startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate} time second={false} onChange={this.handlerRangeChange.bind(this)} />
 					<DateRange startDate={this.state.startDate} endDate={this.state.endDate}  onChange={this.handlerRangeChange.bind(this)} />
@@ -143,22 +144,8 @@ class App extends React.Component {
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div>
-					<Trigger target={<Calendar isInvalid={isInValidDate} date={this.state.date1 || ''}  onConfirm={this.handlerTriggerChange1.bind(this)} />}>
-						<input type="text" value={date1 && date1.format ? date1.format('YYYY.MM.DD') : date1 } onChange={this.handlerChange.bind(this,'date1')} />
-					</Trigger>
-					<Trigger target={<Calendar date={this.state.date2 || ''}  onConfirm={this.handlerTriggerChange.bind(this)} />}>
-						<input type="text" value={date2 ? date2.format('YYYY.MM.DD') : '' }/>
-					</Trigger>
-					<Trigger target={<Calendar time date={this.state.date3}  onConfirm={this.handlerTriggerChange3.bind(this)} />}>
-						<input type="text" value={date3 ? date3.format('YYYY.MM.DD HH:mm:ss') : '' }/>
-					</Trigger>
-					<Trigger target={<Time date={this.state.time2} onConfirm={this.handlerChange.bind(this,'time2')} />}>
-						<input type="text" value={this.state.time2 ? this.state.time2.format('HH:mm:ss') : '' }/>
-					</Trigger>
-					<Trigger target={<DateRange time startDate={this.state.startDate} endDate={this.state.endDate} onConfirm={this.handlerRangeChange.bind(this)} />}>
-						<input type="text" value={(this.state.startDate && this.state.endDate) ? `${this.state.startDate.format(formatStr)}-${this.state.endDate.format(formatStr)}` : '' }/>
-					</Trigger>
-					<Trigger target={<DateRange ranges={defaultRanges} startDate={this.state.startDate2} endDate={this.state.endDate2} onConfirm={this.handlerRangeChange2.bind(this)} />}>
+
+					<Trigger target={<DateRange yearLowerLimit={1991} yearUpperLimit={2040} ranges={defaultRanges} startDate={this.state.startDate2} endDate={this.state.endDate2} onConfirm={this.handlerRangeChange2.bind(this)} />}>
 						<input type="text" value={(this.state.startDate2 && this.state.endDate2) ? `${this.state.startDate2.format(formatStr)}-${this.state.endDate2.format(formatStr)}` : '' }/>
 					</Trigger>
 				</div>
@@ -178,3 +165,23 @@ class App extends React.Component {
 }
 
 module.exports = App
+					// <DateRange startDate={this.state.startDate} endDate={this.state.endDate} time onChange={this.handlerRangeChange.bind(this)} />
+					// <DateRange startDate={this.state.startDate} endDate={this.state.endDate} time second={false} onChange={this.handlerRangeChange.bind(this)} />
+					// <DateRange startDate={this.state.startDate} endDate={this.state.endDate}  onChange={this.handlerRangeChange.bind(this)} />
+
+
+					// <Trigger target={<Calendar yearLowerLimit={1991} yearUpperLimit={2040} isInvalid={isInValidDate} date={this.state.date1 || ''}  onConfirm={this.handlerTriggerChange1.bind(this)} />}>
+					// 	<input type="text" value={date1 && date1.format ? date1.format('YYYY.MM.DD') : date1 } onChange={this.handlerChange.bind(this,'date1')} />
+					// </Trigger>
+					// <Trigger target={<Calendar yearLowerLimit={1991} yearUpperLimit={2040} date={this.state.date2 || ''}  onConfirm={this.handlerTriggerChange.bind(this)} />}>
+					// 	<input type="text" value={date2 ? date2.format('YYYY.MM.DD') : '' }/>
+					// </Trigger>
+					// <Trigger target={<Calendar yearLowerLimit={1991} yearUpperLimit={2040} time date={this.state.date3}  onConfirm={this.handlerTriggerChange3.bind(this)} />}>
+					// 	<input type="text" value={date3 ? date3.format('YYYY.MM.DD HH:mm:ss') : '' }/>
+					// </Trigger>
+					// <Trigger target={<Time yearLowerLimit={1991} yearUpperLimit={2040} date={this.state.time2} onConfirm={this.handlerChange.bind(this,'time2')} />}>
+					// 	<input type="text" value={this.state.time2 ? this.state.time2.format('HH:mm:ss') : '' }/>
+					// </Trigger>
+					// <Trigger target={<DateRange yearLowerLimit={1991} yearUpperLimit={2040} time startDate={this.state.startDate} endDate={this.state.endDate} onConfirm={this.handlerRangeChange.bind(this)} />}>
+					// 	<input type="text" value={(this.state.startDate && this.state.endDate) ? `${this.state.startDate.format(formatStr)}-${this.state.endDate.format(formatStr)}` : '' }/>
+					// </Trigger>

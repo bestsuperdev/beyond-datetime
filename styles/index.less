@@ -76,8 +76,6 @@
 			vertical-align: middle;
 			border-color: #ddd;
 	}
-
-
 	& &-month-and-year{
 		// text-align: center;
 		box-sizing: border-box;
@@ -87,6 +85,9 @@
 		line-height: 18px;
 		div:nth-child(2){
 			text-align:right;
+			select{
+				width:60px;//Firefox宽度太长溢出
+			}
 		};
 		select{
 
@@ -210,9 +211,10 @@
 
 
 .rdr-predefined-ranges{
-	box-sizing: content-box;
+	// box-sizing: content-box;
+	box-sizing:border-box;
 	background: white;
-	width         : 140px;
+	width         : 80px;
 	display       : inline-block;
 	vertical-align : top;
 	padding-left: 10px;
@@ -224,7 +226,7 @@
 		display       : block;
 		font-size      : 12px;
 		color         : #2c3e50;
-		padding       : 10px 14px;
+		padding       : 10px 5px;
 		border-radius  : 2px;
 		background    : #ecf0f1;
 		text-decoration: none;
@@ -240,13 +242,14 @@
 	background-color: white;
 	display     : inline-block;
 	box-sizing  : border-box;
-	border-radius  : 2px;
-	min-width : 564px;
+	// border-radius  : 2px;
+	// min-width : 564px;
+	width:100%;
 	position: relative;
-	border: 1px solid rgba(0, 0, 0, 0.15);
-	box-shadow: 0 0px 4px rgba(0,0,0,.2);
 	// border: 1px solid rgba(0, 0, 0, 0.15);
-	position: relative;
+	// box-shadow: 0 0px 4px rgba(0,0,0,.2);
+	// border: 1px solid rgba(0, 0, 0, 0.15);
+	// position: relative;
 	& &-confirm-btn{
 		font-size: 13px;
 		height: 24px;
@@ -261,6 +264,13 @@
 		display: inline-block;
 		background : #2283D0;
 		color      : #ffffff;
+		float:right;
+	}
+	.no-border{
+	// box-sizing  : border-box;
+	border-radius  : 0px;	
+	border: none;
+	box-shadow:none;	
 	}
 	.rdr-calendar{
 		padding-bottom: 5px;
@@ -268,12 +278,103 @@
 		border: none;
 		position: relative;
 		z-index: 2;
+		float:left;
 	}
 	.rdr-predefined-ranges{
 		border-radius  : 2px;
 		z-index: 1;
 		position: absolute;
-		left: -148px;
-		top: -1px;
+		// left: -148px;
+		left:-71px;
+		// top: -1px;
 	}
 }
+
+	//一行三列
+	// .rdr-time{
+	// 	background-color: black;
+	// }
+	.rdr-date-range-width-both{
+		width:645px;
+	}
+	.rdr-date-range-width{
+		width:564px;
+	}			
+	.rdr-calendar-list{
+		display: inline-block;
+    	box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px;
+   		border-radius: 2px;
+    	border: 1px solid rgba(0, 0, 0, 0.15);
+    	width: 562px;
+    	position: relative;
+    	left: -2px;
+	}
+	.rdr-date-range{
+		.rdr-predefined-ranges-relative{
+			position: relative;
+			top: 0px;
+			left: 0px;
+			width: 81px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+			padding-right: 0px;
+			padding-bottom: 0px;
+		}	
+	}	
+
+@media screen and (max-width: 665px){
+	//一行两列
+	// .rdr-time{
+	// 	background-color: red;
+	// }	
+	.rdr-calendar-list{
+    	width: 282px;
+	}
+	.rdr-date-range-width-both{
+		width:363px;
+	}
+	.rdr-date-range-width{
+		width:282px;
+	}			
+	.rdr-date-range{
+			
+		.rdr-predefined-ranges-absolute{
+			position: relative;
+			top: 0px;
+			left: 0px;
+			width: 282px;
+			border-bottom: none;
+			padding-right: 10px;
+			padding-bottom: 10px;
+		}		
+	}	
+}
+@media screen and (max-width: 404px){
+	//一列,relative and absolute
+	// .rdr-time{
+	// 	background-color: green;
+	// }
+	.rdr-calendar-list{
+    	border-top: none;
+    	width: 282px;
+    	position: relative;
+    	left: 0px;		
+	}
+	.rdr-date-range-width-both{
+		width:282px;
+	}
+	.rdr-date-range-width{
+		width:562px;
+	}			
+	.rdr-date-range{	
+		.rdr-predefined-ranges-relative{
+			position: relative;
+			top: 0px;
+			left: 0px;
+			width: 282px;
+			border-bottom: none;
+			padding-right: 10px;
+			padding-bottom: 10px;
+		}		
+	}
+}
+
