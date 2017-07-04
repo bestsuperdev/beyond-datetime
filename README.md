@@ -123,7 +123,8 @@ class MyComponent extends Component {
 | time        | boolean   | 是否显示时间选择     | false |
 | minute      | boolean   | 是否显示分选择      | true |
 | second      | boolean   |   是否显示秒选择    |  true |
-
+| yearLowerLimit      | number   | 年份下限设置      | - |
+| yearUpperLimit      | number   | 年份上限设置    |  - |
 
 
 ### DateRange
@@ -191,7 +192,8 @@ class MyComponent extends Component {
 | time        | boolean   | 是否显示时间选择     | false |
 | minute      | boolean   | 是否显示分选择      | true |
 | second      | boolean   |   是否显示秒选择    |  true |
-
+| yearLowerLimit      | number   | 年份下限设置      | - |
+| yearUpperLimit      | number   | 年份上限设置    |  - |
 
 
 ### Trigger
@@ -232,3 +234,5 @@ class MyComponent extends Component {
 | -------- | -----  | ----   | ---- |
 | target    | Calendar/DateRange  | -  | - |
 | wrapStyle    | object  | Trigger 会默认生成一个 span (style="display:inline-block")标签，使用wrapStyle 进行覆盖  | - |
+| yearLowerLimit      | number   | 年份下限设置      | - |
+| yearUpperLimit      | number   |   年份上限设置    |  - |
