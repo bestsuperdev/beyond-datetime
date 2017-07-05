@@ -28,25 +28,24 @@ class DateRange extends Component {
 		this.step = 0;
 		// this.styles = getTheme(theme);
 		this.leftPosition = -1
-		this.rightPosition = -1
 		this.box = null
-		this.boxWidth = 0
 		this.isRelative = false
+		this.isMount = false
 	}
 	resize(){
+		// debugger
 		this.leftPosition = $(this.box).offset().left//box.getBoundingClientRect().left
 		// console.log(this.leftPosition)
-		this.boxWidth = this.box.clientWidth
-		this.setState({leftPosition:this.leftPosition})		
+		if(this.isMount == true){
+			this.setState({leftPosition:this.leftPosition})
+		}
 	}
 	componentDidMount() {
 		// debugger
-		// this.resize()
+		this.isMount = true
 		let box = ReactDom.findDOMNode(this)
 		this.box = box
-		this.boxWidth = box.clientWidth
 		this.leftPosition = $(box).offset().left//box.getBoundingClientRect().left
-		// console.log(this.leftPosition)
 		this.setState({leftPosition:this.leftPosition})			
 		window.addEventListener("resize",this.resize.bind(this))
 		const { onInit } = this.props
@@ -54,14 +53,10 @@ class DateRange extends Component {
 		onInit && onInit(range)
 	}
 	componentWillUnmount(){
+		// debugger
+		this.isMount = false
 		window.removeEventListener("resize",this.resize.bind(this))
 	}
-	// componentDidUpdate(){
-	// 	this.leftPosition = $(this.box).offset().left//box.getBoundingClientRect().left
-	// 	// console.log(this.leftPosition)
-	// 	this.boxWidth = this.box.clientWidth
-	// 	this.setState({leftPosition:this.leftPosition})	
-	// }
 	orderRange(range) {
 		const { startDate, endDate } = range;
 		if (startDate && endDate) {
@@ -204,64 +199,13 @@ class DateRange extends Component {
 		}
 	}
 
-	// setCalendarsWidth(wrapWidth){
-	// 	let widthCalendars
-	// 	let countCaldendars = (Math.floor((wrapWidth)/281))
-	// 	if(countCaldendars == 0){
-	// 		countCaldendars = 1
-			
-	// 	}else if(countCaldendars > 2) {
-	// 		countCaldendars = 2
-	// 	}
-		
-	// 	return {width:281*countCaldendars + "px",count:countCaldendars}
-	// 	// return  (280*(Math.floor((wrapWidth)/280) != 0 ? Math.floor((wrapWidth)/280):1))+"px"
-		
-	// 	// return {leftCalendars:widthCalendars,leftCalendars:leftCalendars}
 
-	// }
-	// setCalendarsLeft(wrapWidth){
-	// 	return (this.props.ranges &&(Math.floor((wrapWidth)/281) != 0 ) &&'-2px') || "0px"
-	// }
 	render() {
 		const { ranges, format, linkedCalendars,  firstDayOfWeek, minDate, maxDate, isInvalid,time,hour,minute,second,confirm,yearLowerLimit,yearUpperLimit } = this.props
 		const { range, link, timeRange } = this.state
-		// console.log(this.leftPosition)
 		let tabsWidth = 81
-		// let stylePredefinedRanges = {position:"relative",top:"0px",left:"0px",width:tabsWidth+"px",borderBottom:"1px solid rgba(0, 0, 0, 0.15)",
-		// 							// float:"left"
-		// 							paddingRight:"0px",
-		// 							paddingBottom:"0px"									
-		// 						}
 		let predefinedRanges
-		// let widthCalendars 
-		// let leftCalendars
-		// let styleCalendarsWrap = { display:"inline-block",
-		// 							boxShadow: "0 0px 4px rgba(0, 0, 0, 0.2)",
-		// 							borderRadius: "2px",
-									
-		// 							border: "1px solid rgba(0, 0, 0, 0.15)",
-		// 							width:widthCalendars,
-		// 							position:'relative',
-		// 							left:leftCalendars,
-		// 							borderTop:"1px solid rgba(0, 0, 0, 0.15)",
-
-		// 							// top:(Math.floor((this.boxWidth-tabsWidth)/284) == 0 &&'-2px') ||"0px"
-		// 						}			 
-		// console.log(this.leftPosition)
 		if(this.leftPosition > 0 && this.leftPosition < tabsWidth ){//148 this.leftPosition
-			// styleCalendarsWrap.width = this.setCalendarsWidth(this.boxWidth - tabsWidth).width
-			// styleCalendarsWrap.left = this.setCalendarsLeft(this.boxWidth - tabsWidth)
-			// console.log(styleCalendarsWrap)
-			// // let styleWidth
-			// if(this.setCalendarsWidth(this.boxWidth).count == 1){
-			// 	stylePredefinedRanges.width = styleCalendarsWrap.width
-			// 	styleCalendarsWrap.left ="0px"
-			// 	styleCalendarsWrap.borderTop = "none"
-			// 	stylePredefinedRanges.paddingBottom ="10px"
-			// 	stylePredefinedRanges.paddingRight = "10px"
-			// 	stylePredefinedRanges.borderBottom ="none"
-			// }
 			this.isRelative = true
 			predefinedRanges=(ranges && (
 					<PredefinedRanges
@@ -274,9 +218,6 @@ class DateRange extends Component {
 			))
 			
 		}else{	
-			// styleCalendarsWrap.width = this.setCalendarsWidth(this.boxWidth).width
-			// // this.setCalendarsWidth(this.boxWidth)
-			// styleCalendarsWrap.left = this.setCalendarsLeft(this.boxWidth)
 			this.isRelative = false
 			predefinedRanges=(ranges && (
 					<PredefinedRanges
