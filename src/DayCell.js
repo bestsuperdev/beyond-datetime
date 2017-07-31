@@ -1,64 +1,50 @@
-import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
+import React, { Component } from 'react'
+import classnames from 'classnames'
 
-class DayCell extends Component {
+export default class DayCell extends Component {
 
-  constructor(props, context) {
-    super(props, context);
-  }
+	constructor(props) {
+		super(props)
+	}
 
+	handlerSelect() {
+		if(!this.props.isInvalid){
+			this.props.onSelect(this.props.dayMoment)
+		}
+	}
 
-  handleSelect(event) {
-    event.preventDefault();
+	getClassNames() {
+		const { className } = this.props;
+		if(className){
+			const {isSelected, isInRange, isPassive, isInvalid, isToday } = this.props
+			return classnames({
+				[className] : true,
+				[`${className}-selected`] : !isInvalid && isSelected,
+				[`${className}-passive`] : isPassive,
+				[`${className}-invalid`] : isInvalid,
+				[`${className}-inrange`] : isInRange,
+				[`${className}-today`] : isToday
+			})
+		}
+	}
 
-    if (this.props.isInvalid) return null;
-
-    this.props.onSelect(this.props.dayMoment,'date')
-  }
-
-
-  getClassNames() {
-    const { classNames } = this.props;
-    const { isSelected, isInRange, isPassive,isInvalid, isToday } = this.props;
-
-    return classnames({
-      [classNames]       : true,
-      [`${classNames}-selected`] :!isInvalid && isSelected ,
-      [`${classNames}-passive`]: isPassive,
-      [`${classNames}-invalid`]: isInvalid,
-      [`${classNames}-inrange`]: isInRange,
-      // [classes.dayStartEdge] : isStartEdge,
-      // [classes.dayEndEdge] : isEndEdge,
-      [`${classNames}-today`] : isToday
-    });
-
-  }
-
-  render() {
-    const { dayMoment } = this.props
-
-    // const { styles } = this;
-    // const stateStyle = this.getStateStyles();
-    const classes    = this.getClassNames()
-
-    return (
-      <span
-        onClick={ this.handleSelect.bind(this) }
-        className={ classes }
-        >
-        { dayMoment.date() }
-      </span>
-    );
-  }
+	render() {
+		const {dayMoment} = this.props
+		if(dayMoment && dayMoment.date){
+			return (
+				<span onClick={this.handlerSelect.bind(this)} className={this.getClassNames()}>
+					{dayMoment.date()}
+				</span>
+			)
+		}
+	}
 }
 
-DayCell.propTypes = {
-  dayMoment   : PropTypes.object.isRequired,
-  onSelect    : PropTypes.func,
-  isSelected  : PropTypes.bool,
-  isInRange   : PropTypes.bool,
-  isPassive   : PropTypes.bool,
-  classNames  : PropTypes.string
-}
-
-export default DayCell;
+// DayCell.propTypes = {
+//   dayMoment   : PropTypes.object.isRequired,
+//   onSelect    : PropTypes.func,
+//   isSelected  : PropTypes.bool,
+//   isInRange   : PropTypes.bool,
+//   isPassive   : PropTypes.bool,
+//   classNames  : PropTypes.string
+// }

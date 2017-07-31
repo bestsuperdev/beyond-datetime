@@ -1,37 +1,36 @@
 {
-    "rules": {
-        "indent": [
-            1,
-            "tab"
-        ],
-        "quotes": [
-            1,
-            "single"
-        ],
-        "linebreak-style": [
-            1,
-            "windows"
-        ],
-        "semi": [
-            1,
-            "never"
-        ]
-    },
     "env": {
-        "es6": true,
         "browser": true,
-        "node" : true
+        "commonjs": true,
+        "es6": true,
+        "node": true
     },
-    "extends": "eslint:recommended",
-    "ecmaFeatures": {
-        "jsx": true,
-        "experimentalObjectRestSpread": true,
-        "modules": true
-    },
-    "plugins": [
-        "react"
+    "extends":[
+        "eslint:recommended",
+        "plugin:react/recommended"
     ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-const-assign": "warn",
+        "no-this-before-super": "warn",
+        "no-undef": "error",
+        "no-unreachable": "warn",
+        "no-unused-vars": "warn",
+        "constructor-super": "warn",
+        "valid-typeof": "warn",
+        "no-console": "warn",
+        "react/prop-types":"off",
+        "react/no-string-refs" : "warn"
+    },
     "globals": {
-        "__DEBUG__": true
+        "__webpack_public_path__": true,
+        "React" : true,
+        "app" : true,
+        "wx" : true
     }
 }

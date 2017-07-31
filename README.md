@@ -234,5 +234,3 @@ class MyComponent extends Component {
 | -------- | -----  | ----   | ---- |
 | target    | Calendar/DateRange  | -  | - |
 | wrapStyle    | object  | Trigger 会默认生成一个 span (style="display:inline-block")标签，使用wrapStyle 进行覆盖  | - |
-| yearLowerLimit      | number   | 年份下限设置      | - |
-| yearUpperLimit      | number   |   年份上限设置    |  - |

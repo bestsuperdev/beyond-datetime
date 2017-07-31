@@ -4,14 +4,10 @@
 </Trigger>
 */
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-// import Calendar from './Calendar.js'
 import getPos from './utils/position'
-// import parseInput from './utils/parseInput.js'
-// import {dateFormat,timeFormat} from './utils/consts'
 const mergeFuncs = require('beyond-lib/lib/utilities/mergeFuncs')
 const assign = require('beyond-lib/lib/assign')
-class Trigger extends Component {
+export default class Trigger extends Component {
 
 	constructor(props){
 		super(props)
@@ -23,20 +19,19 @@ class Trigger extends Component {
 		this.innerClick = false
 		this.handlerHideCalendar = this.handlerHideCalendar.bind(this)
 		this.handlerInnerClick = this.handlerInnerClick.bind(this)
+		this.wrap = null
 	}
 
 	componentDidMount() {
-		let wrap = ReactDOM.findDOMNode(this)
-		if (wrap) {
-			wrap.addEventListener('click',this.handlerInnerClick)
+		if(this.wrap){
+			this.wrap.addEventListener('click',this.handlerInnerClick)
 			document.addEventListener('click',this.handlerHideCalendar)
 		}
 	}
 
 	componentWillUnmount() {
-		let wrap = ReactDOM.findDOMNode(this)
-		if (wrap) {
-			wrap.removeEventListener('click',this.handlerInnerClick)
+		if(this.wrap){
+			this.wrap.removeEventListener('click',this.handlerInnerClick)
 			document.removeEventListener('click',this.handlerHideCalendar)
 		}
 	}
@@ -49,18 +44,17 @@ class Trigger extends Component {
 		let self = this
 		setTimeout(()=>{
 			if (!self.innerClick) {
-				self.setState((state, props) => ({showCalendar : false}))
+				self.setState({showCalendar : false})
 			}
 			self.innerClick = false
-		}, 100);
+		}, 100)
 	}
 
 	handlerClick(event){
-		let showCalendar = true
 		let target = event.target
 		let position = getPos(target)
 		let inputHeight = target.offsetHeight
-		this.setState((state, props) => ({showCalendar,position,inputHeight}))
+		this.setState({showCalendar : true, position, inputHeight})
 	}
 
 	render() {
@@ -97,7 +91,7 @@ class Trigger extends Component {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
 			return (
-				<div style={assign( {position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
+				<div ref={(wrap)=> this.wrap = wrap } style={assign( {position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
 					{React.cloneElement(target,props)}
 				</div>
 			)
@@ -108,6 +102,3 @@ class Trigger extends Component {
 Trigger.defaultProps = {
 	onChange : function () {}
 }
-// {position : 'absolute',left : '0',zIndex : 999},
-
-export default Trigger

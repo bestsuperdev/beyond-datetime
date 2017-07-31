@@ -1,6 +1,4 @@
 const React = require('react')
-// const moment = require('moment')
-
 import {DateRange, Calendar, defaultRanges, Time,Trigger} from 'src/index'
 const isInValidDate = (current)=> current.isBefore(new Date,'day')
 const formatStr = 'YYYY.MM.DD HH:mm:ss'
@@ -102,7 +100,7 @@ class App extends React.Component {
 				<div style={{height : '20px'}}></div>
 				<div >
 					<p>普通日期选择</p>
-					<Calendar yearLowerLimit={1991} yearUpperLimit={2040} isInvalid={isInValidDate} time second={false}  onChange={this.log} />
+					<Calendar yearLowerLimit={1979} yearUpperLimit={2040} isInvalid={isInValidDate} time second={false}  onChange={this.log} />
 					<Calendar time  onChange={this.log} />
 					<Calendar  onChange={this.log} />
 				</div>
@@ -144,6 +142,9 @@ class App extends React.Component {
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div>
+					<Trigger target={<DateRange yearLowerLimit={1991} yearUpperLimit={2040} ranges={defaultRanges} startDate={this.state.startDate2} endDate={this.state.endDate2} onConfirm={this.handlerRangeChange2.bind(this)} />}>
+						<input type="text" value={(this.state.startDate2 && this.state.endDate2) ? `${this.state.startDate2.format(formatStr)}-${this.state.endDate2.format(formatStr)}` : '' }/>
+					</Trigger>
 					<Trigger target={<Calendar yearLowerLimit={1991} yearUpperLimit={2040} isInvalid={isInValidDate} date={this.state.date1 || ''}  onConfirm={this.handlerTriggerChange1.bind(this)} />}>
 						<input type="text" value={date1 && date1.format ? date1.format('YYYY.MM.DD') : date1 } onChange={this.handlerChange.bind(this,'date1')} />
 					</Trigger>
@@ -158,7 +159,8 @@ class App extends React.Component {
 					</Trigger>
 					<Trigger target={<DateRange yearLowerLimit={1991} yearUpperLimit={2040} time startDate={this.state.startDate} endDate={this.state.endDate} onConfirm={this.handlerRangeChange.bind(this)} />}>
 						<input type="text" value={(this.state.startDate && this.state.endDate) ? `${this.state.startDate.format(formatStr)}-${this.state.endDate.format(formatStr)}` : '' }/>
-					</Trigger>									
+					</Trigger>		
+
 					<Trigger target={<DateRange yearLowerLimit={1991} yearUpperLimit={2040} ranges={defaultRanges} startDate={this.state.startDate2} endDate={this.state.endDate2} onConfirm={this.handlerRangeChange2.bind(this)} />}>
 						<input type="text" value={(this.state.startDate2 && this.state.endDate2) ? `${this.state.startDate2.format(formatStr)}-${this.state.endDate2.format(formatStr)}` : '' }/>
 					</Trigger>

@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import parseInput from './utils/parseInput.js';
 import {predefinedRangesPrefix} from './utils/consts'
 const classnames = require('classnames')
 
-class PredefinedRanges extends Component {
+export default class PredefinedRanges extends Component {
 
   constructor(props, context) {
     super(props, context)
@@ -56,8 +56,6 @@ class PredefinedRanges extends Component {
 }
 
 
-PredefinedRanges.propTypes = {
-  ranges      : PropTypes.object.isRequired
-}
-
-export default PredefinedRanges;
+// PredefinedRanges.propTypes = {
+//   ranges      : PropTypes.object.isRequired
+// }

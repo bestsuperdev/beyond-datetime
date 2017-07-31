@@ -1,0 +1,44 @@
+.rdr-time{
+	display: table;
+	background-color: white;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	&>&-mini-cell,&>&-cell{
+		box-sizing: content-box;
+		padding: 4px;
+		text-align: center;
+		font-size: 14px;
+		// width: 55px;
+		display: table-cell;
+		vertical-align: middle;
+		color: #000000;
+		cursor: pointer;
+		position: relative;
+	}
+	&>&-cell>select{
+		padding: 0;
+		box-sizing: border-box;
+		height: 24px;
+		outline: none;
+		min-width: 55px;
+		cursor: pointer;
+		border-color: #ddd;
+	}
+	&>&-mini-cell{
+		padding-left: 2px;
+		padding-right: 2px;
+		// width: 5px;
+	}
+	& &-confirm-btn{
+        border: none;
+		font-size: 13px;
+		height: 24px;
+		line-height: 24px;
+		padding: 0 10px;
+		white-space: nowrap;
+		margin: 0;
+		text-decoration: none;
+		display: inline-block;
+		background : #2283D0;
+		color      : #ffffff;
+	}
+}

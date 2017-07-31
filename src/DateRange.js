@@ -1,83 +1,74 @@
-import React, { Component, PropTypes } from 'react';
-import ReactDom from 'react-dom';
+import React, { Component } from 'react';
 import classnames from 'classnames'
-import parseInput,{parseTimeInput} from './utils/parseInput.js';
+import parseInput from './utils/parseInput.js';
 import Calendar from './Calendar.js';
 import PredefinedRanges from './PredefinedRanges.js';
 import {dateRangePrefix} from './utils/consts'
-var $ = require('jquery')
-class DateRange extends Component {
+
+
+export default class DateRange extends Component {
 
 	constructor(props, context) {
 		super(props, context)
 
 		const { format, linkedCalendars, time } = props
 		const startDate = parseInput(props.startDate, format,true)
-		const startTime = time ? parseTimeInput(startDate) : null
-
 		const endDate   = parseInput(props.endDate, format,true)
-		const endTime = time ? parseTimeInput(endDate) : null
-
+		
+		let startTime = null
+		let endTime =  null
+		if(time){
+			startTime = parseInput(startDate,format,true,true)
+			endTime = parseInput(endDate,format,true,true)
+		}
 		this.state = {
-			timeRange : (time && startTime && endTime) ? ({startTime,endTime}) : null,
+			timeRange : time && startTime && endTime ? {startTime,endTime} : null,
 			range     : { startDate, endDate },
 			link      : linkedCalendars && endDate,
 			leftPosition :-1
 		}
 
-		this.step = 0;
-		// this.styles = getTheme(theme);
-		this.leftPosition = -1
+		this.step = 0
 		this.box = null
 		this.isRelative = false
-		this.isMount = false
 	}
-	resize(){
-		// debugger
-		this.leftPosition = $(this.box).offset().left//box.getBoundingClientRect().left
-		// console.log(this.leftPosition)
-		if(this.isMount == true){
-			this.setState({leftPosition:this.leftPosition})
-		}
-	}
+
 	componentDidMount() {
-		// debugger
-		this.isMount = true
-		let box = ReactDom.findDOMNode(this)
-		this.box = box
-		this.leftPosition = $(box).offset().left//box.getBoundingClientRect().left
-		this.setState({leftPosition:this.leftPosition})			
-		window.addEventListener("resize",this.resize.bind(this))
+	
+		let leftPosition = this.box.getBoundingClientRect().left
+		this.setState({leftPosition})			
 		const { onInit } = this.props
 		const {range} = this.state
 		onInit && onInit(range)
 	}
-	componentWillUnmount(){
-		// debugger
-		this.isMount = false
-		window.removeEventListener("resize",this.resize.bind(this))
-	}
+
 	orderRange(range) {
-		const { startDate, endDate } = range;
+		const { startDate, endDate } = range
+		let result 
 		if (startDate && endDate) {
 			const swap = startDate.isAfter(endDate);
-			if (!swap) return range;
+
+			if (!swap) {
+				result =  {startDate,endDate}
+			}else{
+				result = {
+					startDate : endDate,
+					endDate   : startDate
+				}
+			}
+		}else{
+			result = {
+				startDate : null,
+				endDate : null
+			}
 		}
 
-		return {
-			startDate : endDate,
-			endDate   : startDate
-		}
+		return result
 	}
 
 	setTime(range,timeRange){
 		let {startDate,endDate} = range
-		let startTime = null
-		let endTime = null
-		if (timeRange) {
-			startTime = timeRange.startTime
-			endTime = timeRange.endTime
-		}
+		let {startTime,endTime} = timeRange || {}
 		if (startDate && endDate) {
 			startDate = startDate.clone()
 			endDate = endDate.clone()
@@ -201,32 +192,18 @@ class DateRange extends Component {
 
 
 	render() {
-		const { ranges, format, linkedCalendars,  firstDayOfWeek, minDate, maxDate, isInvalid,time,hour,minute,second,confirm,yearLowerLimit,yearUpperLimit } = this.props
-		const { range, link, timeRange } = this.state
+		const { ranges, format, linkedCalendars,  firstDayOfWeek, minDate, maxDate, isInvalid,time,second,confirm,yearLowerLimit,yearUpperLimit } = this.props
+		const { range, link, timeRange,leftPosition } = this.state
 		let tabsWidth = 81
-		let predefinedRanges
-		if(this.leftPosition > 0 && this.leftPosition < tabsWidth ){//148 this.leftPosition
-			this.isRelative = true
-			predefinedRanges=(ranges && (
-					<PredefinedRanges
-						// style={stylePredefinedRanges}
-						extraClassName={this.isRelative &&`rdr-predefined-ranges-relative`}
-						ranges={ ranges }
-						range={ range }
-						onSelect={this.handlerRangeChange.bind(this)}
-					/>
-			))
-			
-		}else{	
-			this.isRelative = false
-			predefinedRanges=(ranges && (
-					<PredefinedRanges
-						ranges={ ranges }
-						range={ range }
-						onSelect={this.handlerRangeChange.bind(this)}
-					/>
-			))			
-		}
+
+		let predefinedRanges=(ranges && (
+			<PredefinedRanges
+				extraClassName={leftPosition > 0 && leftPosition < tabsWidth && `rdr-predefined-ranges-relative`}
+				ranges={ ranges }
+				range={ range }
+				onSelect={this.handlerRangeChange.bind(this)}
+			/>
+		))
 		// console.log(predefinedRanges)
 		let _calendars = []
 		for (let i = 0; i < 2; i++) {
@@ -244,8 +221,6 @@ class DateRange extends Component {
 					minDate={ minDate }
 					maxDate={ maxDate }
 					time={time}
-					hour={hour}
-					minute={minute}
 					second={second}
 					onTimeChange={ this.handlerTimeChange.bind(this,i) }
 					onDateChange={ this.handlerDateChange.bind(this,i) }
@@ -257,9 +232,8 @@ class DateRange extends Component {
 			)
 		}	
 
-// style={styleCalendarsWrap}
 		return (
-			<div className={classnames(dateRangePrefix,this.isRelative && "rdr-date-range-width-both",!this.isRelative && "rdr-date-range-width" )}>
+			<div ref={(box)=> this.box = box} className={dateRangePrefix}>
 				{predefinedRanges}
 				{(<div className={`rdr-calendar-list`}>
 					{_calendars}
@@ -280,20 +254,18 @@ DateRange.defaultProps = {
 	yearUpperLimit : -1
 }
 
-DateRange.propTypes = {
-	format          : PropTypes.string,
-	time : PropTypes.bool,
-	firstDayOfWeek  : PropTypes.number,
-	startDate       : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-	endDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-	minDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-	maxDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-	dateLimit       : PropTypes.func,
-	ranges          : PropTypes.object,
-	linkedCalendars : PropTypes.bool,
-	onInit          : PropTypes.func,
-	onChange        : PropTypes.func,
-	isInvalid       : PropTypes.func,	
-}
-
-export default DateRange;
+// DateRange.propTypes = {
+// 	format          : PropTypes.string,
+// 	time : PropTypes.bool,
+// 	firstDayOfWeek  : PropTypes.number,
+// 	startDate       : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
+// 	endDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
+// 	minDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
+// 	maxDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
+// 	dateLimit       : PropTypes.func,
+// 	ranges          : PropTypes.object,
+// 	linkedCalendars : PropTypes.bool,
+// 	onInit          : PropTypes.func,
+// 	onChange        : PropTypes.func,
+// 	isInvalid       : PropTypes.func,	
+// }
