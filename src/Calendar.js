@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 require('moment/locale/zh-cn')
-import {dateFormat,calendarPrefix} from './utils/consts'
+import {calendarPrefix} from './utils/consts'
 import parseInput from './utils/parseInput.js'
 import DayCell from './DayCell.js'
 import Time from './Time'
 
 
 moment.locale('zh-cn')
+
+function syncTime(source,target){
+
+}
 
 function checkRange(dayMoment, range) {
 	return (
@@ -31,15 +35,10 @@ export default class Calendar extends Component {
 
 	constructor(props, context) {
 		super(props, context)
-
-		let {date, format, range, offset, time, timeDate } = props
-
-		date = parseInput(date, format,true)
-		this.state = {
-			date, 
-			timeDate : timeDate ? timeDate : (time ? date : null),
-			shownDate : ((range && range.endDate) || date || moment()).clone().add(offset, 'months')
-		}
+		let {date, range, offset,time, initTime} = props
+		date = parseInput(date,time && initTime)
+		let shownDate = ((range && range.endDate) || date || moment()).clone().add(offset, 'months')
+		this.state = {date,shownDate}
 	}
 
 	getFirstDayOfWeek(){
@@ -47,13 +46,21 @@ export default class Calendar extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		let {date,isInvalid,format, time, range, timeDate} = nextProps
-		let nextState = null
+		let nextState
+		if('date' in nextProps){
+			let {date,isInvalid,time,initTime} = nextProps
+			if(typeof isInvalid !== 'function' || !isInvalid(date)){
+				nextState = {date : parseInput(date,time && initTime)}
+			}
+		}
 
-		if (date != null && (typeof isInvalid !== 'function' || !isInvalid(date)) ) {
-			nextState = {date : parseInput(date,format,true), timeDate : time ? parseInput(date,format,true,true) : null }
-		}else if(range && timeDate){
-			nextState = {timeDate}
+		let {range,offset} = nextProps
+		let shownDate = (range && range.endDate) || (nextState ? nextState.date : moment()) 
+		shownDate = shownDate.clone().add(offset,'months')
+		if(nextState){
+			nextState.shownDate = shownDate
+		}else{
+			nextState = {shownDate}
 		}
 
 		if (nextState) {
@@ -70,109 +77,44 @@ export default class Calendar extends Component {
 	}
 
 	getShownDate() {
-		const { link, offset } = this.props;
-
-		const shownDate = link ? link.clone().add(offset, 'months') : this.state.shownDate;
-
-		return shownDate;
+		return  this.state.shownDate;
 	}
 
-	handlerTimeConfirm(){
+	handlerConfirm(date){
 		const {onConfirm} = this.props
-		const {date} = this.state
 		if(typeof onConfirm === 'function'){
 			onConfirm(date)
 		}
 	}
 
-	handlerDateSelect(newDate,type) {
-		const { link, onChange, onConfirm, onDateChange, time, second } = this.props
+	handlerSelect(isSyncTime,date) {
+		const {onChange} = this.props
 		let result = null
-		let result2 = null
-		let {timeDate} = this.state
-
-		newDate.hours(timeDate ? timeDate.hours() : 0)
-		newDate.minutes(timeDate ? timeDate.minutes() : 0)
-		newDate.seconds(timeDate && second  ? timeDate.seconds() : 0)
-
-		if (typeof onDateChange === 'function') {
-			result = onDateChange(newDate.clone())
+		if(isSyncTime){
+			let {date : _date} = this.state
+			date.hours(_date.hours())
+			date.minutes(_date.minutes())
+			date.seconds(_date.seconds())
 		}
-
 		if (typeof onChange === 'function') {
-			result2 = onChange(newDate.clone(), type)
+			result = onChange(date.clone())
 		}
 
-		if (!link && result !== false && result2 !== false) {
-			this.setState({ date : newDate },()=>{
-				(!time && typeof onConfirm === 'function') && onConfirm(newDate)
-			})
+		if (result !== false) {
+			this.setState({date})
 		}
 
 		return false
 	}
 
-	handlerTimeSelect(newDate,type) {
-		const { link, onChange, onTimeChange} = this.props
-		let {date} = this.state
-		if (date == null) {
-			let result
-			if (typeof onTimeChange === 'function') {
-				result = onTimeChange(newDate)
-			}
-			if (result !== false) {
-				this.setState({timeDate : newDate})
-			}
-		}else{
-			let date = this.state.date.clone()
-			let result
-			let result2
-			date.hours(newDate ? newDate.hours() : 0)
-			date.minutes(newDate ? newDate.minutes() : 0)
-			date.seconds(newDate ? newDate.seconds() : 0)
-			// let date = newDate.
-			// const { date } = this.state;
-			if (typeof onTimeChange === 'function') {
-				result = onTimeChange(newDate)
-			}
-			if (typeof onChange === 'function') {
-				result2 = onChange(date.clone(), type)
-			}
 
-			if (!link && result !== false && result2 !== false) {
-				this.setState({ date,timeDate : newDate })
-			}
-		}
-		return false
+	changeMonth(direction) {
+		const shownDate = this.state.shownDate.clone().add(direction, 'months');
+		this.setState({shownDate})
 	}
 
-	changeMonth(direction, event) {
-		event.preventDefault();
-		const { link, linkCB } = this.props;
-
-		if (link && linkCB) {
-			return linkCB(direction);
-		}
-
-		// const current  = this.state.shownDate.month();
-		const newMonth = this.state.shownDate.clone().add(direction, 'months');
-
-		this.setState({
-			shownDate : newMonth
-		});
-	}
-
-	changeYear(direction, event) {
-		event.preventDefault();
-		const { link, linkCB } = this.props;
-
-		if (link && linkCB) {
-			return linkCB(direction);
-		}
-
-		// const current  = this.state.shownDate.year();
+	changeYear(direction) {
 		const shownDate = this.state.shownDate.clone().add(direction, 'years');
-
 		this.setState({shownDate})
 	}
 
@@ -219,21 +161,19 @@ export default class Calendar extends Component {
 			years.push(<option key={currentShownYear} value={currentShownYear}>{currentShownYear}</option>)
 		}
 		let style = {width : '50%',display : 'inline-block',verticalAlign: 'top'}
+		let prevClassName = `${prefix}-button ${prefix}-prev-button`
+		let nextClassName = `${prefix}-button ${prefix}-next-button`
 		return (
 			<div className={prefix}>
 			<div style={style}>
-				<button className={`${prefix}-button ${prefix}-prev-button`} onClick={this.changeYear.bind(this, -1)}><i></i></button>
-				<select value={shownDate.year()} onChange={this.handlerChangeShownYear.bind(this)}>
-				{years}
-				</select>
-				<button className={`${prefix}-button ${prefix}-next-button`} onClick={this.changeYear.bind(this, 1)}><i></i></button>
+				<button type="button" className={prevClassName} onClick={this.changeYear.bind(this, -1)}></button>
+				<select value={shownDate.year()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
+				<button type="button" className={nextClassName} onClick={this.changeYear.bind(this, 1)}></button>
 			</div>
 			<div style={style}>
-				<button className={`${prefix}-button ${prefix}-prev-button`} onClick={this.changeMonth.bind(this, -1)}><i></i></button>
-				<select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.month()}>
-				{months}
-				</select>
-				<button className={`${prefix}-button ${prefix}-next-button`} onClick={this.changeMonth.bind(this, 1)}><i></i></button>
+				<button type="button" className={prevClassName} onClick={this.changeMonth.bind(this, -1)}></button>
+				<select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.month()}>{months}</select>
+				<button type="button" className={nextClassName} onClick={this.changeMonth.bind(this, 1)}></button>
 			</div>
 			</div>
 		)
@@ -245,10 +185,7 @@ export default class Calendar extends Component {
 
 		for (let i = dow; i < 7 + dow; i++) {
 			const day = moment.weekdaysMin(i);
-
-			weekdays.push(
-			<span key={day}>{day}</span>
-			);
+			weekdays.push(<span key={day}>{day}</span>)
 		}
 
 		return <div className={`${calendarPrefix}-weekdays`}>{weekdays}</div>
@@ -256,45 +193,40 @@ export default class Calendar extends Component {
 
 	renderDays() {
 
-		const { range, minDate, maxDate, format, isInvalid } = this.props;
+		const { range, minDate, maxDate, format, isInvalid, time } = this.props;
 
-		const shownDate = this.getShownDate();
+		const shownDate = this.getShownDate()
 		const firstDayOfWeek = this.getFirstDayOfWeek()
-		const { date } = this.state;
+		const { date } = this.state
 
-		const monthNumber = shownDate.month();
-		const dayCount = shownDate.daysInMonth();
-		const startOfMonth = shownDate.clone().startOf('month').isoWeekday();
-		// console.log(monthNumber+'；'+dayCount+'；'+startOfMonth)
+		const monthNumber = shownDate.month()
+		const dayCount = shownDate.daysInMonth()
+		const startOfMonth = shownDate.clone().startOf('month').isoWeekday()
 
-		const lastMonth                = shownDate.clone().month(monthNumber - 1);
-		const lastMonthDayCount        = lastMonth.daysInMonth();
-		// console.log(lastMonth+'；'+lastMonthNumber+'；'+lastMonthDayCount)
+		const lastMonth = shownDate.clone().month(monthNumber - 1)
+		const lastMonthDayCount = lastMonth.daysInMonth()
 
-		const nextMonth                = shownDate.clone().month(monthNumber + 1);
+		const nextMonth = shownDate.clone().month(monthNumber + 1)
+		const days = []
 
-		const days                     = [];
+		const diff = (Math.abs(firstDayOfWeek - (startOfMonth + 7)) % 7)
 
-		// Previous month's days
-		const diff = (Math.abs(firstDayOfWeek - (startOfMonth + 7)) % 7);
-		// console.log(diff)
 		for (let i = diff-1; i >= 0; i--) {
-			const dayMoment  = lastMonth.clone().date(lastMonthDayCount - i);
-			// console.log(dayMoment)
-			days.push({ dayMoment, isPassive : true });
+			const dayMoment  = lastMonth.clone().date(lastMonthDayCount - i)
+			days.push({dayMoment, isPassive : true })
 		}
 
 		// Current month's days
 		for (let i = 1; i <= dayCount; i++) {
-			const dayMoment  = shownDate.clone().date(i);
+			const dayMoment  = shownDate.clone().date(i)
 			days.push({ dayMoment });
 		}
 
 		// Next month's days
-		const remainingCells = 42 - days.length; // 42cells = 7days * 6rows
+		const remainingCells = 42 - days.length // 42cells = 7days * 6rows
 		for (let i = 1; i <= remainingCells; i++ ) {
-			const dayMoment  = nextMonth.clone().date(i);
-			days.push({ dayMoment, isPassive : true });
+			const dayMoment  = nextMonth.clone().date(i)
+			days.push({ dayMoment, isPassive : true })
 		}
 
 		const today = moment()//.startOf('day');
@@ -312,7 +244,7 @@ export default class Calendar extends Component {
 			const invalid       = isInvalid ? isInvalid(dayMoment) : false
 			const isOutsideMinMax = isOusideMinMax(dayMoment, minDate, maxDate, format)
 			return  <DayCell
-						onSelect={ this.handlerDateSelect.bind(this) }
+						onSelect={ this.handlerSelect.bind(this,time) }
 						dayMoment={dayMoment}
 						isStartEdge = { isStartEdge }
 						isEndEdge = { isEndEdge }
@@ -328,16 +260,17 @@ export default class Calendar extends Component {
 	}
 
 	renderTime(){
-		let {time,second,confirm} = this.props
+		let {time,initTime, second,confirm} = this.props
 		if (time) {
 			return (
 				<div style={{position : 'relative'}}>
 					<Time 
 						confirm={confirm}
-						date={this.state.timeDate} 
+						date={this.state.date}
+						init={initTime} 
 						second={second} 
-						onChange={this.handlerTimeSelect.bind(this)}
-						onConfirm={this.handlerTimeConfirm.bind(this)}  />
+						onChange={this.handlerSelect.bind(this,false)}
+						onConfirm={this.handlerConfirm.bind(this)}  />
 				</div>
 			)
 		}
@@ -356,8 +289,8 @@ export default class Calendar extends Component {
 }
 
 Calendar.defaultProps = {
-	format      : dateFormat,
 	time : false,
+	initTime : true,
 	second : true,
 	yearLowerLimit:-1,
 	yearUpperLimit:-1

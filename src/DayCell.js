@@ -9,7 +9,7 @@ export default class DayCell extends Component {
 
 	handlerSelect() {
 		if(!this.props.isInvalid){
-			this.props.onSelect(this.props.dayMoment)
+			this.props.onSelect(this.props.dayMoment.clone())
 		}
 	}
 

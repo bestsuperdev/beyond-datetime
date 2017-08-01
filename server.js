@@ -12,8 +12,10 @@ if (typeof config.entry === 'string') {
   config.entry = ["webpack-dev-server/client?http://"+ip+":"+port, "webpack/hot/dev-server" ,config.entry];
 }else if(typeof config.entry === 'object'){
   for(var k in config.entry){
-    var main = config.entry[k]
-    config.entry[k] = ["webpack-dev-server/client?http://"+ip+":"+port, "webpack/hot/dev-server"].concat(main)
+    if( k !== 'commons'){
+      var main = config.entry[k]
+      config.entry[k] = ["webpack-dev-server/client?http://"+ip+":"+port, "webpack/hot/dev-server"].concat(main)
+    }
   }
 }
 
