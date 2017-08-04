@@ -39,7 +39,7 @@ class App extends React.Component {
 					<Calendar onChange={this.log} />
 					<Calendar time  onChange={this.log} />
 					<Calendar isInvalid={isInValidDate} time second={false}  onChange={this.log} />
-					<Calendar time second={false} confirm  onConfirm={this.log} />
+					<Calendar time second={false} confirm cancel clear  onConfirm={this.log} />
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div >
@@ -49,7 +49,7 @@ class App extends React.Component {
 
 					<Calendar yearLowerLimit={1991} yearUpperLimit={2040} date={date1} onChange={this.handlerChange.bind(this,'date1')} />
 					<Calendar time second={false} date={date2} onChange={this.handlerChange.bind(this,'date2')} />
-					<Calendar time date={new Date} confirm onConfirm={this.handlerChange.bind(this,'date3')} />
+					<Calendar time date={new Date} confirm cancel clear onConfirm={this.handlerChange.bind(this,'date3')} />
 				</div>
 
 			

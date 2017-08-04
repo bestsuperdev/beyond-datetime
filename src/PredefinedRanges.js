@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import parseInput from './utils/parseInput.js'
+import {isSameDate} from './utils/DateHelper'
 import {predefinedRangesPrefix} from './utils/consts'
 import moment from 'moment'
 const classnames = require('classnames')
@@ -22,29 +22,29 @@ export default class PredefinedRanges extends Component {
 		super(props, context)
 	}
 
-	handleSelect(name, event) {
+	handleSelect(i, event) {
 		event.preventDefault()
-		const {ranges,range} = this.props
-		const rangeFunc = ranges[name]
-		let startDate = parseRange(rangeFunc.startDate,range && range.startDate)
-		let endDate = parseRange(rangeFunc.endDate,range && range.endDate)
+		let{ranges} = this.props
+		let startDate = ranges[i].startDate(new Date)
+		let endDate = ranges[i].endDate(new Date)
 		this.props.onSelect({startDate,endDate})
 	}
 
 	renderRangeList() {
-		const { ranges, range } = this.props
-
-		return Object.keys(ranges).map(name => {
-			const active = (
-				parseRange(ranges[name].startDate,range.startDate).isSame(range.startDate,'day') &&
-				parseRange(ranges[name].endDate,range.endDate).isSame(range.endDate,'day')
-			) ? 'active' : null
+		let { ranges, startDate,endDate } = this.props
+		ranges = ranges || []
+		return ranges.map((range,i) => {
+			let {startDate : startDateFunc, endDate : endDateFunc,name} = range
+			const active = 
+				isSameDate(startDateFunc(new Date),startDate) &&
+				isSameDate(endDateFunc(new Date),endDate) &&
+				'active'
 
 			return (
 				<a 	href='#'
-					key={'range-' + name}
+					key={i+''}
 					className={classnames(`${predefinedRangesPrefix}-item`,active)}
-					onClick={this.handleSelect.bind(this, name)}>
+					onClick={this.handleSelect.bind(this,i)}>
 					{name}
 				</a>
 			)
@@ -52,10 +52,9 @@ export default class PredefinedRanges extends Component {
 	}
 
 	render() {
-		let {extraClassName} = this.props
 		return (
-			<div className={classnames(predefinedRangesPrefix,extraClassName)} style={this.props.style}>
-				{ this.renderRangeList() }
+			<div className={predefinedRangesPrefix} style={this.props.style}>
+				{this.renderRangeList()}
 			</div>
 		);
 	}

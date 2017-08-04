@@ -8,8 +8,9 @@ export default class DayCell extends Component {
 	}
 
 	handlerSelect() {
-		if(!this.props.isInvalid){
-			this.props.onSelect(this.props.dayMoment.clone())
+		let {isInvalid,date,onSelect} = this.props
+		if(!isInvalid && typeof onSelect === 'function'){
+			onSelect(new Date(date))
 		}
 	}
 
@@ -29,12 +30,16 @@ export default class DayCell extends Component {
 	}
 
 	render() {
-		const {dayMoment} = this.props
-		if(dayMoment && dayMoment.date){
+		const {date,isInvalid} = this.props
+		if(date){
+			let props = {
+				className : this.getClassNames()
+			}
+			if(!isInvalid){
+				props.onClick = this.handlerSelect.bind(this)
+			}
 			return (
-				<span onClick={this.handlerSelect.bind(this)} className={this.getClassNames()}>
-					{dayMoment.date()}
-				</span>
+				<span {...props}>{date.getDate()}</span>
 			)
 		}
 	}

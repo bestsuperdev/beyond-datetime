@@ -36,14 +36,15 @@ class App extends React.Component {
 				<div>
 					<p>普通时间选择</p>
 					<Time second={false} onChange={this.log} /> 
-					<Time onChange={this.log} />
+					<Time defaultDate={new Date} onChange={this.log} />
 					<Time confirm onConfirm={this.log} />
+					<Time disabled />
 				</div>
 				<div>
 					<p>受控时间选择</p>
 					<Time date={time1} second={false} onChange={this.handlerChange.bind(this,'time1')} />
 					<Time date={time2} onChange={this.handlerChange.bind(this,'time2')} />
-					<Time date={time3} onChange={this.handlerChange.bind(this,'time3')} />
+					<Time date={time3}  />
 				</div>
 			</div>
 		)

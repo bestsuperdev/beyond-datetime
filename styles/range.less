@@ -1,0 +1,40 @@
+.bdt-range {
+    position: relative;
+    width: 562px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0px 4px rgba(0, 0, 0, .2);
+    &>&-container {
+        display: inline-block;
+        .bdt-calendar {
+            box-shadow: none;
+            border: none;
+        }
+    }
+}
+
+.bdt-predefined-ranges {
+    position: absolute;
+    top: -1px;
+    left: -80px;
+    width: 80px;
+    box-sizing: border-box;
+    background: white;
+    padding: 10px 5px 0 10px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-right: none;
+    box-shadow: -2px 0px 4px rgba(0, 0, 0, .2); 
+    &>&-item {
+        display: block;
+        font-size: 12px;
+        color: #2c3e50;
+        padding: 10px 5px;
+        border-radius: 2px;
+        background: #ecf0f1;
+        text-decoration: none;
+        margin-bottom: 6px;
+        &.active{
+            color: #E74C3C;
+        }
+    }
+}

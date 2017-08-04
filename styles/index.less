@@ -2,35 +2,26 @@
 // @cell-padding : 10px;
 
 
+.bdt-btn{
+	border:none ;
+	font-size: 14px;
+	padding: 4px 14px;
+	white-space: nowrap;
+	background : #2283D0;
+	color      : #ffffff;
+	cursor: pointer;
+	outline: none;
+}
+
+.bdt-btn.bdt-btn-reverse{
+	background: #efefef;
+	color : black; 
+}
+
 @import "time.less";
 @import "calendar.less";
+@import "range.less";
 
-.rdr-predefined-ranges{
-	// box-sizing: content-box;
-	box-sizing:border-box;
-	background: white;
-	width         : 80px;
-	display       : inline-block;
-	vertical-align : top;
-	padding-left: 10px;
-    padding-top: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    box-shadow: 0 0px 4px rgba(0,0,0,.2);
-    // margin-top: 1px;
-	&>&-item{
-		display       : block;
-		font-size      : 12px;
-		color         : #2c3e50;
-		padding       : 10px 5px;
-		border-radius  : 2px;
-		background    : #ecf0f1;
-		text-decoration: none;
-		margin-bottom  : 6px;
-	}
-	&>&-item.active{
-		color : #E74C3C;
-	}
-}
 
 
 
@@ -38,35 +29,9 @@
 	background-color: white;
 	display     : inline-block;
 	box-sizing  : border-box;
-	// border-radius  : 2px;
-	// min-width : 564px;
 	width:100%;
 	position: relative;
-	// border: 1px solid rgba(0, 0, 0, 0.15);
-	// box-shadow: 0 0px 4px rgba(0,0,0,.2);
-	// border: 1px solid rgba(0, 0, 0, 0.15);
-	// position: relative;
-	& &-confirm-btn{
-		font-size: 13px;
-		height: 24px;
-		line-height: 24px;
-		padding: 0;
-		margin: 0;
-		width: 55px;
-		text-align: center;
-		// color:  inherit ;
-		text-decoration: none;
-		// background-color:#ecf0f1;
-		display: inline-block;
-		background : #2283D0;
-		color      : #ffffff;
-	}
-	.no-border{
-	// box-sizing  : border-box;
-	border-radius  : 0px;	
-	border: none;
-	box-shadow:none;	
-	}
+
 	.rdr-calendar{
 		padding-bottom: 5px;
 		box-shadow: none;
@@ -79,16 +44,11 @@
 		border-radius  : 2px;
 		z-index: 1;
 		position: absolute;
-		// left: -148px;
 		left:-71px;
-		// top: -1px;
 	}
 }
 
-	//一行三列
-	// .rdr-time{
-	// 	background-color: black;
-	// }
+
 	.rdr-date-range-width-both{
 		width:645px;
 	}

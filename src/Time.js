@@ -1,47 +1,53 @@
-/*
-<Time format="HH:mm:ss" format="H:m:s" />
-*/
-
 import React, { Component } from 'react'
-import parseInput from './utils/parseInput';
 import {timePrefix as prefix} from './utils/consts'
 
 function toDoubleDigits(number){
 	return number < 10 ? `0${number}` : number
 }
 
+function getInitDate(){
+	let date = new Date
+	date.setHours(0)
+	date.setMinutes(0)
+	date.setSeconds(0)
+	return date
+}
 
 export default class Time extends Component {
 
 	constructor(props){
 		super(props)
-		let {date,init} = props
-		date = parseInput(date,init)
+		let date = props.defaultDate instanceof Date ? new Date(props.defaultDate) : getInitDate()
 		this.state = {date}
 	}
 
-	componentWillReceiveProps(nextProps) {
-		let {date,init} = nextProps
-		if ('date' in nextProps) {
-			date = parseInput(date,init)
-			this.setState({date})
+	getDate(){
+		let date = this.props.date || this.state.date
+		if(date){
+			return new Date(date)
+		}else{
+			return getInitDate()
 		}
 	}
 
 	handlerChange(type,event){
-		let {second,onChange} = this.props
-		let date = this.state.date.clone()
+		let {onChange} = this.props
 		let number = +event.target.value
-		date[`${type}`](number)
-		if (!second) {
-			date.second(0)
-		}
+		let date = this.getDate()
+		date[type](number)
 		let result
 		if(typeof onChange === 'function'){
 			result = onChange(date)
 		}
 		if (result !== false) {
-			this.setState({date})
+			this.setState({date : new Date(date)})
+		}
+	}
+
+	handlerConfirm(){
+		let {onConfirm} = this.props
+		if(typeof onConfirm === 'function' ){
+			onConfirm(this.getDate())
 		}
 	}
 
@@ -51,34 +57,27 @@ export default class Time extends Component {
 			options.push(<option key={i} value={i}>{toDoubleDigits(i)}</option>)
 		}
 		return (
-			<select value={value} onChange={this.handlerChange.bind(this,type)}>{options}</select>
+			<select disabled={this.props.disabled} value={value} onChange={this.handlerChange.bind(this,type)}>{options}</select>
 		)
 	}
 
-	handlerConfirm(){
-		let {onConfirm} = this.props
-		if(typeof onConfirm === 'function' ){
-			let {date} = this.state
-			onConfirm(date)
-		}
-	}
 
 	render() { 
-		const {second,confirm} = this.props
-		const {date} = this.state
+		let {second,confirm} = this.props
+		const date = this.props.date || this.state.date
 		return (
 			<div className={prefix}>
 				<div className={`${prefix}-cell`}>
-					{this.renderSelector('hour',24,date.hour())}
+					{this.renderSelector('setHours',24,date.getHours())}
 				</div>
 				<div className={`${prefix}-mini-cell`}>:</div>
 				<div className={`${prefix}-cell`}>
-					{this.renderSelector('minute',60,date.minute())}
+					{this.renderSelector('setMinutes',60,date.getMinutes())}
 				</div>
 				{second && <div className={`${prefix}-mini-cell`}>:</div>}
 				{second && (
 					<div className={`${prefix}-cell`}>
-						{this.renderSelector('second',60,date.second())}
+						{this.renderSelector('setSeconds',60,date.getSeconds())}
 					</div>
 				)}
 				{confirm && (
@@ -95,5 +94,6 @@ export default class Time extends Component {
 Time.defaultProps = {
 	second : true,
 	confirm : false,
-	init : true
+	init : true,
+	disabled : false
 }

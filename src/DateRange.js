@@ -10,20 +10,17 @@ export default class DateRange extends Component {
 
 	constructor(props, context) {
 		super(props, context)
-
 		const {time,initTime } = props
 		const startDate = parseInput(props.startDate,time && initTime)
 		const endDate   = parseInput(props.endDate,time && initTime)
-		this.state = {
-			range : {startDate,endDate}
-		}
+		this.state = {startDate,endDate}
 		this.step = 0
 	}
 
 	componentDidMount() {		
 		const { onInit } = this.props
-		const {range} = this.state
-		typeof onInit === 'function' && onInit(range)
+		const {startDate,endDate} = this.state
+		typeof onInit === 'function' && onInit({startDate,endDate})
 	}
 
 	orderRange(range) {
@@ -49,7 +46,7 @@ export default class DateRange extends Component {
 		}
 
 		if (result !== false) {
-			this.setState({range})
+			this.setState(range)
 		}
 	}
 
@@ -62,8 +59,8 @@ export default class DateRange extends Component {
 	}
 
 
-	handlerDateChange(index,date){
-		let { startDate, endDate } = this.state.range
+	handlerDateChange(date){
+		let { startDate, endDate } = this.state
 		switch (this.step) {
 			case 0:
 				startDate = date
@@ -82,7 +79,7 @@ export default class DateRange extends Component {
 	handlerConfirm(){
 		let {onConfirm} = this.props
 		if (typeof onConfirm === 'function') {
-			let {startDate,endDate} = this.state.range
+			let {startDate,endDate} = this.state
 			startDate = startDate.clone()
 			endDate = endDate.clone()
 			this.props.onConfirm({startDate,endDate})
@@ -100,50 +97,44 @@ export default class DateRange extends Component {
 	}
 
 	render() {
-		const {ranges, firstDayOfWeek, minDate, maxDate, isInvalid, time, second, confirm, yearLowerLimit, yearUpperLimit } = this.props
-		const {range} = this.state
-
-		let predefinedRanges=(ranges && (
-			<PredefinedRanges
-				// extraClassName={leftPosition > 0 && leftPosition < tabsWidth && `rdr-predefined-ranges-relative`}
-				ranges={ ranges }
-				range={ range }
-				onSelect={this.handlerRangeChange.bind(this)}
-			/>
-		))
-		// console.log(predefinedRanges)
-		let _calendars = []
-		for (let i = 0; i < 2; i++) {
-			_calendars.push(
-				<Calendar
-					key={i}
-					offset={ i-1 }
-					range={ range }
-					firstDayOfWeek={ firstDayOfWeek }
-					isInvalid={isInvalid}
-					minDate={ minDate }
-					maxDate={ maxDate }
-					time={time}
-					second={second}
-					onChange={ this.handlerDateChange.bind(this,i) }
-					onConfirm={ confirm && i === 1 ? this.handlerConfirm.bind(this) : void(0)}
-					confirm={confirm && i === 1}
-					yearLowerLimit={yearLowerLimit}
-					yearUpperLimit={yearUpperLimit}/>
-			)
-		}	
+		const {ranges, firstDayOfWeek, minDate, maxDate, invalid, time, second, confirm, yearLowerLimit, yearUpperLimit } = this.props
+		const {startDate,endDate} = this.state
+		let getProps = (i)=>{
+			let props = {
+				key : i+'',
+				offset : i-1,
+				range : {startDate,endDate},
+				firstDayOfWeek,
+				invalid,
+				minDate,
+				maxDate,
+				time,
+				second,
+				onChange : this.handlerDateChange.bind(this),
+				yearLowerLimit,
+				yearUpperLimit
+			}
+			if(confirm && i == 1){
+				props.onConfirm = this.handlerConfirm.bind(this)
+				props.confirm = true
+			}
+			return props
+		}
 
 		return (
 			<div className={dateRangePrefix}>
-				{predefinedRanges}
-				{(<div className={`rdr-calendar-list`}>
-					{_calendars}
-					{(confirm && !time) && (
-						<div style={{padding : '5px 15px',textAlign :'right',}}>
-							<a href="#" className={`${dateRangePrefix}-confirm-btn`} onClick={this.handlerConfirm.bind(this)}>确认</a>
-						</div>
-					)}
-				</div>)}
+				{ranges && <PredefinedRanges
+						ranges={ ranges }
+						startDate={startDate}
+						endDate={endDate}
+						onSelect={this.handlerRangeChange.bind(this)}
+					/>}
+				<div className={`${dateRangePrefix}-container`}>
+					<Calendar  {...getProps(0)} />
+				</div>
+				<div className={`${dateRangePrefix}-container`}>
+					<Calendar  {...getProps(1)} />
+				</div>
 			</div>
 		);
 	}

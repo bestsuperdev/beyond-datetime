@@ -1,105 +1,68 @@
+/*
+
+<Calendar />
+
+*/
+
+
 import React, { Component } from 'react'
-import moment from 'moment'
-require('moment/locale/zh-cn')
 import {calendarPrefix} from './utils/consts'
-import parseInput from './utils/parseInput.js'
+import * as DateHelper from './utils/DateHelper'
 import DayCell from './DayCell.js'
 import Time from './Time'
 
 
-moment.locale('zh-cn')
-
-function syncTime(source,target){
-
+function checkRange(date, range) {
+	return DateHelper.isBetween(date,range.startDate,range.endDate)
 }
 
-function checkRange(dayMoment, range) {
-	return (
-		dayMoment.isBetween(range['startDate'], range['endDate']) ||
-		dayMoment.isBetween(range['endDate'], range['startDate'])
-	)
+function checkEdge(date1, date2) {
+	return DateHelper.isSameDate(date1,date2)
 }
 
-function checkEdge(dayMoment, date) {
-	return dayMoment.isSame(date,'day')
-}
-
-function isOusideMinMax(dayMoment, minDate, maxDate, format) {
-	return (
-	(minDate && dayMoment.isBefore(parseInput(minDate, format))) ||
-	(maxDate && dayMoment.isAfter(parseInput(maxDate, format)))
-	)
+function isOusideMinMax(date, minDate, maxDate) {
+	return !DateHelper.isBetween(date,minDate,maxDate)
 }
 
 export default class Calendar extends Component {
 
 	constructor(props, context) {
 		super(props, context)
-		let {date, range, offset,time, initTime} = props
-		date = parseInput(date,time && initTime)
-		let shownDate = ((range && range.endDate) || date || moment()).clone().add(offset, 'months')
-		this.state = {date,shownDate}
-	}
-
-	getFirstDayOfWeek(){
-		return this.props.firstDayOfWeek || moment.localeData().firstDayOfWeek()
-	}
-
-	componentWillReceiveProps(nextProps) {
-		let nextState
-		if('date' in nextProps){
-			let {date,isInvalid,time,initTime} = nextProps
-			if(typeof isInvalid !== 'function' || !isInvalid(date)){
-				nextState = {date : parseInput(date,time && initTime)}
-			}
-		}
-
-		let {range,offset} = nextProps
-		let shownDate = (range && range.endDate) || (nextState ? nextState.date : moment()) 
-		shownDate = shownDate.clone().add(offset,'months')
-		if(nextState){
-			nextState.shownDate = shownDate
-		}else{
-			nextState = {shownDate}
-		}
-
-		if (nextState) {
-			this.setState(nextState)
-		}
+		let {defaultDate,defaultShownDate} = props
+		let date = defaultDate instanceof Date ? new Date(defaultDate) : new Date
+		let shownDate = defaultShownDate instanceof Date ? new Date(defaultShownDate) : new Date
+		shownDate.setDate(1)
+		this.state = {date, shownDate}
 	}
 
 	componentDidMount() {
 		const { onInit } = this.props
-		const {date} = this.state
 		if(typeof onInit === 'function'){
-			onInit(date)
+			onInit(this.getDate())
 		}
+	}
+
+	getDate(){
+		return new Date(this.props.date || this.state.date)
 	}
 
 	getShownDate() {
-		return  this.state.shownDate;
+		return new Date(this.props.shownDate || this.state.shownDate)
 	}
 
-	handlerConfirm(date){
+	handlerConfirm(){
 		const {onConfirm} = this.props
 		if(typeof onConfirm === 'function'){
-			onConfirm(date)
+			onConfirm(this.getDate())
 		}
 	}
 
-	handlerSelect(isSyncTime,date) {
+	handlerSelect(date) {
 		const {onChange} = this.props
 		let result = null
-		if(isSyncTime){
-			let {date : _date} = this.state
-			date.hours(_date.hours())
-			date.minutes(_date.minutes())
-			date.seconds(_date.seconds())
-		}
 		if (typeof onChange === 'function') {
 			result = onChange(date.clone())
 		}
-
 		if (result !== false) {
 			this.setState({date})
 		}
@@ -108,48 +71,55 @@ export default class Calendar extends Component {
 	}
 
 
-	changeMonth(direction) {
-		const shownDate = this.state.shownDate.clone().add(direction, 'months');
-		this.setState({shownDate})
-	}
-
-	changeYear(direction) {
-		const shownDate = this.state.shownDate.clone().add(direction, 'years');
-		this.setState({shownDate})
-	}
-
 	handlerChangeShownMonth(event){
-		let month = +event.target.value
-		let shownDate = this.getShownDate()
-		shownDate = shownDate.clone().month(month)
-		this.setState({shownDate})
+		let shownDate
+		if(event.target){
+			shownDate = DateHelper.setMonth(this.getShownDate(),+event.target.value)
+		}else if(typeof event === 'number'){
+			shownDate = DateHelper.addMonth(shownDate,event)
+		}
+		if(shownDate){
+			shownDate.setDate(1)
+			this.handlerChangeShownDate(shownDate)
+		}
 	}
 
 	handlerChangeShownYear(event){
-		let year = +event.target.value
-		let shownDate = this.getShownDate()
-		shownDate = shownDate.clone().year(year)
-		this.setState({shownDate})
+		let shownDate
+		if(event.target){
+			shownDate = DateHelper.setYear(this.getShownDate(),+event.target.value)
+		}else if(typeof event === 'number'){
+			shownDate = DateHelper.addYear(shownDate,event)
+		}
+		if(shownDate){
+			shownDate.setDate(1)
+			this.handlerChangeShownDate(shownDate)
+		}
 	}
 
+
+	handlerChangeShownDate(shownDate){
+		let {onShownChange} = this.props
+		let result 
+		if(typeof onShownChange === 'function'){
+			result = onShownChange(shownDate)
+		}
+		if(result !== false){
+			this.setState({shownDate})
+		}
+	}
+
+
 	renderMonthAndYear() {
-		const shownDate = this.getShownDate();
-		const currentYear = moment().year()
-		const currentShownYear = shownDate.year()
+		const shownDate = this.getShownDate()
+		const currentYear = (new Date).getFullYear()
+		const currentShownYear = shownDate.getFullYear()
 		const prefix = `${calendarPrefix}-month-and-year`
-		const months = []
 		const years = []
-		for(let i = 0; i < 12; i++){
-			months.push(<option key={i} value={i}>{moment.months(i)}</option>)
-		}
-		let startYear = currentYear - 45
-		let endYear = currentYear + 10
-		if(this.props.yearLowerLimit > 0) {
-			startYear = this.props.yearLowerLimit
-		}		
-		if(this.props.yearUpperLimit > 0) {
-			endYear = this.props.yearUpperLimit
-		}
+
+		let startYear = this.props.yearLowerLimit || Math.max(currentYear - 45,1970)
+		let endYear = this.props.yearUpperLimit || (currentYear + 10)
+
 
 		if (currentShownYear < startYear) {
 			years.push(<option key={currentShownYear} value={currentShownYear}>{currentShownYear}</option>)
@@ -160,92 +130,62 @@ export default class Calendar extends Component {
 		if (currentShownYear > endYear) {
 			years.push(<option key={currentShownYear} value={currentShownYear}>{currentShownYear}</option>)
 		}
-		let style = {width : '50%',display : 'inline-block',verticalAlign: 'top'}
+		let style = {width : '50%',display : 'inline-block'}
 		let prevClassName = `${prefix}-button ${prefix}-prev-button`
 		let nextClassName = `${prefix}-button ${prefix}-next-button`
 		return (
 			<div className={prefix}>
-			<div style={style}>
-				<button type="button" className={prevClassName} onClick={this.changeYear.bind(this, -1)}></button>
-				<select value={shownDate.year()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
-				<button type="button" className={nextClassName} onClick={this.changeYear.bind(this, 1)}></button>
-			</div>
-			<div style={style}>
-				<button type="button" className={prevClassName} onClick={this.changeMonth.bind(this, -1)}></button>
-				<select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.month()}>{months}</select>
-				<button type="button" className={nextClassName} onClick={this.changeMonth.bind(this, 1)}></button>
-			</div>
+				<div style={style}>
+					<button type="button" className={prevClassName} onClick={this.handlerChangeShownYear.bind(this, -1)}></button>
+					<select value={shownDate.getFullYear()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
+					<button type="button" className={nextClassName} onClick={this.handlerChangeShownYear.bind(this, 1)}></button>
+				</div>
+				<div style={style}>
+					<button type="button" className={prevClassName} onClick={this.handlerChangeShownMonth.bind(this, -1)}></button>
+					<select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.getMonth()}>
+						{DateHelper.Months.map((month,i)=> <option key={i+''} value={i}>{month}</option> )}
+					</select>
+					<button type="button" className={nextClassName} onClick={this.handlerChangeShownMonth.bind(this, 1)}></button>
+				</div>
 			</div>
 		)
 	}
 
 	renderWeekdays() {
-		const dow = this.getFirstDayOfWeek()
-		const weekdays = []
 
-		for (let i = dow; i < 7 + dow; i++) {
-			const day = moment.weekdaysMin(i);
-			weekdays.push(<span key={day}>{day}</span>)
-		}
-
-		return <div className={`${calendarPrefix}-weekdays`}>{weekdays}</div>
+		return (
+			<div className={`${calendarPrefix}-weekdays`}>
+				{DateHelper.Weeks.map((week,i)=> <span key={i+''}>{week}</span> )}
+			</div>
+		)
 	}
 
 	renderDays() {
-
-		const { range, minDate, maxDate, format, isInvalid, time } = this.props;
+		const { range, minDate, maxDate,  invalid } = this.props
 
 		const shownDate = this.getShownDate()
-		const firstDayOfWeek = this.getFirstDayOfWeek()
-		const { date } = this.state
+		const date = this.getDate() 
 
-		const monthNumber = shownDate.month()
-		const dayCount = shownDate.daysInMonth()
-		const startOfMonth = shownDate.clone().startOf('month').isoWeekday()
+		const days = DateHelper.getDatesInCalendarMonth(shownDate)
 
-		const lastMonth = shownDate.clone().month(monthNumber - 1)
-		const lastMonthDayCount = lastMonth.daysInMonth()
-
-		const nextMonth = shownDate.clone().month(monthNumber + 1)
-		const days = []
-
-		const diff = (Math.abs(firstDayOfWeek - (startOfMonth + 7)) % 7)
-
-		for (let i = diff-1; i >= 0; i--) {
-			const dayMoment  = lastMonth.clone().date(lastMonthDayCount - i)
-			days.push({dayMoment, isPassive : true })
-		}
-
-		// Current month's days
-		for (let i = 1; i <= dayCount; i++) {
-			const dayMoment  = shownDate.clone().date(i)
-			days.push({ dayMoment });
-		}
-
-		// Next month's days
-		const remainingCells = 42 - days.length // 42cells = 7days * 6rows
-		for (let i = 1; i <= remainingCells; i++ ) {
-			const dayMoment  = nextMonth.clone().date(i)
-			days.push({ dayMoment, isPassive : true })
-		}
-
-		const today = moment()//.startOf('day');
+		const today = new Date
 		const className = `${calendarPrefix}-day`
-		return days.map((data, index) => {
-			const { dayMoment, isPassive } = data;
-			const isSelected    = !range && (dayMoment.isSame(date ,'day'));
-			//用于范围选择
-			const isInRange = range && checkRange(dayMoment, range)
-			const isStartEdge = range && checkEdge(dayMoment, range.startDate)
-			const isEndEdge = range && checkEdge(dayMoment, range.endDate)
-			const isEdge = isStartEdge || isEndEdge; 
+		const dayCells = days.map((_date, index) => {
 
-			const isToday       = today.isSame(dayMoment,'day');
-			const invalid       = isInvalid ? isInvalid(dayMoment) : false
-			const isOutsideMinMax = isOusideMinMax(dayMoment, minDate, maxDate, format)
+			const isSelected = !range && DateHelper.isSameDate(date,_date)
+			//用于范围选择
+			const isPassive = DateHelper.isSameMonth(shownDate,_date)
+			const isInRange = range && checkRange(_date, range)
+			const isStartEdge = range && checkEdge(_date, range.startDate)
+			const isEndEdge = range && checkEdge(_date, range.endDate)
+			const isEdge = isStartEdge || isEndEdge
+
+			const isToday = DateHelper.isSameDate(_date,today)
+			const isInvalid = typeof invalid === 'function' ? invalid(new Date(_date)) : false
+			const isOutsideMinMax = isOusideMinMax(_date, minDate, maxDate)
 			return  <DayCell
-						onSelect={ this.handlerSelect.bind(this,time) }
-						dayMoment={dayMoment}
+						onSelect={ this.handlerSelect.bind(this) }
+						date={_date}
 						isStartEdge = { isStartEdge }
 						isEndEdge = { isEndEdge }
 						isSelected={ isSelected || isEdge }
@@ -253,36 +193,43 @@ export default class Calendar extends Component {
 						isToday={ isToday }
 						key={ index }
 						isPassive = { isPassive  }
-						isInvalid={invalid || isOutsideMinMax}
+						isInvalid={isInvalid || isOutsideMinMax}
 						className = {className}
 					/>
 		})
+		return <div>{dayCells}</div>
 	}
 
 	renderTime(){
-		let {time,initTime, second,confirm} = this.props
+		let {time,second} = this.props
 		if (time) {
 			return (
-				<div style={{position : 'relative'}}>
-					<Time 
-						confirm={confirm}
-						date={this.state.date}
-						init={initTime} 
-						second={second} 
-						onChange={this.handlerSelect.bind(this,false)}
-						onConfirm={this.handlerConfirm.bind(this)}  />
-				</div>
+				<Time second={second}/>
 			)
 		}
 	}
 
+	renderBtns(){
+		let {confirm} = this.props
+		let btns = []
+		if(confirm){
+			btns.push(<button onClick={this.handlerConfirm.bind(this)} key="confirm" className="bdt-btn" type="button">确定</button>)
+		}
+		if(btns.length > 0){
+			return <div style={{padding : 4,textAlign : 'right'}}>{btns}</div>
+		}
+
+	}
+
 	render() {
+
 		return (
-			<div className={`${calendarPrefix}`}>
-			{ this.renderMonthAndYear() }
-			{ this.renderWeekdays() }
-			<div>{ this.renderDays() }</div>
-			{this.renderTime()}
+			<div className={calendarPrefix} style={this.props.style}>
+				{this.renderMonthAndYear()}
+				{this.renderWeekdays()}
+				{this.renderDays()}
+				{this.renderTime()}
+				{this.renderBtns()}
 			</div>
 		)
 	}
@@ -295,28 +242,3 @@ Calendar.defaultProps = {
 	yearLowerLimit:-1,
 	yearUpperLimit:-1
 }
-
-// Calendar.propTypes = {
-// 	sets           : PropTypes.string,
-// 	range          : PropTypes.shape({
-// 	startDate    : PropTypes.object,
-// 	endDate      : PropTypes.object
-// 	}),
-// 	minDate        : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-// 	maxDate        : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-// 	date           : PropTypes.oneOfType([PropTypes.object, PropTypes.string, PropTypes.func]),
-// 	format         : PropTypes.string.isRequired,
-// 	firstDayOfWeek : PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-// 	onChange       : PropTypes.func,
-// 	onInit         : PropTypes.func,
-// 	isInvalid      : PropTypes.func,
-// 	link           : PropTypes.oneOfType([PropTypes.shape({
-// 	startDate    : PropTypes.object,
-// 	endDate      : PropTypes.object,
-// 	}), PropTypes.bool]),
-// 	linkCB         : PropTypes.func,
-// 	// theme          : PropTypes.object,
-// 	// onlyClasses    : PropTypes.bool,
-// 	classNames     : PropTypes.object,
-// 	time : PropTypes.bool
-// }
