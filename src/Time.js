@@ -1,33 +1,22 @@
 import React, { Component } from 'react'
 import {timePrefix as prefix} from './utils/consts'
-
+import {getInitTime} from './utils/DateHelper'
 function toDoubleDigits(number){
 	return number < 10 ? `0${number}` : number
 }
 
-function getInitDate(){
-	let date = new Date
-	date.setHours(0)
-	date.setMinutes(0)
-	date.setSeconds(0)
-	return date
-}
 
 export default class Time extends Component {
 
 	constructor(props){
 		super(props)
-		let date = props.defaultDate instanceof Date ? new Date(props.defaultDate) : getInitDate()
+		let date = props.defaultDate instanceof Date ? new Date(props.defaultDate) : getInitTime()
 		this.state = {date}
 	}
 
 	getDate(){
 		let date = this.props.date || this.state.date
-		if(date){
-			return new Date(date)
-		}else{
-			return getInitDate()
-		}
+		return new Date(date)
 	}
 
 	handlerChange(type,event){
@@ -60,7 +49,6 @@ export default class Time extends Component {
 			<select disabled={this.props.disabled} value={value} onChange={this.handlerChange.bind(this,type)}>{options}</select>
 		)
 	}
-
 
 	render() { 
 		let {second,confirm} = this.props

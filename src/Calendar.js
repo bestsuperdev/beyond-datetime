@@ -1,38 +1,19 @@
-/*
-
-<Calendar />
-
-*/
-
-
 import React, { Component } from 'react'
 import {calendarPrefix} from './utils/consts'
 import * as DateHelper from './utils/DateHelper'
 import DayCell from './DayCell.js'
 import Time from './Time'
 
-
-function checkRange(date, range) {
-	return DateHelper.isBetween(date,range.startDate,range.endDate)
-}
-
-function checkEdge(date1, date2) {
-	return DateHelper.isSameDate(date1,date2)
-}
-
-function isOusideMinMax(date, minDate, maxDate) {
-	return !DateHelper.isBetween(date,minDate,maxDate)
-}
-
 export default class Calendar extends Component {
 
 	constructor(props, context) {
 		super(props, context)
 		let {defaultDate,defaultShownDate} = props
-		let date = defaultDate instanceof Date ? new Date(defaultDate) : new Date
+		let date = defaultDate instanceof Date ? new Date(defaultDate) : null
 		let shownDate = defaultShownDate instanceof Date ? new Date(defaultShownDate) : new Date
 		shownDate.setDate(1)
-		this.state = {date, shownDate}
+		
+		this.state = {date,shownDate}
 	}
 
 	componentDidMount() {
@@ -43,11 +24,18 @@ export default class Calendar extends Component {
 	}
 
 	getDate(){
-		return new Date(this.props.date || this.state.date)
+		let date = this.props.date || this.state.date
+		return date ? new Date(date) : null 
+	}
+
+	getTime(){
+		let timeDate = this.props.date || this.state.date || DateHelper.getInitTime()
+		return timeDate && this.props.time ? new Date(timeDate) : null
 	}
 
 	getShownDate() {
-		return new Date(this.props.shownDate || this.state.shownDate)
+		let date = this.props.shownDate || this.state.shownDate
+		return  date ? new Date(date) : null
 	}
 
 	handlerConfirm(){
@@ -57,26 +45,40 @@ export default class Calendar extends Component {
 		}
 	}
 
-	handlerSelect(date) {
+	handlerDateChange(date) {
+		if(this.props.time){
+			let time = this.getTime()
+			date = DateHelper.syncTime(date,time)
+		}
+		return this.handlerChange(date)
+	}
+
+	handlerTimeChange(timeDate){
+		let date = this.getDate()
+		if(date){
+			date = DateHelper.syncTime(date,timeDate)
+			return this.handlerChange(date)
+		}
+	}
+
+	handlerChange(date){
 		const {onChange} = this.props
 		let result = null
 		if (typeof onChange === 'function') {
-			result = onChange(date.clone())
+			result = onChange(new Date(date))
 		}
 		if (result !== false) {
 			this.setState({date})
 		}
-
 		return false
 	}
-
 
 	handlerChangeShownMonth(event){
 		let shownDate
 		if(event.target){
 			shownDate = DateHelper.setMonth(this.getShownDate(),+event.target.value)
 		}else if(typeof event === 'number'){
-			shownDate = DateHelper.addMonth(shownDate,event)
+			shownDate = DateHelper.addMonth(this.getShownDate()	,event)
 		}
 		if(shownDate){
 			shownDate.setDate(1)
@@ -89,7 +91,7 @@ export default class Calendar extends Component {
 		if(event.target){
 			shownDate = DateHelper.setYear(this.getShownDate(),+event.target.value)
 		}else if(typeof event === 'number'){
-			shownDate = DateHelper.addYear(shownDate,event)
+			shownDate = DateHelper.addYear(this.getShownDate(),event)
 		}
 		if(shownDate){
 			shownDate.setDate(1)
@@ -117,8 +119,8 @@ export default class Calendar extends Component {
 		const prefix = `${calendarPrefix}-month-and-year`
 		const years = []
 
-		let startYear = this.props.yearLowerLimit || Math.max(currentYear - 45,1970)
-		let endYear = this.props.yearUpperLimit || (currentYear + 10)
+		let startYear = Math.max(currentYear-45, 1970)
+		let endYear = currentYear + 10
 
 
 		if (currentShownYear < startYear) {
@@ -161,30 +163,32 @@ export default class Calendar extends Component {
 	}
 
 	renderDays() {
-		const { range, minDate, maxDate,  invalid } = this.props
+		const { range, minDate, maxDate, invalidDates } = this.props
 
 		const shownDate = this.getShownDate()
 		const date = this.getDate() 
 
-		const days = DateHelper.getDatesInCalendarMonth(shownDate)
+		const days = DateHelper.getDatesInCalendarMonth(shownDate,this.getTime())
 
 		const today = new Date
 		const className = `${calendarPrefix}-day`
 		const dayCells = days.map((_date, index) => {
 
-			const isSelected = !range && DateHelper.isSameDate(date,_date)
+			const isSelected = !range && date && DateHelper.isSameDate(date,_date)
 			//用于范围选择
-			const isPassive = DateHelper.isSameMonth(shownDate,_date)
-			const isInRange = range && checkRange(_date, range)
-			const isStartEdge = range && checkEdge(_date, range.startDate)
-			const isEndEdge = range && checkEdge(_date, range.endDate)
+			const isPassive = !DateHelper.isSameYearAndMonth(shownDate,_date)
+			const isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate) // checkRange(_date, range)
+			const isStartEdge = range && DateHelper.isSameDate(_date,range.startDate)
+			const isEndEdge = range && DateHelper.isSameDate(_date,range.endDate)
 			const isEdge = isStartEdge || isEndEdge
 
 			const isToday = DateHelper.isSameDate(_date,today)
-			const isInvalid = typeof invalid === 'function' ? invalid(new Date(_date)) : false
-			const isOutsideMinMax = isOusideMinMax(_date, minDate, maxDate)
+			let isInvalid = typeof invalidDates === 'function' ? invalidDates(new Date(_date)) : false
+			if(minDate || maxDate){
+				isInvalid = isInvalid && !DateHelper.isBetween(_date,minDate,maxDate) // isOusideMinMax(_date, minDate, maxDate)
+			}
 			return  <DayCell
-						onSelect={ this.handlerSelect.bind(this) }
+						onSelect={ this.handlerChange.bind(this) }
 						date={_date}
 						isStartEdge = { isStartEdge }
 						isEndEdge = { isEndEdge }
@@ -193,7 +197,7 @@ export default class Calendar extends Component {
 						isToday={ isToday }
 						key={ index }
 						isPassive = { isPassive  }
-						isInvalid={isInvalid || isOutsideMinMax}
+						isInvalid={isInvalid}
 						className = {className}
 					/>
 		})
@@ -204,7 +208,10 @@ export default class Calendar extends Component {
 		let {time,second} = this.props
 		if (time) {
 			return (
-				<Time second={second}/>
+				<Time second={second} 
+					disabled={!this.getDate()}
+					date={this.getTime()} 
+					onChange={this.handlerChange.bind(this)}  />
 			)
 		}
 	}
@@ -238,7 +245,7 @@ export default class Calendar extends Component {
 Calendar.defaultProps = {
 	time : false,
 	initTime : true,
-	second : true,
-	yearLowerLimit:-1,
-	yearUpperLimit:-1
+	second : true
+	// yearLowerLimit:-1,
+	// yearUpperLimit:-1
 }

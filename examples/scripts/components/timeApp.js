@@ -44,7 +44,7 @@ class App extends React.Component {
 					<p>受控时间选择</p>
 					<Time date={time1} second={false} onChange={this.handlerChange.bind(this,'time1')} />
 					<Time date={time2} onChange={this.handlerChange.bind(this,'time2')} />
-					<Time date={time3}  />
+					时间固定 <Time date={time3}  />
 				</div>
 			</div>
 		)

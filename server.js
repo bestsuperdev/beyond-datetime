@@ -1,10 +1,8 @@
-var localIp = require('quick-local-ip');
 var path = require('path');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.dev.config');
 var opn = require('opn');
-// var ip = localIp.getLocalIP4();
 var ip = '0.0.0.0';
 var port = 9031;
 
@@ -21,6 +19,7 @@ if (typeof config.entry === 'string') {
 
 new WebpackDevServer(webpack(config), {
   contentBase: path.resolve(__dirname, './'),
+  host : ip,
   hot: true,
   //设置webpack-dev-server启动的时候，bundles的输出的路径，打包的时候这个publicPath没有作用
   publicPath: config.output.publicPath,
@@ -31,7 +30,7 @@ new WebpackDevServer(webpack(config), {
     }
   },
   historyApiFallback: true
-}).listen(port, function (err) {
+}).listen(port,ip, function (err) {
   if (err) {
     console.log(err); //eslint-disable-line no-console
   }else{

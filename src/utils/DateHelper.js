@@ -42,18 +42,23 @@ export function isSameDate(date1,date2){
             && date1.getDate() === date2.getDate() 
 }
 
-export function isSameMonth(date1,date2){
+export function isSameYearAndMonth(date1,date2){
     return  date1 && date2 
             && date1.getFullYear() === date2.getFullYear() 
             && date1.getMonth() === date2.getMonth() 
 }
 
-export function getDatesInCalendarMonth(date){
+export function getDatesInCalendarMonth(date,timeDate){
     const dates = []
     let monthDaysCount = daysInMonth(date)
     let startMonthDate = (new Date(date))//.setDate(1)
     startMonthDate.setDate(1)
-    let lastMonthDaysCount = startMonthDate.getDay() - 1
+    if(timeDate){
+        startMonthDate.setHours(timeDate.getHours())
+        startMonthDate.setMinutes(timeDate.getMinutes())
+        startMonthDate.setSeconds(timeDate.getSeconds())
+    }
+    let lastMonthDaysCount = (startMonthDate.getDay() || 7) - 1
     for(let i = lastMonthDaysCount; i > 0; i--){
         let _date = new Date(startMonthDate)
         _date.setDate(_date.getDate() - i)
@@ -79,8 +84,34 @@ export function getDatesInCalendarMonth(date){
 }
 
 export function isBetween(date,minDate,maxDate){
-    if(date && minDate && maxDate){
-        return +date >= +minDate && +date <= +maxDate
+    let result
+    if(date && (minDate || maxDate)){
+        if(minDate){
+            result = +date >= +minDate
+        }
+        if(maxDate){
+            result = result != null ? (result && +date <= +maxDate) :  (+date <= +maxDate)
+        }
+        return result
+    }else{
+        return false
     }
-    return false
+}
+
+export function getInitTime(){
+    let date = new Date
+	date.setHours(0)
+	date.setMinutes(0)
+	date.setSeconds(0)
+	return date
+}
+
+export function syncTime(date,timeDate){
+    if(date && timeDate){
+        date = new Date(date)
+        date.setHours(timeDate.getHours())
+        date.setMinutes(timeDate.getMinutes())
+        date.setSeconds(timeDate.getSeconds())
+    }
+	return date
 }
