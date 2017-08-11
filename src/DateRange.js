@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-// import classnames from 'classnames'
-import parseInput from './utils/parseInput.js';
-import Calendar from './Calendar.js';
-import PredefinedRanges from './PredefinedRanges.js';
+import React, { Component } from 'react'
+import * as DateHelper from './utils/DateHelper'
+import Calendar from './Calendar.js'
+import PredefinedRanges from './PredefinedRanges.js'
 import {dateRangePrefix} from './utils/consts'
 
 
@@ -10,39 +9,41 @@ export default class DateRange extends Component {
 
 	constructor(props, context) {
 		super(props, context)
-		const {time,initTime } = props
-		const startDate = parseInput(props.startDate,time && initTime)
-		const endDate   = parseInput(props.endDate,time && initTime)
-		this.state = {startDate,endDate}
+		const startShownDate = DateHelper.addMonth(new Date,-1)
+		const endShownDate = new Date
+		let {defaultStartDate,defaultEndDate} = props
+		let tmpStartDate = defaultStartDate || defaultEndDate
+		let tmpEndDate = defaultEndDate || defaultStartDate 
+		let {startDate,endDate} = DateHelper.orderRange(tmpStartDate,tmpEndDate)
+		this.state = {startDate,endDate,startShownDate,endShownDate}
 		this.step = 0
 	}
 
-	componentDidMount() {		
-		const { onInit } = this.props
-		const {startDate,endDate} = this.state
-		typeof onInit === 'function' && onInit({startDate,endDate})
+	getDate(){
+		let startDate = this.props.startDate || this.state.startDate
+		let endDate = this.props.endDate || this.state.endDate
+		if(startDate){
+			startDate = new Date(startDate)
+		}
+		if(endDate){
+			endDate = new Date(endDate)
+		}
+		return {startDate,endDate}
 	}
 
-	orderRange(range) {
-		let { startDate, endDate } = range
-		startDate = startDate.clone()
-		endDate = endDate.clone()
-		if (!startDate.isAfter(endDate)) {
-			return {startDate,endDate}
-		}else{
-			return {
-				startDate : endDate,
-				endDate : startDate
-			}
+	getTime(){
+		if(this.props.time){
+			let startTime = this.props.startDate || this.state.startDate || DateHelper.getInitTime()
+			let endTime = this.props.endDate || this.state.endDate || DateHelper.getInitTime()
+			return {startTime,endTime}
 		}
 	}
 
-	setRange(range) {
+	handlerSetRange(range) {
 		const {onChange} = this.props
-		range = this.orderRange(range)
 		let result = null
 		if (typeof onChange === 'function') {
-			result = onChange(range)
+			result = onChange({startDate : new Date(range.startDate), endDate : new Date(range.endDate)})
 		}
 
 		if (result !== false) {
@@ -53,66 +54,78 @@ export default class DateRange extends Component {
 	handlerRangeChange(date){
 		if (date.startDate && date.endDate) {
 			this.step = 0;
-			this.setRange(date);
+			let timeRange = this.getTime()
+			if(timeRange){
+				date.startDate = DateHelper.syncTime(date.startDate,timeRange.startTime)
+				date.endDate = DateHelper.syncTime(date.endDate,timeRange.endTime)
+			}
+			this.handlerSetRange(date);
 			return false
 		}
 	}
 
 
-	handlerDateChange(date){
-		let { startDate, endDate } = this.state
-		switch (this.step) {
-			case 0:
+	handlerDateChange(prefix,date,changeType){
+		let {startDate,endDate} = this.getDate()
+		let timeRange = this.getTime()
+		if(changeType === 'date'){
+			if(this.step === 0){
 				startDate = date
 				endDate = date
 				this.step = 1
-				break
-			case 1:
+			}else if(this.step === 1){
 				endDate = date
 				this.step = 0
-				break
+			}
+			let range = DateHelper.orderRange(startDate,endDate)
+
+			if(timeRange){
+				range.startDate = DateHelper.syncTime(range.startDate,timeRange.startTime)
+				range.endDate = DateHelper.syncTime(range.endDate,timeRange.endTime)
+			}
+			this.handlerSetRange(range)
+
+		}else if(changeType === 'time'){
+			if(prefix === 'start'){
+				startDate = DateHelper.syncTime(startDate,date)
+			}else{
+				endDate = DateHelper.syncTime(endDate,date)
+			}
+			this.handlerSetRange({startDate,endDate})
 		}
-		this.setRange({startDate,endDate})
 		return false
 	}
 
 	handlerConfirm(){
 		let {onConfirm} = this.props
 		if (typeof onConfirm === 'function') {
-			let {startDate,endDate} = this.state
-			startDate = startDate.clone()
-			endDate = endDate.clone()
+			let {startDate,endDate} = this.getDate()
 			this.props.onConfirm({startDate,endDate})
 		}
 	}
 
-	componentWillReceiveProps(nextProps) {
-		// Whenever date props changes,	 update state with parsed variant
-		if('startDate' in nextProps || 'endDate' in nextProps){
-			let {time,initTime} = nextProps
-			const startDate = parseInput(nextProps.startDate,time && initTime)
-			const endDate = parseInput(nextProps.endDate,time && initTime)
-			this.setState({startDate,endDate})
-		}
+	handlerShownChange(prefix,date){
+		this.setState({[`${prefix}ShownDate`] : date})
 	}
 
 	render() {
-		const {ranges, firstDayOfWeek, minDate, maxDate, invalid, time, second, confirm, yearLowerLimit, yearUpperLimit } = this.props
-		const {startDate,endDate} = this.state
+		const {ranges, minDate, maxDate, invalidDates, time, second, confirm} = this.props
+		const {startShownDate,endShownDate} = this.state
+		let {startDate,endDate} = this.getDate()
 		let getProps = (i)=>{
+			let key = i === 0 ? 'start' : 'end'
 			let props = {
-				key : i+'',
-				offset : i-1,
+				shownDate : key === 'start' ? startShownDate : endShownDate,
+				key,
 				range : {startDate,endDate},
-				firstDayOfWeek,
-				invalid,
+				rangePosition : key,
+				invalidDates,
 				minDate,
 				maxDate,
 				time,
 				second,
-				onChange : this.handlerDateChange.bind(this),
-				yearLowerLimit,
-				yearUpperLimit
+				onChange : this.handlerDateChange.bind(this,key),
+				onShownChange : this.handlerShownChange.bind(this,key)
 			}
 			if(confirm && i == 1){
 				props.onConfirm = this.handlerConfirm.bind(this)
@@ -139,20 +152,3 @@ export default class DateRange extends Component {
 		);
 	}
 }
-
-
-// DateRange.propTypes = {
-// 	format          : PropTypes.string,
-// 	time : PropTypes.bool,
-// 	firstDayOfWeek  : PropTypes.number,
-// 	startDate       : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-// 	endDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-// 	minDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-// 	maxDate         : PropTypes.oneOfType([PropTypes.object, PropTypes.func, PropTypes.string]),
-// 	dateLimit       : PropTypes.func,
-// 	ranges          : PropTypes.object,
-// 	linkedCalendars : PropTypes.bool,
-// 	onInit          : PropTypes.func,
-// 	onChange        : PropTypes.func,
-// 	isInvalid       : PropTypes.func,	
-// }

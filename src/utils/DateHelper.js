@@ -115,3 +115,22 @@ export function syncTime(date,timeDate){
     }
 	return date
 }
+
+export function isOrderedDates(date1,date2){
+    if(date1 instanceof Date && date2 instanceof Date){
+        date1 = syncTime(date1,getInitTime())
+        date2 = syncTime(date2,getInitTime())
+        return +date1 <= +date2
+    }
+}
+
+export function orderRange(startDate,endDate){
+    if(startDate instanceof Date && endDate instanceof Date){
+		if (!isOrderedDates(startDate,endDate)) {
+            let tmp = startDate
+            startDate = new Date(endDate)
+            endDate = new Date(tmp)
+		}
+    }
+    return {startDate,endDate}
+}

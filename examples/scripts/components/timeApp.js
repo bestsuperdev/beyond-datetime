@@ -21,11 +21,7 @@ class App extends React.Component {
 	}
 
 	log(date){
-		if(date && date.format){
-			this.logText.innerHTML = date.format(formatStr)
-		}else{
-			this.logText.innerHTML = date
-		}
+		this.logText.innerHTML = date
 	}
 
 	render() {

@@ -16,21 +16,15 @@ export default class Calendar extends Component {
 		this.state = {date,shownDate}
 	}
 
-	componentDidMount() {
-		const { onInit } = this.props
-		if(typeof onInit === 'function'){
-			onInit(this.getDate())
-		}
-	}
-
 	getDate(){
 		let date = this.props.date || this.state.date
 		return date ? new Date(date) : null 
 	}
 
 	getTime(){
-		let timeDate = this.props.date || this.state.date || DateHelper.getInitTime()
-		return timeDate && this.props.time ? new Date(timeDate) : null
+		let {date,range,rangePosition,time} = this.props
+		let timeDate = (range && range[`${rangePosition}Date`]) || date || this.state.date || DateHelper.getInitTime()
+		return timeDate && time ? new Date(timeDate) : null
 	}
 
 	getShownDate() {
@@ -45,27 +39,18 @@ export default class Calendar extends Component {
 		}
 	}
 
-	handlerDateChange(date) {
-		if(this.props.time){
-			let time = this.getTime()
-			date = DateHelper.syncTime(date,time)
-		}
-		return this.handlerChange(date)
-	}
 
-	handlerTimeChange(timeDate){
-		let date = this.getDate()
-		if(date){
-			date = DateHelper.syncTime(date,timeDate)
-			return this.handlerChange(date)
-		}
-	}
-
-	handlerChange(date){
+	handlerChange(type,date){
 		const {onChange} = this.props
 		let result = null
+		let timeDate
+		if(type === 'date' && null != (timeDate = this.getTime())){
+			date = DateHelper.syncTime(date,timeDate)
+		}else if(type === 'time' && this.state.date){
+			date = DateHelper.syncTime(this.state.date,date)
+		}
 		if (typeof onChange === 'function') {
-			result = onChange(new Date(date))
+			result = onChange(new Date(date),type)
 		}
 		if (result !== false) {
 			this.setState({date})
@@ -78,7 +63,7 @@ export default class Calendar extends Component {
 		if(event.target){
 			shownDate = DateHelper.setMonth(this.getShownDate(),+event.target.value)
 		}else if(typeof event === 'number'){
-			shownDate = DateHelper.addMonth(this.getShownDate()	,event)
+			shownDate = DateHelper.addMonth(this.getShownDate(),event)
 		}
 		if(shownDate){
 			shownDate.setDate(1)
@@ -168,7 +153,7 @@ export default class Calendar extends Component {
 		const shownDate = this.getShownDate()
 		const date = this.getDate() 
 
-		const days = DateHelper.getDatesInCalendarMonth(shownDate,this.getTime())
+		const days = DateHelper.getDatesInCalendarMonth(shownDate)
 
 		const today = new Date
 		const className = `${calendarPrefix}-day`
@@ -188,7 +173,7 @@ export default class Calendar extends Component {
 				isInvalid = isInvalid && !DateHelper.isBetween(_date,minDate,maxDate) // isOusideMinMax(_date, minDate, maxDate)
 			}
 			return  <DayCell
-						onSelect={ this.handlerChange.bind(this) }
+						onSelect={ this.handlerChange.bind(this,'date') }
 						date={_date}
 						isStartEdge = { isStartEdge }
 						isEndEdge = { isEndEdge }
@@ -205,13 +190,14 @@ export default class Calendar extends Component {
 	}
 
 	renderTime(){
-		let {time,second} = this.props
+		let {time,second,range} = this.props
 		if (time) {
+			let disabled = !this.getDate() && (!range || !range.startDate)
 			return (
 				<Time second={second} 
-					disabled={!this.getDate()}
+					disabled={disabled}
 					date={this.getTime()} 
-					onChange={this.handlerChange.bind(this)}  />
+					onChange={this.handlerChange.bind(this,'time')}  />
 			)
 		}
 	}
