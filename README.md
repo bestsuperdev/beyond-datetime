@@ -191,8 +191,6 @@ class MyComponent extends Component {
 | isInvalid | function  | 禁止选择的日期  | - |
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
-| yearLowerLimit      | number   | 年份下限设置      | - |
-| yearUpperLimit      | number   | 年份上限设置    |  - |
 
 
 ### Trigger
