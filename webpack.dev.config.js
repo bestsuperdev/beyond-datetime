@@ -14,6 +14,7 @@ module.exports = {
         time : './time.js',   
         calendar : './calendar.js',   
         range : './range.js',
+        trigger : './trigger.js',
         commons : ['react','react-dom']
     },
     output: {
@@ -64,6 +65,12 @@ module.exports = {
             template : path.join(__dirname,'examples/index.html') ,
             inject: true,
             filename: 'range.html',
+        }),
+        new HtmlWebpackPlugin({
+            chunks : ['commons','trigger'],
+            template : path.join(__dirname,'examples/index.html') ,
+            inject: true,
+            filename: 'trigger.html',
         })
     ],
     debug : true,

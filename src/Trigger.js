@@ -1,5 +1,5 @@
 /*
-<Trigger calendar={<DateRange time ranges={defaultRanges} />}  wrapStyle={}>
+<Trigger target={<DateRange time ranges={defaultRanges} />}  wrapStyle={}>
 	<input type="text"/>
 </Trigger>
 */
@@ -12,25 +12,36 @@ export default class Trigger extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
-			showCalendar : false,
+			showTarget : false,
 			position : null,
 			inputHeight : 30
 		}
 		this.innerClick = false
+		this.wrap = null
+		this.hasEvents = false
 		this.handlerHideCalendar = this.handlerHideCalendar.bind(this)
 		this.handlerInnerClick = this.handlerInnerClick.bind(this)
-		this.wrap = null
 	}
 
-	componentDidMount() {
-		if(this.wrap){
+	componentDidUpdate(){
+		if(this.wrap && !this.hasEvents){
+			this.hasEvents = true
 			this.wrap.addEventListener('click',this.handlerInnerClick)
 			document.addEventListener('click',this.handlerHideCalendar)
 		}
 	}
 
+	componentWillUpdate(nextProps, nextState) {
+		if(this.wrap && !nextState.showTarget){
+			this.hasEvents = false
+			this.wrap.removeEventListener('click',this.handlerInnerClick)
+			document.removeEventListener('click',this.handlerHideCalendar)
+		}
+	}
+	
+
 	componentWillUnmount() {
-		if(this.wrap){
+		if(this.wrap && this.hasEvents){
 			this.wrap.removeEventListener('click',this.handlerInnerClick)
 			document.removeEventListener('click',this.handlerHideCalendar)
 		}
@@ -44,17 +55,17 @@ export default class Trigger extends Component {
 		let self = this
 		setTimeout(()=>{
 			if (!self.innerClick) {
-				self.setState({showCalendar : false})
+				self.setState({showTarget : false})
 			}
 			self.innerClick = false
-		}, 100)
+		}, 50)
 	}
 
 	handlerClick(event){
 		let target = event.target
 		let position = getPos(target)
 		let inputHeight = target.offsetHeight
-		this.setState({showCalendar : true, position, inputHeight})
+		this.setState({showTarget : true, position, inputHeight})
 	}
 
 	render() {
@@ -66,39 +77,36 @@ export default class Trigger extends Component {
 			return (
 				<span style={assign({display : 'inline-block',position : 'relative'},wrapStyle)}>
 					{children}
-					{this.renderCalendar()}
+					{this.renderTarget()}
 				</span>
 			)
 		}
 	}
 
-	renderCalendar(){
-		let {showCalendar,position,inputHeight} = this.state
+	renderTarget(){
+		let {showTarget,position,inputHeight} = this.state
 		let {target,wrapStyle} = this.props
-		if (showCalendar && target) {
+		if (showTarget && target) {
 			let {confirm,onConfirm,onChange} = target.props
 			if (confirm == null) {
 				confirm = true
 			}
-			let calendarWrapStyle = {}
+			let targetWrapStyle = {}
 			if (position === 'top') {
-				calendarWrapStyle.top = inputHeight
+				targetWrapStyle.top = inputHeight
 			}else if( position === 'bottom'){
-				calendarWrapStyle.bottom = inputHeight
+				targetWrapStyle.bottom = inputHeight
 			}
 			let props = {confirm, onConfirm : mergeFuncs(onConfirm,this.handlerHideCalendar) }
 			if (!confirm) {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
+			let style = assign({position : 'absolute',left : '0',zIndex : 999},targetWrapStyle,wrapStyle)
 			return (
-				<div ref={(wrap)=> this.wrap = wrap } style={assign( {position : 'absolute',left : '0',zIndex : 999},calendarWrapStyle,wrapStyle)}>
+				<div ref={(wrap)=> this.wrap = wrap} style={style}>
 					{React.cloneElement(target,props)}
 				</div>
 			)
 		}
 	}
-}
-
-Trigger.defaultProps = {
-	onChange : function () {}
 }

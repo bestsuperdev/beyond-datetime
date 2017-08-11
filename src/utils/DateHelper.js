@@ -134,3 +134,7 @@ export function orderRange(startDate,endDate){
     }
     return {startDate,endDate}
 }
+
+export function isDate(date){
+    return date && Object.prototype.toString.call(date) === '[object Date]' && date.toString() !== 'Invalid Date'
+}

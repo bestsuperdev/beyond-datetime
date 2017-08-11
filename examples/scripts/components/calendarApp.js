@@ -44,6 +44,7 @@ class App extends React.Component {
 					<p>普通日期选择</p>
 					<div className="log" ref={(log)=> this.logText = log }></div>
 					<div style={{display : 'inline-block'}}><Calendar onChange={this.log} /></div>
+					<div style={{display : 'inline-block'}}><Calendar defaultDate={new Date} onChange={this.log} /></div>
 					<div style={{display : 'inline-block'}}><Calendar time  onChange={this.log} /></div>
 					<div style={{display : 'inline-block'}}><Calendar invalidDates={invalidDates} time second={false}  onChange={this.log} /></div>
 					<div style={{display : 'inline-block'}}><Calendar time second={false} confirm cancel clear  onConfirm={this.log} /></div>

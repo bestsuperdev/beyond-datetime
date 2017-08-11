@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
 import {calendarPrefix} from './utils/consts'
-import * as DateHelper from './utils/DateHelper'
+import * as DateHelper  from './utils/DateHelper'
 import DayCell from './DayCell.js'
 import Time from './Time'
+
+const {isDate} = DateHelper
 
 export default class Calendar extends Component {
 
 	constructor(props, context) {
 		super(props, context)
-		let {defaultDate,defaultShownDate} = props
-		let date = defaultDate instanceof Date ? new Date(defaultDate) : null
-		let shownDate = defaultShownDate instanceof Date ? new Date(defaultShownDate) : new Date
+		let {defaultDate} = props
+		let date = isDate(defaultDate) ? new Date(defaultDate) : null
+		let shownDate = isDate(props.date) ? new Date(props.date) : (isDate(date) ? new Date(date) : new Date)
 		shownDate.setDate(1)
-		
 		this.state = {date,shownDate}
 	}
 

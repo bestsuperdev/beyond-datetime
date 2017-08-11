@@ -13,6 +13,7 @@ class App extends React.Component {
 	}
 
 	handlerRangeChange(range){
+		this.log(range)
 		this.setState(range)
 		return false
 	}
@@ -42,7 +43,14 @@ class App extends React.Component {
 				<div style={{height : '20px'}}></div>
 				<div>
 					<p>受控日期范围选择</p>
-					<DateRange ranges={defaultRanges} confirm startDate={startDate} endDate={endDate} time onChange={this.handlerRangeChange.bind(this)} />
+					<DateRange 
+						time 
+						confirm 
+						ranges={defaultRanges} 
+						startDate={startDate} 
+						endDate={endDate} 
+						onChange={this.handlerRangeChange.bind(this)}
+						onConfirm={this.handlerRangeChange.bind(this)} />
 					<div style={{height : '20px'}}></div>
 					<DateRange ranges={defaultRanges} startDate={startDate} endDate={endDate} time onChange={this.handlerRangeChange.bind(this)} />
 					<div style={{height : '20px'}}></div>

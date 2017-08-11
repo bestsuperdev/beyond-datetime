@@ -81,7 +81,6 @@ export default class Time extends Component {
 
 Time.defaultProps = {
 	second : true,
-	confirm : false,
 	init : true,
 	disabled : false
 }

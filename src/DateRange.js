@@ -3,38 +3,65 @@ import * as DateHelper from './utils/DateHelper'
 import Calendar from './Calendar.js'
 import PredefinedRanges from './PredefinedRanges.js'
 import {dateRangePrefix} from './utils/consts'
-
+const {isDate} = DateHelper
 
 export default class DateRange extends Component {
 
 	constructor(props, context) {
 		super(props, context)
-		const startShownDate = DateHelper.addMonth(new Date,-1)
-		const endShownDate = new Date
+		let startShownDate
+		let endShownDate
+
 		let {defaultStartDate,defaultEndDate} = props
-		let tmpStartDate = defaultStartDate || defaultEndDate
-		let tmpEndDate = defaultEndDate || defaultStartDate 
-		let {startDate,endDate} = DateHelper.orderRange(tmpStartDate,tmpEndDate)
+		let {startDate,endDate} = DateHelper.orderRange(defaultStartDate || defaultEndDate,defaultEndDate || defaultStartDate)
+		let {startDate : propsStartDate, endDate : propsEndDate} = DateHelper.orderRange(props.startDate,props.endDate)
+
+		if(isDate(propsStartDate) && isDate(propsEndDate)){
+			startShownDate = new Date(propsStartDate)
+			endShownDate = new Date(propsEndDate)
+		}else if(isDate(startDate) && isDate(endDate)){
+			startShownDate = new Date(startDate)
+			endShownDate = new Date(endDate)
+		}else {
+			startShownDate = DateHelper.addMonth(new Date,-1)
+			endShownDate = new Date
+		}
+		if(DateHelper.isSameDate(startShownDate,endShownDate)){
+			endShownDate = DateHelper.addMonth(endShownDate,1)
+		}
 		this.state = {startDate,endDate,startShownDate,endShownDate}
 		this.step = 0
 	}
 
 	getDate(){
-		let startDate = this.props.startDate || this.state.startDate
-		let endDate = this.props.endDate || this.state.endDate
-		if(startDate){
-			startDate = new Date(startDate)
-		}
-		if(endDate){
-			endDate = new Date(endDate)
+		let {startDate : pStartDate ,endDate : pEndDate} = this.props
+		let {startDate : sStartDate ,endDate : sEndDate} = this.state
+		let startDate,endDate
+		if(isDate(pStartDate) && isDate(pEndDate)){
+			startDate = new Date(pStartDate)
+			endDate = new Date(pEndDate)
+		}else if(isDate(sStartDate) && isDate(sEndDate)){
+			startDate = new Date(sStartDate)
+			endDate = new Date(sEndDate)
 		}
 		return {startDate,endDate}
 	}
 
 	getTime(){
 		if(this.props.time){
-			let startTime = this.props.startDate || this.state.startDate || DateHelper.getInitTime()
-			let endTime = this.props.endDate || this.state.endDate || DateHelper.getInitTime()
+			let startTime,endTime
+			let {startDate : pStartDate ,endDate : pEndDate} = this.props
+			let {startDate : sStartDate ,endDate : sEndDate} = this.state
+			if(isDate(pStartDate) && isDate(pEndDate)){
+				startTime = new Date(pStartDate)
+				endTime = new Date(pEndDate)
+			}else if(isDate(sStartDate) && isDate(sEndDate)){
+				startTime = new Date(sStartDate)
+				endTime = new Date(sEndDate)
+			}else{
+				startTime = DateHelper.getInitTime()
+				endTime = DateHelper.getInitTime()
+			}
 			return {startTime,endTime}
 		}
 	}
