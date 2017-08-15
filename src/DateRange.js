@@ -179,3 +179,7 @@ export default class DateRange extends Component {
 		);
 	}
 }
+
+DateRange.defaultProps = {
+	hideOnConfirm : true
+}

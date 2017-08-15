@@ -87,21 +87,23 @@ export default class Trigger extends Component {
 		let {showTarget,position,inputHeight} = this.state
 		let {target,wrapStyle} = this.props
 		if (showTarget && target) {
-			let {confirm,onConfirm,onChange} = target.props
-			if (confirm == null) {
-				confirm = true
-			}
+			let {onConfirm,onChange} = target.props
 			let targetWrapStyle = {}
 			if (position === 'top') {
 				targetWrapStyle.top = inputHeight
 			}else if( position === 'bottom'){
 				targetWrapStyle.bottom = inputHeight
 			}
-			let props = {confirm, onConfirm : mergeFuncs(onConfirm,this.handlerHideCalendar) }
-			if (!confirm) {
+			let {hideOnConfirm,hideOnChange} = target.props
+			let props = {}
+			if(hideOnConfirm){
+				props.confirm = true
+				props.onConfirm = mergeFuncs(onConfirm,this.handlerHideCalendar)
+			}
+			if (hideOnChange) {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
-			let style = assign({position : 'absolute',left : '0',zIndex : 999},targetWrapStyle,wrapStyle)
+			let style = assign({position : 'absolute', left : '0',zIndex : 999},targetWrapStyle,wrapStyle)
 			return (
 				<div ref={(wrap)=> this.wrap = wrap} style={style}>
 					{React.cloneElement(target,props)}

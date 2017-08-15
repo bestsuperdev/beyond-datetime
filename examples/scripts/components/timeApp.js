@@ -32,14 +32,14 @@ class App extends React.Component {
 			<div className='app' style={{margin : '0 100px'}}>
 				<div className="log" ref={(log)=> this.logText = log }></div>
 				<div>
-					<p>普通时间选择</p>
+					<p>普通</p>
 					<Time second={false} onChange={this.log} /> 
 					<Time defaultDate={new Date} onChange={this.log} />
 					<Time confirm onConfirm={this.log} />
 					<Time disabled />
 				</div>
 				<div>
-					<p>受控时间选择</p>
+					<p>受控</p>
 					<Time date={time1} second={false} onChange={this.handlerChange.bind(this,'time1')} />
 					<Time date={time2} onChange={this.handlerChange.bind(this,'time2')} />
 					时间固定 <Time date={time3}  />
