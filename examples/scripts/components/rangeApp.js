@@ -28,7 +28,7 @@ class App extends React.Component {
 	render() {
 		let {startDate,endDate} = this.state
 		return (
-			<div className='app'>
+			<div className='app' style={{padding : '0 100px'}}>
 				<div>
 					<p>普通日期范围选择</p>
 					<div className="log" ref={(log)=> this.logText = log }></div>

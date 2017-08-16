@@ -4,7 +4,7 @@
 </Trigger>
 */
 import React, { Component } from 'react'
-import getPos from './utils/position'
+import getPosStyle from './utils/position'
 const mergeFuncs = require('beyond-lib/lib/utilities/mergeFuncs')
 const assign = require('beyond-lib/lib/assign')
 export default class Trigger extends Component {
@@ -13,8 +13,7 @@ export default class Trigger extends Component {
 		super(props)
 		this.state = {
 			showTarget : false,
-			position : null,
-			inputHeight : 30
+			targetWrapStyle : null
 		}
 		this.innerClick = false
 		this.wrap = null
@@ -62,10 +61,8 @@ export default class Trigger extends Component {
 	}
 
 	handlerClick(event){
-		let target = event.target
-		let position = getPos(target)
-		let inputHeight = target.offsetHeight
-		this.setState({showTarget : true, position, inputHeight})
+		let targetWrapStyle = getPosStyle(event.target,this.props.target.props.ranges && this.props.target.props.ranges.length > 0)
+		this.setState({showTarget : true, targetWrapStyle})
 	}
 
 	render() {
@@ -84,16 +81,10 @@ export default class Trigger extends Component {
 	}
 
 	renderTarget(){
-		let {showTarget,position,inputHeight} = this.state
+		let {showTarget,targetWrapStyle} = this.state
 		let {target,wrapStyle} = this.props
 		if (showTarget && target) {
 			let {onConfirm,onChange} = target.props
-			let targetWrapStyle = {}
-			if (position === 'top') {
-				targetWrapStyle.top = inputHeight
-			}else if( position === 'bottom'){
-				targetWrapStyle.bottom = inputHeight
-			}
 			let {hideOnConfirm,hideOnChange} = target.props
 			let props = {}
 			if(hideOnConfirm){
@@ -103,7 +94,7 @@ export default class Trigger extends Component {
 			if (hideOnChange) {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
-			let style = assign({position : 'absolute', left : '0',zIndex : 999},targetWrapStyle,wrapStyle)
+			let style = assign({},targetWrapStyle,wrapStyle)
 			return (
 				<div ref={(wrap)=> this.wrap = wrap} style={style}>
 					{React.cloneElement(target,props)}

@@ -23,9 +23,13 @@ export default class Calendar extends Component {
 	}
 
 	getTime(){
-		let {date,range,rangePosition,time} = this.props
-		let timeDate = (range && range[`${rangePosition}Date`]) || date || this.state.date || DateHelper.getInitTime()
-		return timeDate && time ? new Date(timeDate) : null
+		if(this.props.time){
+			let {date,range,rangePosition} = this.props
+			let timeDate = (range && range[`${rangePosition}Date`]) || date || this.state.date || DateHelper.getInitTime()
+			return new Date(timeDate)
+		}else{
+			return null
+		}
 	}
 
 	getShownDate() {

@@ -9,16 +9,17 @@ fork from [http://adphorus.github.io/react-date-range](http://adphorus.github.io
 
 ### 安装
 ```
-$ npm install --save beyond-datetime
+$ npm install --save beyond-datetime@next
 ```
 
 ## 使用
 
 ### Calendar
 
+日期选择器
+
+
 #### 基本用法
-
-
 
 
 ```javascript
@@ -28,15 +29,13 @@ import { Calendar } from 'beyond-datetime';
 
 class MyComponent extends Component {
 	handlerSelect(date){
-		console.log(date); // Momentjs object
+		console.log(date); // Date object
 	}
 
 	render(){
 		return (
 			<div>
-				<Calendar 
-					onInit={this.handlerSelect} 
-					onChange={this.handlerSelect} />
+				<Calendar onChange={this.handlerSelect} />
 			</div>
 		)
 	}
@@ -54,9 +53,7 @@ class MyComponent extends Component {
 	render(){
 		return (
 			<div>
-				<Calendar time 
-					onInit={this.handlerSelect} 
-					onChange={this.handlerSelect} />
+				<Calendar time onChange={this.handlerSelect} />
 			</div>
 		)
 	}
@@ -66,40 +63,48 @@ class MyComponent extends Component {
 
 #### 禁止选择前一天以及更早的日期
 ```javascript 
-const isInValidDate = (dayMoment)=> dayMoment.isBefore(new Date,'day')
+const invalidDates = (date)=>{
+	let today = new Date
+	today.setHours(0)
+	today.setMinutes(0)
+	today.setSeconds(0)
+	return  +date < +today
+}
 
 class MyComponent extends Component {
 
 	render(){
 		return (
 			<div>
-				<Calendar isInvalid={isInValidDate} />
+				<Calendar invalidDates={invalidDates} />
 			</div>
 		)
 	}
 }
 
 ```
-#### 从外部更新日期组件，禁止内部setState进行更新
+
+#### 从外部通过属性更新，禁止内部setState进行更新， onChange 事件必须返回 false 阻止内部 state 更新，本例也适用于 DateRange、 Time 组件
+
 ```javascript 
 class MyComponent extends Component {
 
 	constructor(props){
 		super(props)
 		this.state = {
-			date : null
+			date : new Date
 		}
 	}
 
-	handlerSelect(date){
-		this.setState((state, props) => ({date}))
+	handlerChange(date){
+		this.setState({date})
 		return false  // 返回false 阻止 Calendar 组件内部刷新
 	}
 
 	render(){
 		return (
 			<div>
-				<Calendar date={this.state.date} onChange={this.handlerSelect}  />
+				<Calendar date={this.state.date} onChange={this.handlerChange.bind(this)}  />
 			</div>
 		)
 	}
@@ -113,21 +118,19 @@ class MyComponent extends Component {
 
 | 属性     | 类型   |  说明  | 默认值 |
 | -------- | -----  | ----   | ---- |
-| date    | string/Moment/date/function   | 设定日期值  | - |
-| format    | string   |  如果 date 为字符串，比如 2016.01.01 这种格式，就需要提供date值的格式，以便moment可以正确解析，针对 2016.01.01,format 就是 YYYY.MM.DD，相关文档请查阅 moment文档 | - |
-| firstDayOfWeek   |  number   |   -     |  moment.localeData().firstDayOfWeek() |
-| onInit   |  function  | 初始化事件    | - |
-| onChange |  function  | 改变日期/时间事件 | - |
-| onConfirm |  function  | 使用Trigger时，使用该事件代替onChange事件 | - |
-| isInvalid | function  | 禁止选择的日期  | - |
+| defaultDate    | Date   | 设定日期值  | - |
+| date    | Date   | 设定日期值  | - |
+| onChange |  Function  | 改变日期/时间事件 | - |
+| onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |
+| invalidDates | Function  | 禁止选择的日期  | - |
+| confirm |  boolean  | 显示确定按钮 | - |
 | time        | boolean   | 是否显示时间选择     | false |
-| minute      | boolean   | 是否显示分选择      | true |
 | second      | boolean   |   是否显示秒选择    |  true |
-| yearLowerLimit      | number   | 年份下限设置      | - |
-| yearUpperLimit      | number   | 年份上限设置    |  - |
 
 
 ### DateRange
+
+日期范围选择器
 
 #### 基本用法
 
@@ -139,17 +142,12 @@ import { DateRange } from 'beyond-datetime';
 class MyComponent extends Component {
 	handlerSelect(range){
 		console.log(range.startDate,range.endDate);
-		// An object with two keys,
-		// 'startDate' and 'endDate' which are Momentjs objects.
 	}
 
 	render(){
 		return (
 			<div>
-				<DateRange
-					onInit={this.handlerSelect}
-					onChange={this.handlerSelect}
-				/>
+				<DateRange onChange={this.handlerSelect}/>
 			</div>
 		)
 	}
@@ -165,10 +163,14 @@ import { DateRange,defaultRanges } from 'beyond-datetime';
 
 class MyComponent extends Component {
 
+	handlerSelect(range){
+		console.log(range.startDate,range.endDate);
+	}
+
 	render(){
 		return (
 			<div>
-				<DateRange ranges={defaultRanges} />
+				<DateRange ranges={defaultRanges} onChange={this.handlerSelect} />
 			</div>
 		)
 	}
@@ -180,17 +182,58 @@ class MyComponent extends Component {
 
 | 属性     | 类型   |  说明  | 默认值 |
 | -------- | -----  | ----   | ---- |
-| startDate    | string/Moment/date/function   | 设定日期值  | - |
-| endDate    | string/Moment/date/function   | 设定日期值  | - |
-| format    | string   |  如果 date 为字符串，比如 2016.01.01 这种格式，就需要提供date值的格式，以便moment可以正确解析，针对 2016.01.01,format 就是 YYYY.MM.DD，相关文档请查阅 moment文档 | - |
-| firstDayOfWeek   |  number   |   -     |  moment.localeData().firstDayOfWeek() |
-| onInit   |  function  | 初始化事件    | - |
-| onChange |  function  | 改变日期/时间事件 | - |
-| onConfirm |  function  | 使用Trigger时，使用该事件代替onChange事件 | - |
-| ranges |  object  | 快捷范围选择 | - |
-| isInvalid | function  | 禁止选择的日期  | - |
+| defaultStartDate    | Date   | 设定默认的开始日期值  | - |
+| defaultEndDate    | Date   | 设定默认的结束日期值  | - |
+| startDate    | Date   | 设定开始日期值  | - |
+| endDate    | Date   | 设定结束日期值  | - |
+| onChange |  Function  | 改变日期/时间事件 | - |
+| onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |
+| ranges |  Array  | 快捷的日期范围选择 | - |
+| invalidDates | Function  | 禁止选择的日期  | - |
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
+
+
+
+### Time
+
+时间选择器
+
+#### 基本用法
+
+```javascript
+require('beyond-datetime/css/index.css')
+import React, { Component } from 'react';
+import { Time } from 'beyond-datetime';
+
+class MyComponent extends Component {
+	handlerSelect(range){
+		console.log(range.startDate,range.endDate);
+	}
+
+	render(){
+		return (
+			<div>
+				<Time onChange={this.handlerSelect}/>
+			</div>
+		)
+	}
+}
+
+```
+
+
+#### Time API (props)
+
+| 属性     | 类型   |  说明  | 默认值 |
+| -------- | -----  | ----   | ---- |
+| defaultDate    | Date   | 设定日期值  | - |
+| date    | Date   | 设定日期值  | - |
+| onChange |  Function  | 改变日期/时间事件 | - |
+| onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |
+| confirm |  boolean  | 显示确定按钮 | - |
+| second      | boolean   |   是否显示秒选择    |  true |
+
 
 
 ### Trigger
@@ -209,14 +252,15 @@ class MyComponent extends Component {
 	}
 
 	handlerChange(date){
-		this.setState((state, props) => ({date}))
+		this.setState({date})
 	}
 
 	render(){
+		let {date} = this.state
 		return (
 			<div>
-				<Trigger target={<Calendar date={this.state.date} time onConfirm={this.handlerChange.bind(this)} />}>
-					<input type="text" value={this.state.date ? this.state.date.format('YYYY.MM.DD HH:mm:ss') : '' } />
+				<Trigger target={<Calendar defaultDate={date} time onConfirm={this.handlerChange.bind(this)} />}>
+					<input type="text" value={date ? date.toString() : '' } />
 				</Trigger>
 			</div>
 		)
