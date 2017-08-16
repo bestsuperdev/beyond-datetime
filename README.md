@@ -9,7 +9,7 @@ fork from [http://adphorus.github.io/react-date-range](http://adphorus.github.io
 
 ### 安装
 ```
-$ npm install --save beyond-datetime@next
+$ npm install --save beyond-datetime@2.0.0-beta.2
 ```
 
 ## 使用

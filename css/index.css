@@ -216,6 +216,11 @@
   box-shadow: none;
   border: none;
 }
+@media (max-width: 500px) {
+  .bdt-range {
+    width: 282px;
+  }
+}
 .bdt-predefined-ranges {
   position: absolute;
   top: -1px;
@@ -240,4 +245,12 @@
 }
 .bdt-predefined-ranges > .bdt-predefined-ranges-item.active {
   color: #E74C3C;
+}
+@media (max-width: 500px) {
+  .bdt-predefined-ranges {
+    position: static;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+  }
 }

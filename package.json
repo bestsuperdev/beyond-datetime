@@ -1,6 +1,6 @@
 {
   "name": "beyond-datetime",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "react date time",
   "main": "lib/index.js",
   "style": "css/index.css",
@@ -17,7 +17,6 @@
   "dependencies": {
     "beyond-lib": "^1.1.0",
     "classnames": "^2.2.5",
-    "moment": "^2.13.0",
     "react": ">=0.14.0",
     "react-dom": ">=0.14.0"
   },
