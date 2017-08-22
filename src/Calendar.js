@@ -129,7 +129,7 @@ export default class Calendar extends Component {
 			<div className={prefix}>
 				<div style={style}>
 					<button type="button" className={prevClassName} onClick={this.handlerChangeShownYear.bind(this, -1)}></button>
-					<select value={shownDate.getFullYear()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
+					<select style={{fontSize : 14}} value={shownDate.getFullYear()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
 					<button type="button" className={nextClassName} onClick={this.handlerChangeShownYear.bind(this, 1)}></button>
 				</div>
 				<div style={style}>
