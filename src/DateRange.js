@@ -26,7 +26,7 @@ export default class DateRange extends Component {
 			startShownDate = DateHelper.addMonth(new Date,-1)
 			endShownDate = new Date
 		}
-		if(DateHelper.isSameDate(startShownDate,endShownDate)){
+		if(DateHelper.isSameYearAndMonth(startShownDate,endShownDate)){
 			endShownDate = DateHelper.addMonth(endShownDate,1)
 		}
 		this.state = {startDate,endDate,startShownDate,endShownDate}
@@ -180,6 +180,6 @@ export default class DateRange extends Component {
 	}
 }
 
-DateRange.defaultProps = {
-	hideOnConfirm : true
-}
+// DateRange.defaultProps = {
+// 	hideOnConfirm : true
+// }

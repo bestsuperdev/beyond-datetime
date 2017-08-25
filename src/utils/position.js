@@ -9,15 +9,13 @@ function getViiew(){
  * @param {Node} node 
  * @param {Boolean} hasRanges   
  */
-export default function position(node,hasRanges) {
+export default function position(node, hasRanges) {
 	if (!node || !node.getBoundingClientRect ) {
 		return null
 	}
 	let style = {position : 'absolute',zIndex : 999}
-	let positions = node.getBoundingClientRect()
-	let {top,left} = positions
+	let {top,left} = node.getBoundingClientRect()
 	let height = node.offsetHeight
-	let width = node.offsetWidth
 	let {height : vHeight, width : vWidth } = getViiew()
 	if ((top + height / 2) >= vHeight / 2 ) {
 		style.bottom = height
@@ -25,10 +23,11 @@ export default function position(node,hasRanges) {
 		style.top = height
 	}
 
-	if( vWidth - ( left + width) <= (hasRanges ? 650 : 565) ){
+
+	if((left / vWidth) > 0.5 ){
 		style.right = 0
 	}else{
-		style.left = left <= 80 && hasRanges ? 80 : 0
+		style.left = left <= 80 && hasRanges && vWidth >= 640 ? 80 : 0
 	}
 	return style
 }

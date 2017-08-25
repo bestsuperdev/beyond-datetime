@@ -61,40 +61,38 @@ export default class Trigger extends Component {
 	}
 
 	handlerClick(event){
-		let targetWrapStyle = getPosStyle(event.target,this.props.target.props.ranges && this.props.target.props.ranges.length > 0)
-		this.setState({showTarget : true, targetWrapStyle})
+		let {target} = this.props
+		if(target){
+			let hasRanges = target.props.ranges && target.props.ranges.length > 0
+			let targetWrapStyle = getPosStyle(event.target,hasRanges)
+			this.setState({showTarget : true, targetWrapStyle})
+		}
 	}
 
 	render() {
-		let {children,wrapStyle} = this.props
+		let {children,wrapStyle,className,type} = this.props
 		
 		if (children) {
 			let props = children.props
 			children = React.cloneElement(children,{onClick : mergeFuncs(props.onClick,this.handlerClick.bind(this)) })
-			return (
-				<span style={assign({display : 'inline-block',position : 'relative'},wrapStyle)}>
-					{children}
-					{this.renderTarget()}
-				</span>
-			)
+			let style = assign({display : 'inline-block',position : 'relative'},wrapStyle)
+			return React.createElement(type,{style,className},children,this.renderTarget())
 		}
 	}
 
 	renderTarget(){
 		let {showTarget,targetWrapStyle} = this.state
-		let {target,wrapStyle} = this.props
+		let {target} = this.props
 		if (showTarget && target) {
 			let {onConfirm,onChange} = target.props
-			let {hideOnConfirm,hideOnChange} = target.props
 			let props = {}
-			if(hideOnConfirm){
+			if(onConfirm){
 				props.confirm = true
 				props.onConfirm = mergeFuncs(onConfirm,this.handlerHideCalendar)
-			}
-			if (hideOnChange) {
+			}else if (!onConfirm && onChange) {
 				props.onChange = mergeFuncs(onChange,this.handlerHideCalendar)
 			}
-			let style = assign({},targetWrapStyle,wrapStyle)
+			let style = assign({},targetWrapStyle)
 			return (
 				<div ref={(wrap)=> this.wrap = wrap} style={style}>
 					{React.cloneElement(target,props)}
@@ -102,4 +100,8 @@ export default class Trigger extends Component {
 			)
 		}
 	}
+}
+
+Trigger.defaultProps = {
+	type : 'span'
 }

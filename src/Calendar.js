@@ -235,6 +235,5 @@ export default class Calendar extends Component {
 
 Calendar.defaultProps = {
 	time : false,
-	second : true,
-	hideOnChange : true
+	second : true
 }

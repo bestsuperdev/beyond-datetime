@@ -81,6 +81,6 @@ export default class Time extends Component {
 
 Time.defaultProps = {
 	second : true,
-	disabled : false,
-	hideOnConfirm : true
+	disabled : false
+	// hideOnConfirm : true
 }
