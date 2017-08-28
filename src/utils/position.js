@@ -24,7 +24,7 @@ export default function position(node, hasRanges) {
 	}
 
 
-	if((left / vWidth) > 0.5 ){
+	if((left / vWidth) > 0.5 || (vWidth - left) < 280 ){
 		style.right = 0
 	}else{
 		style.left = left <= 80 && hasRanges && vWidth >= 640 ? 80 : 0

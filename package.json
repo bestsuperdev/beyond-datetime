@@ -1,6 +1,6 @@
 {
   "name": "beyond-datetime",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "description": "react date time",
   "main": "lib/index.js",
   "style": "css/index.css",
@@ -15,6 +15,8 @@
     "build:example": "npm run clear:example && cross-env NODE_ENV=production webpack --config webpack.config.js"
   },
   "dependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-runtime": "^6.26.0",
     "beyond-lib": "^1.1.0",
     "classnames": "^2.2.5",
     "react": ">=0.14.0",

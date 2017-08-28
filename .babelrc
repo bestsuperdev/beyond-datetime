@@ -5,7 +5,10 @@
       "presets": ["react-hmre"]
     },
     "production": {
-      "plugins": ["transform-es3-property-literals","transform-es3-member-expression-literals"]
+      "plugins": ["transform-es3-property-literals",
+                  "transform-es3-member-expression-literals",
+                  "transform-runtime",
+                  "transform-es2015-classes"]
     }
   }
 }

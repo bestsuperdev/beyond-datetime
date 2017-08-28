@@ -1,19 +1,8 @@
 import React, { Component } from 'react'
 import {isSameDate} from './utils/DateHelper'
 import {predefinedRangesPrefix} from './utils/consts'
-import moment from 'moment'
 const classnames = require('classnames')
 
-function parseRange(fn,asyncTimeDate){
-	let date = fn(moment())
-	// async time
-	if(asyncTimeDate){
-		date.hours(asyncTimeDate.hours())
-		date.minutes(asyncTimeDate.minutes())
-		date.seconds(asyncTimeDate.seconds())
-	}
-	return date
-}
 
 
 export default class PredefinedRanges extends Component {
