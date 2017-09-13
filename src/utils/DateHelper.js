@@ -48,6 +48,12 @@ export function isSameYearAndMonth(date1,date2){
             && date1.getMonth() === date2.getMonth() 
 }
 
+/**
+ * 
+ * @param {Date} date 
+ * @param {Date} timeDate 
+ * @return {Date[]}
+ */
 export function getDatesInCalendarMonth(date,timeDate){
     const dates = []
     let monthDaysCount = daysInMonth(date)
@@ -137,4 +143,19 @@ export function orderRange(startDate,endDate){
 
 export function isDate(date){
     return date && Object.prototype.toString.call(date) === '[object Date]' && date.toString() !== 'Invalid Date'
+}
+
+export function getYearRange(date=new Date){
+    let currentYear = date.getFullYear()
+    let startYear = Math.max(currentYear-45, 1970)
+    let endYear = currentYear + 10
+    return {startYear,endYear}
+}
+
+export function cloneDate(date){
+    if(isDate(date)){
+        return new Date(date)
+    }else{
+        return date
+    }
 }

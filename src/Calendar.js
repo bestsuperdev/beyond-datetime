@@ -4,29 +4,29 @@ import * as DateHelper  from './utils/DateHelper'
 import DayCell from './DayCell.js'
 import Time from './Time'
 
-const {isDate} = DateHelper
+const {isDate,cloneDate} = DateHelper
 
 export default class Calendar extends Component {
 
 	constructor(props, context) {
 		super(props, context)
 		let {defaultDate} = props
-		let date = isDate(defaultDate) ? new Date(defaultDate) : null
-		let shownDate = isDate(props.date) ? new Date(props.date) : (isDate(date) ? new Date(date) : new Date)
+		let date = isDate(defaultDate) ? cloneDate(defaultDate) : null
+		let shownDate = isDate(props.date) ? cloneDate(props.date) : (isDate(date) ? cloneDate(date) : new Date)
 		shownDate.setDate(1)
 		this.state = {date,shownDate}
 	}
 
 	getDate(){
 		let date = this.props.date || this.state.date
-		return date ? new Date(date) : null 
+		return date ? cloneDate(date) : null 
 	}
 
 	getTime(){
 		if(this.props.time){
 			let {date,range,rangePosition} = this.props
 			let timeDate = (range && range[`${rangePosition}Date`]) || date || this.state.date || DateHelper.getInitTime()
-			return new Date(timeDate)
+			return cloneDate(timeDate)
 		}else{
 			return null
 		}
@@ -34,7 +34,7 @@ export default class Calendar extends Component {
 
 	getShownDate() {
 		let date = this.props.shownDate || this.state.shownDate
-		return  date ? new Date(date) : null
+		return  date ? cloneDate(date) : null
 	}
 
 	handlerConfirm(){
@@ -55,7 +55,7 @@ export default class Calendar extends Component {
 			date = DateHelper.syncTime(this.state.date,date)
 		}
 		if (typeof onChange === 'function') {
-			result = onChange(new Date(date),type)
+			result = onChange(cloneDate(date),type)
 		}
 		if (result !== false) {
 			this.setState({date})
@@ -104,13 +104,11 @@ export default class Calendar extends Component {
 
 	renderMonthAndYear() {
 		const shownDate = this.getShownDate()
-		const currentYear = (new Date).getFullYear()
+
 		const currentShownYear = shownDate.getFullYear()
 		const prefix = `${calendarPrefix}-month-and-year`
 		const years = []
-
-		let startYear = Math.max(currentYear-45, 1970)
-		let endYear = currentYear + 10
+		let {startYear,endYear} = DateHelper.getYearRange()
 
 
 		if (currentShownYear < startYear) {
@@ -173,7 +171,7 @@ export default class Calendar extends Component {
 			const isEdge = isStartEdge || isEndEdge
 
 			const isToday = DateHelper.isSameDate(_date,today)
-			let isInvalid = typeof invalidDates === 'function' ? invalidDates(new Date(_date)) : false
+			let isInvalid = typeof invalidDates === 'function' ? invalidDates(cloneDate(_date)) : false
 			if(minDate || maxDate){
 				isInvalid = isInvalid && !DateHelper.isBetween(_date,minDate,maxDate) // isOusideMinMax(_date, minDate, maxDate)
 			}

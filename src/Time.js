@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {timePrefix as prefix} from './utils/consts'
+import {selectPrefix as prefix} from './utils/consts'
 import {getInitTime} from './utils/DateHelper'
 function toDoubleDigits(number){
 	return number < 10 ? `0${number}` : number
