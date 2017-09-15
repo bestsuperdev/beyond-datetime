@@ -29,7 +29,7 @@ export default class DateRange extends Component {
 		if(DateHelper.isSameYearAndMonth(startShownDate,endShownDate)){
 			endShownDate = DateHelper.addMonth(endShownDate,1)
 		}
-		this.state = {startDate,endDate,startShownDate,endShownDate}
+		this.state = {startDate,endDate,startShownDate,endShownDate,hoverDate : null}
 		this.step = 0
 	}
 
@@ -135,9 +135,13 @@ export default class DateRange extends Component {
 		this.setState({[`${prefix}ShownDate`] : date})
 	}
 
+	handlerHoverDayCell(hoverDate){
+		this.setState({hoverDate})
+	}
+
 	render() {
 		const {ranges, minDate, maxDate, invalidDates, time, second, confirm} = this.props
-		const {startShownDate,endShownDate} = this.state
+		const {startShownDate,endShownDate,hoverDate} = this.state
 		let {startDate,endDate} = this.getDate()
 		let getProps = (i)=>{
 			let key = i === 0 ? 'start' : 'end'
@@ -151,12 +155,17 @@ export default class DateRange extends Component {
 				maxDate,
 				time,
 				second,
+				today : false,
 				onChange : this.handlerDateChange.bind(this,key),
 				onShownChange : this.handlerShownChange.bind(this,key)
 			}
 			if(confirm && i == 1){
 				props.onConfirm = this.handlerConfirm.bind(this)
 				props.confirm = true
+			}
+			if(this.step === 0){
+				props.onHover = this.handlerHoverDayCell.bind(this)
+				props.hoverDate = hoverDate
 			}
 			return props
 		}

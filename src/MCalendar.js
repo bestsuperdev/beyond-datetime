@@ -73,7 +73,7 @@ export default class MCalendar extends Component {
 		}
 		
 		for(let i = 1; i <= daysCountInMonth; i++ ){
-			dates.push(<option key={i} value={i}>{toDoubleDigits(i+1)}</option>)
+			dates.push(<option key={i} value={i}>{toDoubleDigits(i)}</option>)
 		}
         
 		return (
@@ -83,13 +83,11 @@ export default class MCalendar extends Component {
 						{years}
 					</select>
 				</div>
-				<div className={`${prefix}-mini-cell`}>-</div>
                 <div className={`${prefix}-cell`}>
 					<select onChange={this.handlerChange.bind(this,'month')} disabled={disabled} value={date.getMonth()}>
 						{months}
 					</select>
 				</div>
-				<div className={`${prefix}-mini-cell`}>-</div>
                 <div className={`${prefix}-cell`}>
                     <select onChange={this.handlerChange.bind(this,'date')} disabled={disabled} value={date.getDate()}>
                         {dates}

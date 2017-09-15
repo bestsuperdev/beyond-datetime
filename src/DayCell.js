@@ -14,6 +14,13 @@ export default class DayCell extends Component {
 		}
 	}
 
+	handlerMouseEnter(){
+		let {isInvalid,date,onHover} = this.props
+		if(!isInvalid && typeof onHover === 'function'){
+			onHover(new Date(date))
+		}
+	}
+
 	getClassNames() {
 		const { className } = this.props;
 		if(className){
@@ -37,6 +44,7 @@ export default class DayCell extends Component {
 			}
 			if(!isInvalid){
 				props.onClick = this.handlerSelect.bind(this)
+				props.onMouseEnter = this.handlerMouseEnter.bind(this)
 			}
 			return (
 				<span {...props}>{date.getDate()}</span>

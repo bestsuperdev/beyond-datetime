@@ -21,6 +21,7 @@ new WebpackDevServer(webpack(config), {
   contentBase: path.resolve(__dirname, './'),
   host : ip,
   hot: true,
+  disableHostCheck : true,
   //设置webpack-dev-server启动的时候，bundles的输出的路径，打包的时候这个publicPath没有作用
   publicPath: config.output.publicPath,
   // /api/* 会指向  http://127.0.0.1:3000/api/*  如  /api/users 就会指向  http://127.0.0.1:3000/api/users

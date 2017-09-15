@@ -19,7 +19,7 @@ export default class Calendar extends Component {
 
 	getDate(){
 		let date = this.props.date || this.state.date
-		return date ? cloneDate(date) : null 
+		return isDate(date) ? cloneDate(date) : null 
 	}
 
 	getTime(){
@@ -34,7 +34,7 @@ export default class Calendar extends Component {
 
 	getShownDate() {
 		let date = this.props.shownDate || this.state.shownDate
-		return  date ? cloneDate(date) : null
+		return  isDate(date) ? cloneDate(date) : null
 	}
 
 	handlerConfirm(){
@@ -101,6 +101,16 @@ export default class Calendar extends Component {
 		}
 	}
 
+	handlerToggelToday(){
+		this.handlerChange('date',new Date)
+	}
+
+	handlerHoverCell(date){
+		let {onHover} = this.props
+		if (typeof onHover === 'function') {
+			onHover(date)
+		}
+	}
 
 	renderMonthAndYear() {
 		const shownDate = this.getShownDate()
@@ -120,17 +130,17 @@ export default class Calendar extends Component {
 		if (currentShownYear > endYear) {
 			years.push(<option key={currentShownYear} value={currentShownYear}>{currentShownYear}</option>)
 		}
-		let style = {width : '50%',display : 'inline-block'}
+		
 		let prevClassName = `${prefix}-button ${prefix}-prev-button`
 		let nextClassName = `${prefix}-button ${prefix}-next-button`
 		return (
 			<div className={prefix}>
-				<div style={style}>
+				<div className={`${prefix}-years`}>
 					<button type="button" className={prevClassName} onClick={this.handlerChangeShownYear.bind(this, -1)}></button>
-					<select style={{fontSize : 14}} value={shownDate.getFullYear()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
+					<select value={shownDate.getFullYear()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
 					<button type="button" className={nextClassName} onClick={this.handlerChangeShownYear.bind(this, 1)}></button>
 				</div>
-				<div style={style}>
+				<div className={`${prefix}-months`}>
 					<button type="button" className={prevClassName} onClick={this.handlerChangeShownMonth.bind(this, -1)}></button>
 					<select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.getMonth()}>
 						{DateHelper.Months.map((month,i)=> <option key={i+''} value={i}>{month}</option> )}
@@ -151,7 +161,7 @@ export default class Calendar extends Component {
 	}
 
 	renderDays() {
-		const { range, minDate, maxDate, invalidDates } = this.props
+		const { range, minDate, maxDate, invalidDates,hoverDate } = this.props
 
 		const shownDate = this.getShownDate()
 		const date = this.getDate() 
@@ -165,18 +175,29 @@ export default class Calendar extends Component {
 			const isSelected = !range && date && DateHelper.isSameDate(date,_date)
 			//用于范围选择
 			const isPassive = !DateHelper.isSameYearAndMonth(shownDate,_date)
-			const isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate) // checkRange(_date, range)
 			const isStartEdge = range && DateHelper.isSameDate(_date,range.startDate)
 			const isEndEdge = range && DateHelper.isSameDate(_date,range.endDate)
 			const isEdge = isStartEdge || isEndEdge
-
+			
 			const isToday = DateHelper.isSameDate(_date,today)
 			let isInvalid = typeof invalidDates === 'function' ? invalidDates(cloneDate(_date)) : false
 			if(minDate || maxDate){
 				isInvalid = isInvalid && !DateHelper.isBetween(_date,minDate,maxDate) // isOusideMinMax(_date, minDate, maxDate)
 			}
+			let isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate) // checkRange(_date, range)
+			if(range){
+				if(hoverDate){
+					// let _range = DateHelper.orderRange()
+					isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate)
+				}else{
+					isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate)
+				}
+			}else{
+				isInRange = false
+			}
 			return  <DayCell
 						onSelect={ this.handlerChange.bind(this,'date') }
+						onHover={ this.handlerHoverCell.bind(this) }
 						date={_date}
 						isStartEdge = { isStartEdge }
 						isEndEdge = { isEndEdge }
@@ -206,8 +227,11 @@ export default class Calendar extends Component {
 	}
 
 	renderBtns(){
-		let {confirm} = this.props
+		let {confirm,today} = this.props
 		let btns = []
+		if(today){
+			btns.push(<button onClick={this.handlerToggelToday.bind(this)} key="today" className="bdt-btn bdt-btn-today" type="button">今天</button>)
+		}
 		if(confirm){
 			btns.push(<button onClick={this.handlerConfirm.bind(this)} key="confirm" className="bdt-btn" type="button">确定</button>)
 		}
@@ -233,5 +257,6 @@ export default class Calendar extends Component {
 
 Calendar.defaultProps = {
 	time : false,
-	second : true
+	second : true,
+	today : true
 }
