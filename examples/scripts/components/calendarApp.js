@@ -1,5 +1,5 @@
 const React = require('react')
-import {Calendar,MCalendar} from 'src/index'
+import {Calendar} from 'src/index'
 const invalidDates = (current)=>{
 	let date = new Date
 	date.setHours(0)
@@ -58,16 +58,7 @@ class App extends React.Component {
 					<div style={{display : 'inline-block'}}><Calendar time second={false} date={date2} onChange={this.handlerChange.bind(this,'date2')} /></div>
 					<div style={{display : 'inline-block'}}><Calendar time confirm cancel clear onConfirm={this.handlerChange.bind(this,'date3')} /></div>
 				</div>
-				<div style={{height : '20px'}}></div>
-				<div >
-					<p>移动端版本</p>
-					<div className="log" ref={(log)=> this.logText3 = log }></div>
-					<MCalendar onChange={(date)=> this.logText3.innerHTML = date.toLocaleDateString() } />
-					<MCalendar onChange={(date)=> this.logText3.innerHTML = date.toLocaleDateString() } defaultDate={new Date(2017,0,1)} />
-					<MCalendar confirm onConfirm={(date)=> this.logText3.innerHTML = date.toLocaleDateString() } defaultDate={new Date(2017,0,1)} />
-					<MCalendar date={date4}  onChange={(date4)=>{ this.setState({date4});this.logText3 = date4.toLocaleDateString();return false} } />
-					
-				</div>
+		
 
 			
 			</div>

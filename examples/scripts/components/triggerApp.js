@@ -59,12 +59,18 @@ class App extends React.Component {
 						<Trigger target={<Calendar defaultDate={date2}  onConfirm={this.handlerChange.bind(this,'date2')} />}>
 							<input type="text" value={date2 ? date2.toLocaleDateString() : ''}/>
 						</Trigger>
-                        <Trigger target={<DateRange {...range} onConfirm={this.handlerRangeChange.bind(this)} />}>
+		
+						
+						<Trigger target={<DateRange {...range} onConfirm={this.handlerRangeChange.bind(this)} />}>
 							<input style={{width : 150}} type="text" value={range ? this.rangeToString(range) : ''}/>
 						</Trigger>
+
+						
 						<Trigger type="div" className="trigger"  target={<DateRange {...range} ranges={defaultRanges} onConfirm={this.handlerRangeChange.bind(this)} />}>
 							<input style={{width : 150}} type="text" value={range ? this.rangeToString(range) : ''}/>
 						</Trigger>
+
+					
 					</div>
 				</div>
 			</div>

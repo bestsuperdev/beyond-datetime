@@ -1,5 +1,5 @@
 const React = require('react')
-import {Time,Trigger,MCalendar} from 'src/index'
+import {Time,Trigger} from 'src/index'
 // const formatStr = 'HH:mm:ss'
 class App extends React.Component {
 
@@ -44,9 +44,7 @@ class App extends React.Component {
 					<Time date={time2} onChange={this.handlerChange.bind(this,'time2')} />
 					时间固定 <Time date={time3}  />
 				</div>
-				<div>
-					<MCalendar />
-				</div>
+		
 				<div>
 					<p>input 触发</p>
 					<div>

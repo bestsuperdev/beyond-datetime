@@ -9,7 +9,7 @@ fork from [http://adphorus.github.io/react-date-range](http://adphorus.github.io
 
 ### 安装
 ```
-$ npm install --save beyond-datetime@2.0.0-beta.2
+$ npm install --save beyond-datetime@2.0.0-beta.5
 ```
 
 ## 使用
@@ -118,7 +118,7 @@ class MyComponent extends Component {
 
 | 属性     | 类型   |  说明  | 默认值 |
 | -------- | -----  | ----   | ---- |
-| defaultDate    | Date   | 设定日期值  | - |
+| defaultDate    | Date   | 设定默认日期值  | - |
 | date    | Date   | 设定日期值  | - |
 | onChange |  Function  | 改变日期/时间事件 | - |
 | onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |
@@ -126,6 +126,48 @@ class MyComponent extends Component {
 | confirm |  boolean  | 显示确定按钮 | - |
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
+
+
+
+### MCalendar
+
+简洁版日历选择器（适合移动端）
+
+#### 基本用法
+
+```javascript
+require('beyond-datetime/css/index.css')
+import React, { Component } from 'react';
+import { MCalendar } from 'beyond-datetime';
+
+class MyComponent extends Component {
+	handlerSelect(date){
+		console.log(date);
+	}
+
+	render(){
+		return (
+			<div>
+				<MCalendar onChange={this.handlerChange}/>
+			</div>
+		)
+	}
+}
+
+```
+
+
+#### Time API (props)
+
+| 属性     | 类型   |  说明  | 默认值 |
+| -------- | -----  | ----   | ---- |
+| defaultDate    | Date   | 设定默认日期值  | - |
+| date    | Date   | 设定日期值  | - |
+| onChange |  Function  | 日期改变事件 | - |
+| onConfirm |  Function  | 通过确定按钮改变日期的事件 | - |
+| confirm |  boolean  | 显示确定按钮 | - |
+
+
 
 
 ### DateRange
@@ -227,7 +269,7 @@ class MyComponent extends Component {
 
 | 属性     | 类型   |  说明  | 默认值 |
 | -------- | -----  | ----   | ---- |
-| defaultDate    | Date   | 设定日期值  | - |
+| defaultDate    | Date   | 设定默认日期值  | - |
 | date    | Date   | 设定日期值  | - |
 | onChange |  Function  | 改变日期/时间事件 | - |
 | onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |

@@ -184,14 +184,10 @@ export default class Calendar extends Component {
 			if(minDate || maxDate){
 				isInvalid = isInvalid && !DateHelper.isBetween(_date,minDate,maxDate) // isOusideMinMax(_date, minDate, maxDate)
 			}
-			let isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate) // checkRange(_date, range)
+			let isInRange //=  range && DateHelper.isBetween(_date,range.startDate,range.endDate) // checkRange(_date, range)
 			if(range){
-				if(hoverDate){
-					// let _range = DateHelper.orderRange()
-					isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate)
-				}else{
-					isInRange = range && DateHelper.isBetween(_date,range.startDate,range.endDate)
-				}
+				let _range = hoverDate ? DateHelper.orderRange(hoverDate,range.startDate) : range
+				isInRange = DateHelper.isBetween(_date,_range.startDate,_range.endDate)
 			}else{
 				isInRange = false
 			}
@@ -258,5 +254,6 @@ export default class Calendar extends Component {
 Calendar.defaultProps = {
 	time : false,
 	second : true,
-	today : true
+	today : true,
+	__type : 'Calendar'
 }

@@ -125,6 +125,12 @@ export function isOrderedDates(date1,date2){
     }
 }
 
+/**
+ * 
+ * @param {Date} startDate 
+ * @param {Date} endDate 
+ * @return {{startDate : Date, endDate : Date}}
+ */
 export function orderRange(startDate,endDate){
     if(isDate(startDate) && isDate(endDate) && !isOrderedDates(startDate,endDate)){
         let tmp = startDate

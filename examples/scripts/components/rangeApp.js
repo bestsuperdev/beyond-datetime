@@ -1,6 +1,5 @@
 const React = require('react')
-import {DateRange, Calendar, defaultRanges, Time,Trigger} from 'src/index'
-const isInValidDate = (current)=> current.isBefore(new Date,'day')
+import {DateRange, defaultRanges} from 'src/index'
 class App extends React.Component {
 
 	constructor(props){

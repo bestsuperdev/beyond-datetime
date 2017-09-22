@@ -68,7 +68,7 @@ export default class DateRange extends Component {
 
 	handlerSetRange(range) {
 		const {onChange} = this.props
-		let result = null
+		let result
 		if (typeof onChange === 'function') {
 			result = onChange({startDate : new Date(range.startDate), endDate : new Date(range.endDate)})
 		}
@@ -163,7 +163,7 @@ export default class DateRange extends Component {
 				props.onConfirm = this.handlerConfirm.bind(this)
 				props.confirm = true
 			}
-			if(this.step === 0){
+			if(this.step === 1){
 				props.onHover = this.handlerHoverDayCell.bind(this)
 				props.hoverDate = hoverDate
 			}
@@ -187,4 +187,8 @@ export default class DateRange extends Component {
 			</div>
 		);
 	}
+}
+
+DateRange.defaultProps = {
+	__type : 'DateRange'
 }
