@@ -12,14 +12,11 @@ function getScrollTop(){
 	return Math.max(document.body.scrollTop,document.documentElement.scrollTop)
 }
 
-function getScrollHeight(){
-	return Math.max(document.documentElement.scrollHeight,document.body.scrollHeight,getViiew().height)
-}
-
 const TimeHeight = 35
 const CalendarHeight = 322
-const CalendarWidth = 354
+const CalendarWidth = 280
 const DateRangeWidth = CalendarWidth * 2
+const DateRangeHeight = 354
 
 /**
  * 
@@ -39,10 +36,10 @@ export default function position(node, target) {
 	let width = node.offsetWidth
 	let {height : vHeight, width : vWidth } = getViiew()
 	let targetWidth = type === 'DateRange' ? DateRangeWidth : CalendarWidth
-	let targetHeight = type === 'Time' ? TimeHeight : CalendarHeight
+	let targetHeight = type === 'Time' ? TimeHeight : (target.props.time ? DateRangeHeight : CalendarHeight ) 
 
 	if ((top + height / 2) >= vHeight / 2 ) {
-		style.top = (top - targetHeight)+ 'px'
+		style.top = (top - targetHeight + scrollTop) + 'px'
 	}else{
 		style.top = (top + height + scrollTop) + 'px'
 	}
