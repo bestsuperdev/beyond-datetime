@@ -1,7 +1,7 @@
 const React = require('react')
 import {Time,Trigger,Calendar,DateRange,defaultRanges} from 'src/index'
 
-class App extends React.Component {
+class TriggerApp extends React.Component {
 
 	constructor(props){
 		super(props)
@@ -27,11 +27,15 @@ class App extends React.Component {
     }
 
     rangeToString(range,time){
-		if(!time){
-			return `${range.defaultStartDate.toLocaleDateString()}~${range.defaultEndDate.toLocaleDateString()}`
-		}else{
-			return `${range.defaultStartDate.toLocaleString()}~${range.defaultEndDate.toLocaleString()}`
+		if(range && range.defaultStartDate){
+
+			if(!time){
+				return `${range.defaultStartDate.toLocaleDateString()}~${range.defaultEndDate.toLocaleDateString()}`
+			}else{
+				return `${range.defaultStartDate.toLocaleString()}~${range.defaultEndDate.toLocaleString()}`
+			}
 		}
+		return ''
     }
 
 	render() {
@@ -43,7 +47,7 @@ class App extends React.Component {
 					<p>input 触发</p>
 					<div>
 						<Trigger wrapStyle={{display : 'block'}} target={<DateRange {...range} time ranges={defaultRanges} onConfirm={this.handlerRangeChange.bind(this)} />}>
-							<input style={{width : '100%'}} type="text" value={range ? this.rangeToString(range,true) : ''}/>
+							<input style={{width : '100%'}} type="text" value={range && range.defaultStartDate ? this.rangeToString(range,true) : ''}/>
 						</Trigger>
 						<Trigger target={<Time defaultDate={date1} onConfirm={this.handlerChange.bind(this,'date1')} />}>
 							<input type="text" value={date1 ? date1.toLocaleTimeString() : ''}/>
@@ -78,4 +82,4 @@ class App extends React.Component {
 	}
 }
 
-module.exports = App
+module.exports = TriggerApp
