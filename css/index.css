@@ -12,13 +12,20 @@
   background: #efefef;
   color: black;
 }
-.bdt-time {
+.bdt-btn.bdt-btn-today {
+  background: none;
+  color: #2283D0;
+}
+.bdt-btn.bdt-btn-today:hover {
+  text-decoration: underline;
+}
+.bdt-select {
   display: table;
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.15);
 }
-.bdt-time > .bdt-time-mini-cell,
-.bdt-time > .bdt-time-cell {
+.bdt-select > .bdt-select-mini-cell,
+.bdt-select > .bdt-select-cell {
   box-sizing: content-box;
   padding: 4px;
   text-align: center;
@@ -28,7 +35,7 @@
   cursor: pointer;
   position: relative;
 }
-.bdt-time > .bdt-time-cell > select {
+.bdt-select > .bdt-select-cell > select {
   padding: 0;
   box-sizing: border-box;
   height: 24px;
@@ -37,11 +44,11 @@
   cursor: pointer;
   border-color: #ddd;
 }
-.bdt-time > .bdt-time-mini-cell {
+.bdt-select > .bdt-select-mini-cell {
   padding-left: 2px;
   padding-right: 2px;
 }
-.bdt-time .bdt-time-confirm-btn {
+.bdt-select .bdt-select-confirm-btn {
   border: none;
   font-size: 13px;
   height: 24px;
@@ -65,17 +72,8 @@
   font-size: 13px;
   box-shadow: 0 0px 4px rgba(0, 0, 0, 0.2);
 }
-.bdt-calendar .bdt-time {
+.bdt-calendar .bdt-select {
   border: none;
-}
-.bdt-calendar select {
-  box-sizing: border-box;
-  font-size: inherit;
-  padding: 0;
-  height: 24px;
-  outline: none;
-  vertical-align: middle;
-  border-color: #ddd;
 }
 .bdt-calendar .bdt-calendar-month-and-year {
   box-sizing: border-box;
@@ -84,30 +82,39 @@
   height: 38px;
   line-height: 18px;
 }
-.bdt-calendar .bdt-calendar-month-and-year div:nth-child(2) {
+.bdt-calendar .bdt-calendar-month-and-year select {
+  vertical-align: top;
+  margin: 0px 5px;
+  outline: none;
+}
+.bdt-calendar .bdt-calendar-month-and-year-months,
+.bdt-calendar .bdt-calendar-month-and-year-years {
+  width: 50%;
+  display: inline-block;
+  padding: 0 3px;
+}
+.bdt-calendar .bdt-calendar-month-and-year-years select {
+  font-size: 14px;
+}
+.bdt-calendar .bdt-calendar-month-and-year-months {
   text-align: right;
 }
-.bdt-calendar .bdt-calendar-month-and-year div:nth-child(2) select {
+.bdt-calendar .bdt-calendar-month-and-year-months select {
   width: 60px;
 }
-.bdt-calendar .bdt-calendar-month-and-year select {
-  margin: 0px 5px;
-}
 .bdt-calendar .bdt-calendar-month-and-year-button {
-  vertical-align: middle;
-  display: inline-block;
+  vertical-align: top;
   box-sizing: border-box;
   height: 18px;
   width: 18px;
   padding: 0;
-  margin: 0 5px;
+  margin: 0;
   border: none;
   background: #efefef;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   outline: none;
   border-radius: 50%;
   cursor: pointer;
-  text-align: left;
   position: relative;
 }
 .bdt-calendar .bdt-calendar-month-and-year-button:after {
@@ -118,7 +125,6 @@
   padding: 0;
   margin: 0;
   border: 4px solid transparent;
-  text-align: center;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -142,20 +148,18 @@
   text-align: center;
   font-weight: bold;
   margin-bottom: 1px;
-  width: 36px;
+  width: 37px;
   line-height: 34px;
 }
 .bdt-calendar .bdt-calendar-day {
   position: relative;
-  box-sizing: border-box;
   display: inline-block;
-  letter-spacing: initial;
   text-align: center;
   cursor: pointer;
   transition: -webkit-transform .1s ease;
   transition: transform .1s ease;
   transition: transform .1s ease, -webkit-transform .1s ease;
-  width: 36px;
+  width: 37px;
   line-height: 32px;
 }
 .bdt-calendar .bdt-calendar-day:hover {
@@ -202,6 +206,7 @@
   color: #ffffff;
 }
 .bdt-range {
+  background: white;
   position: relative;
   width: 562px;
   box-sizing: border-box;
