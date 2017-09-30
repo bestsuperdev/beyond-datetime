@@ -1,11 +1,12 @@
 const React = require('react')
 import {Calendar} from 'src/index'
-const invalidDates = (current)=>{
+const invalidDates = (dayCell)=>{
 	let date = new Date
 	date.setHours(0)
 	date.setMinutes(0)
 	date.setSeconds(0)
-	return  +current < +date
+	date.setMilliseconds(0)
+	return  +dayCell < +date
 }
 class App extends React.Component {
 

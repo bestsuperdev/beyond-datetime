@@ -74,8 +74,7 @@ export default class Trigger extends Component {
 		}
 		let {target} = this.props
 		if(target){
-			assign(this.wrap.style,targetWrapStyle)
-			// this.wrap.style = targetWrapStyle
+			assign(this.wrap.style,targetWrapStyle,this.props.wrapStyle)
 			let {onConfirm,onChange} = target.props
 			let props = {}
 			if(onConfirm){

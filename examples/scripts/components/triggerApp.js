@@ -1,6 +1,16 @@
 const React = require('react')
 import {Time,Trigger,Calendar,DateRange,defaultRanges} from 'src/index'
 
+function isInValidDate(dayCell){
+	let date = new Date
+	date.setHours(0)
+	date.setMinutes(0)
+	date.setSeconds(0)
+	// return false
+	return +dayCell < +date
+}
+
+
 class TriggerApp extends React.Component {
 
 	constructor(props){
@@ -53,10 +63,10 @@ class TriggerApp extends React.Component {
 							<input type="text" value={date1 ? date1.toLocaleTimeString() : ''}/>
 						</Trigger>
 						
-                        <Trigger target={<Calendar defaultDate={date2} onChange={this.handlerChange.bind(this,'date2')} />}>
+                        <Trigger target={<Calendar invalidDates={isInValidDate}  defaultDate={date2} onChange={this.handlerChange.bind(this,'date2')} />}>
 							<input type="text" value={date2 ? date2.toLocaleDateString() : ''}/>
 						</Trigger>
-						<Trigger target={<Calendar defaultDate={date2} time onConfirm={this.handlerChange.bind(this,'date2')} />}>
+						<Trigger target={<Calendar invalidDates={isInValidDate} defaultDate={date2} time onConfirm={this.handlerChange.bind(this,'date2')} />}>
 							<input type="text" value={date2 ? date2.toLocaleString() : ''}/>
 						</Trigger>
 

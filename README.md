@@ -68,6 +68,7 @@ const invalidDates = (date)=>{
 	today.setHours(0)
 	today.setMinutes(0)
 	today.setSeconds(0)
+	today.setMilliseconds(0)
 	return  +date < +today
 }
 
@@ -316,4 +317,4 @@ class MyComponent extends Component {
 | 属性     | 类型   |  说明  | 默认值 |
 | -------- | -----  | ----   | ---- |
 | target    | Calendar/DateRange  | -  | - |
-| wrapStyle    | object  | Trigger 会默认生成一个 span (style="display:inline-block")标签，使用wrapStyle 进行覆盖  | - |
+| wrapStyle    | object  | Trigger 会默认生成一个 div (style="display:inline-block")标签实现定位， 使用 wrapStyle 进行覆盖该div默认样式  | - |
