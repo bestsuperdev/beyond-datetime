@@ -38,7 +38,10 @@ export default class Trigger extends Component {
 		this.innerClick = true
 	}
 
-	hideTarget(){
+	hideTarget(e){
+		if(e && e.button == 2){
+			return
+		}
 		let self = this
 		setTimeout(()=>{
 			if (!self.innerClick && this.wrap) {

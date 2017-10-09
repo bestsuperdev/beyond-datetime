@@ -64,6 +64,9 @@ export default class Calendar extends Component {
 	}
 
 	handlerChangeShownMonth(event){
+		if(event.preventDefault){
+			event.preventDefault()
+		}
 		let shownDate
 		if(event.target){
 			shownDate = DateHelper.setMonth(this.getShownDate(),+event.target.value)
@@ -77,6 +80,9 @@ export default class Calendar extends Component {
 	}
 
 	handlerChangeShownYear(event){
+		if(event.preventDefault){
+			event.preventDefault()
+		}
 		let shownDate
 		if(event.target){
 			shownDate = DateHelper.setYear(this.getShownDate(),+event.target.value)
@@ -102,6 +108,9 @@ export default class Calendar extends Component {
 	}
 
 	handlerToggelToday(){
+		let date = new Date
+		date.setDate(1)
+		this.handlerChangeShownDate(date)
 		this.handlerChange('date',new Date)
 	}
 

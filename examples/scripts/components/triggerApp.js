@@ -69,6 +69,9 @@ class TriggerApp extends React.Component {
 						<Trigger target={<Calendar invalidDates={isInValidDate} defaultDate={date2} time onConfirm={this.handlerChange.bind(this,'date2')} />}>
 							<input type="text" value={date2 ? date2.toLocaleString() : ''}/>
 						</Trigger>
+						<Trigger target={<Calendar  defaultDate={date2} time onConfirm={this.handlerChange.bind(this,'date2')} />}>
+							<input type="text" value={date2 ? date2.toLocaleString() : ''}/>
+						</Trigger>
 
 						<Trigger target={<Calendar defaultDate={date2}  onConfirm={this.handlerChange.bind(this,'date2')} />}>
 							<input type="text" value={date2 ? date2.toLocaleDateString() : ''}/>
