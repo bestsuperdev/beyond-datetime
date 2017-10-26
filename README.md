@@ -9,7 +9,7 @@ fork from [http://adphorus.github.io/react-date-range](http://adphorus.github.io
 
 ### 安装
 ```
-$ npm install --save beyond-datetime@2.0.0-beta.5
+$ npm install --save beyond-datetime
 ```
 
 ## 使用
@@ -128,34 +128,6 @@ class MyComponent extends Component {
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
 
-
-
-### MCalendar
-
-简洁版日历选择器（适合移动端）
-
-#### 基本用法
-
-```javascript
-require('beyond-datetime/css/index.css')
-import React, { Component } from 'react';
-import { MCalendar } from 'beyond-datetime';
-
-class MyComponent extends Component {
-	handlerSelect(date){
-		console.log(date);
-	}
-
-	render(){
-		return (
-			<div>
-				<MCalendar onChange={this.handlerChange}/>
-			</div>
-		)
-	}
-}
-
-```
 
 
 #### Time API (props)
