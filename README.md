@@ -127,20 +127,7 @@ class MyComponent extends Component {
 | confirm |  boolean  | 显示确定按钮 | - |
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
-
-
-
-#### Time API (props)
-
-| 属性     | 类型   |  说明  | 默认值 |
-| -------- | -----  | ----   | ---- |
-| defaultDate    | Date   | 设定默认日期值  | - |
-| date    | Date   | 设定日期值  | - |
-| onChange |  Function  | 日期改变事件 | - |
-| onConfirm |  Function  | 通过确定按钮改变日期的事件 | - |
-| confirm |  boolean  | 显示确定按钮 | - |
-
-
+| timeFilter      | Array   |   时间过滤    |  - |
 
 
 ### DateRange
@@ -192,6 +179,29 @@ class MyComponent extends Component {
 }
 
 ```
+#### 时间过滤
+
+```javascript
+require('beyond-datetime/css/index.css')
+import React, { Component } from 'react';
+import { DateRange,defaultRanges } from 'beyond-datetime';
+const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
+class MyComponent extends Component {
+
+	handlerSelect(range){
+		console.log(range.startDate,range.endDate);
+	}
+
+	render(){
+		return (
+			<div>
+				<DateRange timeFilter={filter} ranges={defaultRanges} onChange={this.handlerSelect} />
+			</div>
+		)
+	}
+}
+
+```
 
 #### DateRange API (props)
 
@@ -207,7 +217,7 @@ class MyComponent extends Component {
 | invalidDates | Function  | 禁止选择的日期  | - |
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
-
+| timeFilter      | Array   |   时间过滤    |  - |
 
 
 ### Time
@@ -220,6 +230,7 @@ class MyComponent extends Component {
 require('beyond-datetime/css/index.css')
 import React, { Component } from 'react';
 import { Time } from 'beyond-datetime';
+const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
 
 class MyComponent extends Component {
 	handlerSelect(range){
@@ -229,7 +240,7 @@ class MyComponent extends Component {
 	render(){
 		return (
 			<div>
-				<Time onChange={this.handlerSelect}/>
+				<Time filter={filter} onChange={this.handlerSelect}/>
 			</div>
 		)
 	}
@@ -248,6 +259,7 @@ class MyComponent extends Component {
 | onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |
 | confirm |  boolean  | 显示确定按钮 | - |
 | second      | boolean   |   是否显示秒选择    |  true |
+| filter      | Array   |   时间过滤    |  - |
 
 
 

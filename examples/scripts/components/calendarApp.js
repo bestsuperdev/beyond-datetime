@@ -8,6 +8,8 @@ const invalidDates = (dayCell)=>{
 	date.setMilliseconds(0)
 	return  +dayCell < +date
 }
+
+const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
 class App extends React.Component {
 
 	constructor(props){
@@ -48,7 +50,14 @@ class App extends React.Component {
 					<div style={{display : 'inline-block'}}><Calendar onChange={this.log} /></div>
 					<div style={{display : 'inline-block'}}><Calendar defaultDate={new Date} onChange={this.log} /></div>
 					<div style={{display : 'inline-block'}}><Calendar time  onChange={this.log} /></div>
-					<div style={{display : 'inline-block'}}><Calendar invalidDates={invalidDates} time second={false}  onChange={this.log} /></div>
+					<div style={{display : 'inline-block'}}>
+						<Calendar 
+							timeFilter={filter}
+							invalidDates={invalidDates} 
+							time 
+							second={false} 
+							onChange={this.log} />
+					</div>
 					<div style={{display : 'inline-block'}}><Calendar time second={false} confirm cancel clear  onConfirm={this.log} /></div>
 				</div>
 				<div style={{height : '20px'}}></div>

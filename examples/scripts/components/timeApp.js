@@ -1,6 +1,8 @@
 const React = require('react')
 import {Time,Trigger} from 'src/index'
 // const formatStr = 'HH:mm:ss'
+
+const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
 class App extends React.Component {
 
 	constructor(props){
@@ -27,7 +29,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		let {time1,time2,time3,time4,time5} = this.state
+		let {time1,time2,time3,time4} = this.state
 		return (
 			<div className='app' style={{margin : '0 100px'}}>
 				<div className="log" ref={(log)=> this.logText = log }></div>
@@ -44,7 +46,8 @@ class App extends React.Component {
 					<Time date={time2} onChange={this.handlerChange.bind(this,'time2')} />
 					时间固定 <Time date={time3}  />
 				</div>
-		
+				
+				
 				<div>
 					<p>input 触发</p>
 					<div>
@@ -52,6 +55,12 @@ class App extends React.Component {
 							<input type="text" value={time4 ? time4.toLocaleString() : ''}/>
 						</Trigger>
 					</div>
+				</div>
+				<div>
+					<p> 过滤 </p>
+					<Time date={time1} filter={filter} second={false} onChange={this.handlerChange.bind(this,'time1')} />
+					<Time date={time2} filter={filter} onChange={this.handlerChange.bind(this,'time2')} />
+					<Time date={time3} filter={filter}  />
 				</div>
 			</div>
 		)

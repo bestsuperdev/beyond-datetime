@@ -1,3 +1,10 @@
+/*
+filter(hour,time,second){
+	return [[1,2,3,4,5,6,7,8,9,10,11,12],[],[]]
+}
+
+*/
+
 import React, { Component } from 'react'
 import {selectPrefix as prefix} from './utils/consts'
 import {getInitTime} from './utils/DateHelper'
@@ -40,10 +47,17 @@ export default class Time extends Component {
 		}
 	}
 
-	renderSelector(type,count,value){
+	renderSelector(type,value,subFilters){
 		const options = []
-		for(let i = 0; i < count; i++){
-			options.push(<option key={i} value={i}>{toDoubleDigits(i)}</option>)
+		if(subFilters){
+			subFilters.forEach((item)=> {
+				options.push(<option key={item} value={item}>{toDoubleDigits(item)}</option>)
+			})
+		}else{
+			const count = type === 'setHours' ? 24 : 60
+			for(let i = 0; i < count; i++){
+				options.push(<option key={i} value={i}>{toDoubleDigits(i)}</option>)
+			}
 		}
 		return (
 			<select disabled={this.props.disabled} value={value} onChange={this.handlerChange.bind(this,type)}>{options}</select>
@@ -51,21 +65,25 @@ export default class Time extends Component {
 	}
 
 	render() { 
-		let {second,confirm} = this.props
+		let {second : supportSecond,confirm,filter} = this.props
 		const date = this.props.date || this.state.date
+		const hour = date.getHours()
+		const minute = date.getMinutes()
+		const second = supportSecond ? date.getSeconds() : 0
+		const filters = typeof filter === 'function' ? filter(hour,minute,second) : null
 		return (
 			<div className={prefix}>
 				<div className={`${prefix}-cell`}>
-					{this.renderSelector('setHours',24,date.getHours())}
+					{this.renderSelector('setHours',hour,filters ? filters[0] : null)}
 				</div>
 				<div className={`${prefix}-mini-cell`}>:</div>
 				<div className={`${prefix}-cell`}>
-					{this.renderSelector('setMinutes',60,date.getMinutes())}
+					{this.renderSelector('setMinutes',minute,filters ? filters[1] : null)}
 				</div>
-				{second && <div className={`${prefix}-mini-cell`}>:</div>}
-				{second && (
+				{supportSecond && <div className={`${prefix}-mini-cell`}>:</div>}
+				{supportSecond && (
 					<div className={`${prefix}-cell`}>
-						{this.renderSelector('setSeconds',60,date.getSeconds())}
+						{this.renderSelector('setSeconds',second,filters ? filters[2] : null )}
 					</div>
 				)}
 				{confirm && (

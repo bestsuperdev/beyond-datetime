@@ -1,5 +1,9 @@
+
 const React = require('react')
 import {DateRange, defaultRanges} from 'src/index'
+
+const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
+
 class App extends React.Component {
 
 	constructor(props){
@@ -35,7 +39,7 @@ class App extends React.Component {
 					<div style={{height : '20px'}}></div>
 					<DateRange time  onChange={this.log} />
 					<div style={{height : '20px'}}></div>
-					<DateRange time second={false} onChange={this.log} />
+					<DateRange time second={false} onChange={this.log} timeFilter={filter} />
 					<div style={{height : '20px'}}></div>
 					<DateRange ranges={defaultRanges} time second={false} onChange={this.log} />
 				</div>

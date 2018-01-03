@@ -219,11 +219,12 @@ export default class Calendar extends Component {
 	}
 
 	renderTime(){
-		let {time,second,range} = this.props
+		let {time,second,range,timeFilter} = this.props
 		if (time) {
 			let disabled = !this.getDate() && (!range || !range.startDate)
 			return (
 				<Time second={second} 
+					filter={timeFilter}
 					disabled={disabled}
 					date={this.getTime()} 
 					onChange={this.handlerChange.bind(this,'time')}  />
