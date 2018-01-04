@@ -3,6 +3,8 @@ const React = require('react')
 import {DateRange, defaultRanges} from 'src/index'
 
 const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
+const startFilter = ()=> [[0,3],[0,15,30,45,60],[0,15,30,45,60]]
+const endFilter = ()=> [[15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
 
 class App extends React.Component {
 
@@ -41,7 +43,11 @@ class App extends React.Component {
 					<div style={{height : '20px'}}></div>
 					<DateRange time second={false} onChange={this.log} timeFilter={filter} />
 					<div style={{height : '20px'}}></div>
-					<DateRange ranges={defaultRanges} time second={false} onChange={this.log} />
+					<DateRange 
+						ranges={defaultRanges} time second={false} onChange={this.log} 
+						timeFilter={filter} 
+						endTimeFilter={endFilter}
+						startTimeFilter={startFilter}/>
 				</div>
 				<div style={{height : '20px'}}></div>
 				<div>

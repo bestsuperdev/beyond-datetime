@@ -140,7 +140,7 @@ export default class DateRange extends Component {
 	}
 
 	render() {
-		const {ranges, minDate, maxDate, invalidDates, time,timeFilter, second, confirm} = this.props
+		const {ranges, minDate, maxDate, invalidDates, time,timeFilter,startTimeFilter,endTimeFilter, second, confirm} = this.props
 		const {startShownDate,endShownDate,hoverDate} = this.state
 		let {startDate,endDate} = this.getDate()
 		let getProps = (i)=>{
@@ -155,7 +155,7 @@ export default class DateRange extends Component {
 				maxDate,
 				time,
 				second,
-				timeFilter,
+				timeFilter : (i === 0 ? startTimeFilter : endTimeFilter) || timeFilter,
 				today : false,
 				onChange : this.handlerDateChange.bind(this,key),
 				onShownChange : this.handlerShownChange.bind(this,key)

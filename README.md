@@ -218,6 +218,8 @@ class MyComponent extends Component {
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
 | timeFilter      | Array   |   时间过滤    |  - |
+| startTimeFilter      | Array   |   开始日期时间过滤，优先级高于 timeFilter    |  - |
+| endTimeFilter      | Array   |   结束日期时间过滤，优先级高于 timeFilter    |  - |
 
 
 ### Time
