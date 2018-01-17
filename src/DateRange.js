@@ -3,7 +3,7 @@ import * as DateHelper from './utils/DateHelper'
 import Calendar from './Calendar.js'
 import PredefinedRanges from './PredefinedRanges.js'
 import {dateRangePrefix} from './utils/consts'
-const {isDate} = DateHelper
+const {isDate,cloneDate} = DateHelper
 
 export default class DateRange extends Component {
 
@@ -16,21 +16,24 @@ export default class DateRange extends Component {
 		let {startDate,endDate} = DateHelper.orderRange(defaultStartDate || defaultEndDate,defaultEndDate || defaultStartDate)
 		let {startDate : propsStartDate, endDate : propsEndDate} = DateHelper.orderRange(props.startDate,props.endDate)
 
+
 		if(isDate(propsStartDate) && isDate(propsEndDate)){
-			startShownDate = new Date(propsStartDate)
-			endShownDate = new Date(propsEndDate)
+			startShownDate = cloneDate(propsStartDate)
+			endShownDate = cloneDate(propsEndDate)
 		}else if(isDate(startDate) && isDate(endDate)){
-			startShownDate = new Date(startDate)
-			endShownDate = new Date(endDate)
+			startShownDate = cloneDate(startDate)
+			endShownDate = cloneDate(endDate)
 		}else {
-			startShownDate = DateHelper.addMonth(new Date,-1)
-			endShownDate = new Date
+			startShownDate = new Date
+			endShownDate = DateHelper.addMonth(startShownDate,1)
 		}
 		if(DateHelper.isSameYearAndMonth(startShownDate,endShownDate)){
-			endShownDate = DateHelper.addMonth(endShownDate,1)
+			endShownDate = DateHelper.addMonth(startShownDate,1)
 		}
 		this.state = {startDate,endDate,startShownDate,endShownDate,hoverDate : null}
 		this.step = 0
+		this.startCalendar = null
+		this.endCalendar = null
 	}
 
 	getDate(){
@@ -38,35 +41,34 @@ export default class DateRange extends Component {
 		let {startDate : sStartDate ,endDate : sEndDate} = this.state
 		let startDate,endDate
 		if(isDate(pStartDate) && isDate(pEndDate)){
-			startDate = new Date(pStartDate)
-			endDate = new Date(pEndDate)
+			startDate = cloneDate(pStartDate)
+			endDate = cloneDate(pEndDate)
 		}else if(isDate(sStartDate) && isDate(sEndDate)){
-			startDate = new Date(sStartDate)
-			endDate = new Date(sEndDate)
+			startDate = cloneDate(sStartDate)
+			endDate = cloneDate(sEndDate)
 		}
 		return {startDate,endDate}
 	}
 
-	getTime(){
-		if(this.props.time){
-			let startTime,endTime
-			let {startDate : pStartDate ,endDate : pEndDate} = this.props
-			let {startDate : sStartDate ,endDate : sEndDate} = this.state
-			if(isDate(pStartDate) && isDate(pEndDate)){
-				startTime = new Date(pStartDate)
-				endTime = new Date(pEndDate)
-			}else if(isDate(sStartDate) && isDate(sEndDate)){
-				startTime = new Date(sStartDate)
-				endTime = new Date(sEndDate)
-			}else{
-				startTime = DateHelper.getInitTime()
-				endTime = DateHelper.getInitTime()
-			}
-			return {startTime,endTime}
+	getShownDate(){
+		let {startShownDate : pStartShownDate ,endShownDate : pEndShownDate} = this.props
+		let {startShownDate : sStartShownDate ,endShownDate : sEndShownDate} = this.state
+		let startShownDate,endShownDate
+		if(isDate(pStartShownDate) && isDate(pEndShownDate)){
+			startShownDate = cloneDate(pStartShownDate)
+			endShownDate = cloneDate(pEndShownDate)
+		}else if(isDate(sStartShownDate) && isDate(sEndShownDate)){
+			startShownDate = cloneDate(sStartShownDate)
+			endShownDate = cloneDate(sEndShownDate)
 		}
+		return {startShownDate,endShownDate}
 	}
 
-	handlerSetRange(range) {
+	getTime(){
+		return {startTime : this.startCalendar.getTime(), endTime : this.endCalendar.getTime()}
+	}
+
+	handlerChange(range) {
 		const {onChange} = this.props
 		let result
 		if (typeof onChange === 'function') {
@@ -86,7 +88,7 @@ export default class DateRange extends Component {
 				date.startDate = DateHelper.syncTime(date.startDate,timeRange.startTime)
 				date.endDate = DateHelper.syncTime(date.endDate,timeRange.endTime)
 			}
-			this.handlerSetRange(date);
+			this.handlerChange(date);
 			return false
 		}
 	}
@@ -106,11 +108,11 @@ export default class DateRange extends Component {
 			}
 			let range = DateHelper.orderRange(startDate,endDate)
 
-			if(timeRange){
+			if(this.props.time){
 				range.startDate = DateHelper.syncTime(range.startDate,timeRange.startTime)
 				range.endDate = DateHelper.syncTime(range.endDate,timeRange.endTime)
 			}
-			this.handlerSetRange(range)
+			this.handlerChange(range)
 
 		}else if(changeType === 'time'){
 			if(prefix === 'start'){
@@ -118,7 +120,7 @@ export default class DateRange extends Component {
 			}else{
 				endDate = DateHelper.syncTime(endDate,date)
 			}
-			this.handlerSetRange({startDate,endDate})
+			this.handlerChange({startDate,endDate})
 		}
 		return false
 	}
@@ -141,12 +143,20 @@ export default class DateRange extends Component {
 
 	render() {
 		const {ranges, minDate, maxDate, invalidDates, time,timeFilter,startTimeFilter,endTimeFilter, second, confirm} = this.props
-		const {startShownDate,endShownDate,hoverDate} = this.state
-		let {startDate,endDate} = this.getDate()
-		let getProps = (i)=>{
-			let key = i === 0 ? 'start' : 'end'
+		const {hoverDate} = this.state
+		const {startShownDate,endShownDate} = this.getShownDate()
+		const {startDate,endDate} = this.getDate()
+		const getProps = (key)=>{
+			let shownDate,filter
+			if(key === 'start'){
+				shownDate = startShownDate
+				filter = startTimeFilter || timeFilter
+			}else{
+				shownDate = endShownDate
+				filter = endTimeFilter || timeFilter
+			}
 			let props = {
-				shownDate : key === 'start' ? startShownDate : endShownDate,
+				shownDate,
 				key,
 				range : {startDate,endDate},
 				rangePosition : key,
@@ -155,12 +165,12 @@ export default class DateRange extends Component {
 				maxDate,
 				time,
 				second,
-				timeFilter : (i === 0 ? startTimeFilter : endTimeFilter) || timeFilter,
+				timeFilter : filter ,
 				today : false,
 				onChange : this.handlerDateChange.bind(this,key),
 				onShownChange : this.handlerShownChange.bind(this,key)
 			}
-			if(confirm && i == 1){
+			if(confirm &&  key === 'end'){
 				props.onConfirm = this.handlerConfirm.bind(this)
 				props.confirm = true
 			}
@@ -180,10 +190,10 @@ export default class DateRange extends Component {
 						onSelect={this.handlerRangeChange.bind(this)}
 					/>}
 				<div className={`${dateRangePrefix}-container`}>
-					<Calendar  {...getProps(0)} />
+					<Calendar  ref={(calendar)=> this.startCalendar = calendar} {...getProps('start')} />
 				</div>
 				<div className={`${dateRangePrefix}-container`}>
-					<Calendar  {...getProps(1)} />
+					<Calendar  ref={(calendar)=> this.endCalendar = calendar} {...getProps('end')} />
 				</div>
 			</div>
 		);

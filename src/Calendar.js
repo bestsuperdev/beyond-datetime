@@ -4,37 +4,31 @@ import * as DateHelper  from './utils/DateHelper'
 import DayCell from './DayCell.js'
 import Time from './Time'
 
-const {isDate,cloneDate} = DateHelper
+const {cloneDate} = DateHelper
 
 export default class Calendar extends Component {
 
 	constructor(props, context) {
 		super(props, context)
-		let {defaultDate} = props
-		let date = isDate(defaultDate) ? cloneDate(defaultDate) : null
-		let shownDate = isDate(props.date) ? cloneDate(props.date) : (isDate(date) ? cloneDate(date) : new Date)
+		let {defaultDate,defaultShownDate} = props
+		let date = cloneDate(defaultDate)
+		let shownDate = cloneDate(defaultShownDate,props.date,defaultDate) || new Date
 		shownDate.setDate(1)
+		this.time = null
 		this.state = {date,shownDate}
 	}
 
 	getDate(){
-		let date = this.props.date || this.state.date
-		return isDate(date) ? cloneDate(date) : null 
+		let {range,rangePosition,date} = this.props
+		return cloneDate(range && range[`${rangePosition}Date`],date,this.state.date)
 	}
 
 	getTime(){
-		if(this.props.time){
-			let {date,range,rangePosition} = this.props
-			let timeDate = (range && range[`${rangePosition}Date`]) || date || this.state.date || DateHelper.getInitTime()
-			return cloneDate(timeDate)
-		}else{
-			return null
-		}
+		return this.time ? this.time.getTime() : null
 	}
 
 	getShownDate() {
-		let date = this.props.shownDate || this.state.shownDate
-		return  isDate(date) ? cloneDate(date) : null
+		return cloneDate(this.props.shownDate,this.state.shownDate)
 	}
 
 	handlerConfirm(){
@@ -48,12 +42,10 @@ export default class Calendar extends Component {
 	handlerChange(type,date){
 		const {onChange} = this.props
 		let result = null
-		let timeDate
-		if(type === 'date' && null != (timeDate = this.getTime())){
-			date = DateHelper.syncTime(date,timeDate)
-		}else if(type === 'time' && this.state.date){
-			date = DateHelper.syncTime(this.state.date,date)
+		if(type === 'time'){
+			date = this.getDate()
 		}
+		date = DateHelper.syncTime(date,this.getTime())
 		if (typeof onChange === 'function') {
 			result = onChange(cloneDate(date),type)
 		}
@@ -63,42 +55,33 @@ export default class Calendar extends Component {
 		return false
 	}
 
-	handlerChangeShownMonth(event){
-		if(event.preventDefault){
-			event.preventDefault()
-		}
-		let shownDate
-		if(event.target){
-			shownDate = DateHelper.setMonth(this.getShownDate(),+event.target.value)
-		}else if(typeof event === 'number'){
-			shownDate = DateHelper.addMonth(this.getShownDate(),event)
-		}
-		if(shownDate){
-			shownDate.setDate(1)
-			this.handlerChangeShownDate(shownDate)
-		}
-	}
+	
 
-	handlerChangeShownYear(event){
-		if(event.preventDefault){
-			event.preventDefault()
-		}
-		let shownDate
-		if(event.target){
-			shownDate = DateHelper.setYear(this.getShownDate(),+event.target.value)
-		}else if(typeof event === 'number'){
-			shownDate = DateHelper.addYear(this.getShownDate(),event)
-		}
-		if(shownDate){
-			shownDate.setDate(1)
-			this.handlerChangeShownDate(shownDate)
-		}
-	}
-
-
-	handlerChangeShownDate(shownDate){
+	handlerChangeShownDate(type,event){
+		let value,shownDate,result
 		let {onShownChange} = this.props
-		let result 
+		if(event && event.preventDefault){
+			event.preventDefault()
+			value = event.target.value
+		}else{
+			value = event
+		}
+		if(type === 'month'){
+			if(typeof value === 'string'){
+				shownDate = DateHelper.setMonth(this.state.shownDate, +value)
+			}else {
+				shownDate = DateHelper.addMonth(this.state.shownDate, value)
+			}
+		}else if(type === 'year'){
+			if(typeof value === 'string'){
+				shownDate = DateHelper.setYear(this.state.shownDate, +value)
+			}else{
+				shownDate = DateHelper.addYear(this.state.shownDate, value)
+			}
+		}else if(type === 'date'){
+			shownDate = event 	
+		}
+		shownDate.setDate(1)
 		if(typeof onShownChange === 'function'){
 			result = onShownChange(shownDate)
 		}
@@ -108,9 +91,7 @@ export default class Calendar extends Component {
 	}
 
 	handlerToggelToday(){
-		let date = new Date
-		date.setDate(1)
-		this.handlerChangeShownDate(date)
+		this.handlerChangeShownDate('date',new Date)
 		this.handlerChange('date',new Date)
 	}
 
@@ -123,7 +104,6 @@ export default class Calendar extends Component {
 
 	renderMonthAndYear() {
 		const shownDate = this.getShownDate()
-
 		const currentShownYear = shownDate.getFullYear()
 		const prefix = `${calendarPrefix}-month-and-year`
 		const years = []
@@ -145,16 +125,16 @@ export default class Calendar extends Component {
 		return (
 			<div className={prefix}>
 				<div className={`${prefix}-years`}>
-					<button type="button" className={prevClassName} onClick={this.handlerChangeShownYear.bind(this, -1)}></button>
-					<select value={shownDate.getFullYear()} onChange={this.handlerChangeShownYear.bind(this)}>{years}</select>
-					<button type="button" className={nextClassName} onClick={this.handlerChangeShownYear.bind(this, 1)}></button>
+					<button type="button" className={prevClassName} onClick={this.handlerChangeShownDate.bind(this,'year', -1)}></button>
+					<select value={currentShownYear} onChange={this.handlerChangeShownDate.bind(this,'year')}>{years}</select>
+					<button type="button" className={nextClassName} onClick={this.handlerChangeShownDate.bind(this,'year', 1)}></button>
 				</div>
 				<div className={`${prefix}-months`}>
-					<button type="button" className={prevClassName} onClick={this.handlerChangeShownMonth.bind(this, -1)}></button>
-					<select onChange={this.handlerChangeShownMonth.bind(this)} value={shownDate.getMonth()}>
+					<button type="button" className={prevClassName} onClick={this.handlerChangeShownDate.bind(this,'month', -1)}></button>
+					<select onChange={this.handlerChangeShownDate.bind(this,'month')} value={shownDate.getMonth()}>
 						{DateHelper.Months.map((month,i)=> <option key={i+''} value={i}>{month}</option> )}
 					</select>
-					<button type="button" className={nextClassName} onClick={this.handlerChangeShownMonth.bind(this, 1)}></button>
+					<button type="button" className={nextClassName} onClick={this.handlerChangeShownDate.bind(this,'month', 1)}></button>
 				</div>
 			</div>
 		)
@@ -219,14 +199,22 @@ export default class Calendar extends Component {
 	}
 
 	renderTime(){
-		let {time,second,range,timeFilter} = this.props
+		let {time,second,range,rangePosition,timeFilter} = this.props
 		if (time) {
-			let disabled = !this.getDate() && (!range || !range.startDate)
+			let date = this.getDate()
+			let disabled = !date && (!range || !range.startDate)
+			if(typeof timeFilter === 'function'){
+				let shownDate = this.getShownDate()
+				let range = range && range.startDate ? {startDate : cloneDate(range.startDate), endDate : cloneDate(range.endDate)} : null
+				timeFilter = timeFilter({date, shownDate, range, rangePosition })
+			}
 			return (
-				<Time second={second} 
+				<Time 
+					ref={(time)=> this.time = time  }
+					second={second} 
 					filter={timeFilter}
 					disabled={disabled}
-					date={this.getTime()} 
+					date={this.getDate()} 
 					onChange={this.handlerChange.bind(this,'time')}  />
 			)
 		}
@@ -242,7 +230,7 @@ export default class Calendar extends Component {
 			btns.push(<button onClick={this.handlerConfirm.bind(this)} key="confirm" className="bdt-btn" type="button">确定</button>)
 		}
 		if(btns.length > 0){
-			return <div style={{padding : 4,textAlign : 'right'}}>{btns}</div>
+			return <div style={{padding : 4, textAlign : 'right'}}>{btns}</div>
 		}
 
 	}
@@ -263,7 +251,7 @@ export default class Calendar extends Component {
 
 Calendar.defaultProps = {
 	time : false,
-	second : true,
+	second : false,
 	today : true,
 	__type : 'Calendar'
 }

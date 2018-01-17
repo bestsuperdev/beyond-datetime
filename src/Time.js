@@ -7,7 +7,7 @@ filter(hour,time,second){
 
 import React, { Component } from 'react'
 import {selectPrefix as prefix} from './utils/consts'
-import {getInitTime} from './utils/DateHelper'
+import {getInitTime, isDate, cloneDate, isSameTime} from './utils/DateHelper'
 function toDoubleDigits(number){
 	return number < 10 ? `0${number}` : number
 }
@@ -17,20 +17,25 @@ export default class Time extends Component {
 
 	constructor(props){
 		super(props)
-		let date = props.defaultDate instanceof Date ? new Date(props.defaultDate) : getInitTime()
+		let date = isDate(props.defaultDate) ? cloneDate(props.defaultDate) : getInitTime()
+		this.handlerChange = this.handlerChange.bind(this)
 		this.state = {date}
+		this.hour = null
+		this.minute = null
+		this.second = null
 	}
 
-	getDate(){
-		let date = this.props.date || this.state.date
-		return new Date(date)
+	getTime(){
+		let date = cloneDate(this.props.date || this.state.date)
+		date.setHours(this.hour ? +this.hour.value : 0)
+		date.setMinutes(this.minute ? +this.minute.value : 0)
+		date.setSeconds(this.second ? +this.second.value : 0)
+		return date
 	}
 
-	handlerChange(type,event){
+	handlerChange(){
 		let {onChange} = this.props
-		let number = +event.target.value
-		let date = this.getDate()
-		date[type](number)
+		let date = this.getTime()
 		let result
 		if(typeof onChange === 'function'){
 			result = onChange(date)
@@ -43,47 +48,52 @@ export default class Time extends Component {
 	handlerConfirm(){
 		let {onConfirm} = this.props
 		if(typeof onConfirm === 'function' ){
-			onConfirm(this.getDate())
+			onConfirm(this.getTime())
 		}
 	}
 
-	renderSelector(type,value,subFilters){
-		const options = []
+	renderSelector(count,subFilters){
+		let options
 		if(subFilters){
-			subFilters.forEach((item)=> {
-				options.push(<option key={item} value={item}>{toDoubleDigits(item)}</option>)
-			})
+			options = subFilters
+					.filter((item)=> item < count )
+					.map((item)=> <option key={item} value={item}>{toDoubleDigits(item)}</option> )
 		}else{
-			const count = type === 'setHours' ? 24 : 60
+			options = []
 			for(let i = 0; i < count; i++){
 				options.push(<option key={i} value={i}>{toDoubleDigits(i)}</option>)
 			}
 		}
-		return (
-			<select disabled={this.props.disabled} value={value} onChange={this.handlerChange.bind(this,type)}>{options}</select>
-		)
+		return options
 	}
 
 	render() { 
-		let {second : supportSecond,confirm,filter} = this.props
+		let {second : supportSecond,confirm,filter,disabled} = this.props
 		const date = this.props.date || this.state.date
 		const hour = date.getHours()
 		const minute = date.getMinutes()
 		const second = supportSecond ? date.getSeconds() : 0
-		const filters = typeof filter === 'function' ? filter(hour,minute,second) : null
+		filter = typeof filter === 'function' ? filter(new Date(date)) : filter
+		filter = Array.isArray(filter) ? filter : []
 		return (
 			<div className={prefix}>
 				<div className={`${prefix}-cell`}>
-					{this.renderSelector('setHours',hour,filters ? filters[0] : null)}
+					<select ref={(select)=> this.hour = select } disabled={disabled} value={hour} onChange={this.handlerChange}>
+						{this.renderSelector(24,filter[0])}
+					</select>
 				</div>
 				<div className={`${prefix}-mini-cell`}>:</div>
 				<div className={`${prefix}-cell`}>
-					{this.renderSelector('setMinutes',minute,filters ? filters[1] : null)}
+					<select ref={(select)=> this.minute = select } disabled={disabled} value={minute} onChange={this.handlerChange}>
+						{this.renderSelector(60,filter[1])}
+					</select>
 				</div>
 				{supportSecond && <div className={`${prefix}-mini-cell`}>:</div>}
 				{supportSecond && (
 					<div className={`${prefix}-cell`}>
-						{this.renderSelector('setSeconds',second,filters ? filters[2] : null )}
+						<select ref={(select)=> this.second = select } disabled={disabled} value={second} onChange={this.handlerChange}>
+							{this.renderSelector(60,filter[2])}
+						</select>
 					</div>
 				)}
 				{confirm && (

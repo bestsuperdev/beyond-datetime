@@ -2,7 +2,8 @@ const React = require('react')
 import {Time,Trigger} from 'src/index'
 // const formatStr = 'HH:mm:ss'
 
-const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
+const filter = ()=> [[3,6,9,12,15,18,21],[0,15,30,45,59,60],[0,15,30,45,59,60]]
+const filter2 = filter()
 class App extends React.Component {
 
 	constructor(props){
@@ -12,14 +13,17 @@ class App extends React.Component {
 			time2 : null,
 			time3  : new Date,
 			time4  : new Date,
-			time5  : new Date
+			time5  : new Date,
+			index : 1
 		}
 		this.log = this.log.bind(this)
 	}
 
 
 	handlerChange(field,value){
-		this.setState({[field] : value})
+		let {index} = this.state
+		index++
+		this.setState({[field] : value,index})
 		this.log(value)
 		return false
 	}
@@ -29,7 +33,7 @@ class App extends React.Component {
 	}
 
 	render() {
-		let {time1,time2,time3,time4} = this.state
+		let {time1,time2,time3,time4,index} = this.state
 		return (
 			<div className='app' style={{margin : '0 100px'}}>
 				<div className="log" ref={(log)=> this.logText = log }></div>
@@ -59,8 +63,12 @@ class App extends React.Component {
 				<div>
 					<p> 过滤 </p>
 					<Time date={time1} filter={filter} second={false} onChange={this.handlerChange.bind(this,'time1')} />
-					<Time date={time2} filter={filter} onChange={this.handlerChange.bind(this,'time2')} />
-					<Time date={time3} filter={filter}  />
+					<Time date={time2} filter={index % 2 === 0 ? [[3]] : [[6]]} 
+						confirm
+						onChange={this.handlerChange.bind(this,'time2')}
+						onConfirm={this.handlerChange.bind(this,'time2')} />
+					<Time date={time3} filter={filter} onChange={this.log}  />
+					<Time filter={index % 2 === 0 ? [[3]] : [[6]]} confirm onConfirm={this.log}  />
 				</div>
 			</div>
 		)

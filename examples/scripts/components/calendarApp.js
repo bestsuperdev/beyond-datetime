@@ -9,7 +9,8 @@ const invalidDates = (dayCell)=>{
 	return  +dayCell < +date
 }
 
-const filter = ()=> [[0,3,6,9,12,15,18,21],[0,15,30,45,60],[0,15,30,45,60]]
+const filter = ()=>[[3,6,9,12,15,18,21],[15,30,45,60],[15,30,45,60]]
+const filter2 =  [[3,6,9,12,15,18,21],[15,30,45,60],[15,30,45,60]]
 class App extends React.Component {
 
 	constructor(props){
@@ -41,7 +42,8 @@ class App extends React.Component {
 
 	render() {
         let {date1,date2,date3,date4} = this.state
-        console.log(this.state)
+		console.log(this.state)
+		console.log(filter)
 		return (
 			<div className='app'  style={{margin : '0 100px'}}>
 				<div>
@@ -49,7 +51,7 @@ class App extends React.Component {
 					<div className="log" ref={(log)=> this.logText = log }></div>
 					<div style={{display : 'inline-block'}}><Calendar onChange={this.log} /></div>
 					<div style={{display : 'inline-block'}}><Calendar defaultDate={new Date} onChange={this.log} /></div>
-					<div style={{display : 'inline-block'}}><Calendar time  onChange={this.log} /></div>
+					<div style={{display : 'inline-block'}}><Calendar time onChange={this.log} /></div>
 					<div style={{display : 'inline-block'}}>
 						<Calendar 
 							timeFilter={filter}
@@ -66,7 +68,17 @@ class App extends React.Component {
 					<div className="log" ref={(log)=> this.logText2 = log }></div>
 					<div style={{display : 'inline-block'}}><Calendar date={date1} onChange={this.handlerChange.bind(this,'date1')} /></div>
 					<div style={{display : 'inline-block'}}><Calendar time second={false} date={date2} onChange={this.handlerChange.bind(this,'date2')} /></div>
-					<div style={{display : 'inline-block'}}><Calendar time confirm cancel clear onConfirm={this.handlerChange.bind(this,'date3')} /></div>
+				
+					<div style={{display : 'inline-block'}}>
+						<Calendar date={date3} time timeFilter={filter2} confirm cancel clear onConfirm={this.handlerChange.bind(this,'date3')} />
+					</div>
+					<br />
+					<div style={{display : 'inline-block'}}>
+						<Calendar date={date4} time  cancel clear onChange={this.handlerChange.bind(this,'date4')} />
+					</div>
+					<div style={{display : 'inline-block'}}>
+						<Calendar date={date4} timeFilter={filter2}  time  cancel clear onChange={this.handlerChange.bind(this,'date4')} />
+					</div>
 				</div>
 		
 

@@ -39,7 +39,11 @@ class App extends React.Component {
 					<div className="log" ref={(log)=> this.logText = log }></div>
 					<DateRange  onChange={this.log} />
 					<div style={{height : '20px'}}></div>
-					<DateRange time  onChange={this.log} />
+					<DateRange 
+						startTimeFilter={startFilter}
+						endTimeFilter={endFilter}
+						time  
+						onChange={this.log} />
 					<div style={{height : '20px'}}></div>
 					<DateRange time second={false} onChange={this.log} timeFilter={filter} />
 					<div style={{height : '20px'}}></div>

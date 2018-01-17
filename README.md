@@ -127,7 +127,7 @@ class MyComponent extends Component {
 | confirm |  boolean  | 显示确定按钮 | - |
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
-| timeFilter      | Array   |   时间过滤    |  - |
+| timeFilter      | Array/Function   |   时间过滤    |  - |
 
 
 ### DateRange
@@ -217,9 +217,9 @@ class MyComponent extends Component {
 | invalidDates | Function  | 禁止选择的日期  | - |
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
-| timeFilter      | Array   |   时间过滤    |  - |
-| startTimeFilter      | Array   |   开始日期时间过滤，优先级高于 timeFilter    |  - |
-| endTimeFilter      | Array   |   结束日期时间过滤，优先级高于 timeFilter    |  - |
+| timeFilter      | Array/Function   |   时间过滤    |  - |
+| startTimeFilter      | Array/Function   |   开始日期时间过滤，优先级高于 timeFilter    |  - |
+| endTimeFilter      | Array/Function   |   结束日期时间过滤，优先级高于 timeFilter    |  - |
 
 
 ### Time
@@ -261,7 +261,7 @@ class MyComponent extends Component {
 | onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |
 | confirm |  boolean  | 显示确定按钮 | - |
 | second      | boolean   |   是否显示秒选择    |  true |
-| filter      | Array   |   时间过滤    |  - |
+| filter      | Array/Function   |   时间过滤    |  - |
 
 
 

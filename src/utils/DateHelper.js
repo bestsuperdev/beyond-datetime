@@ -35,6 +35,14 @@ export function daysInMonth(date){
     return (new Date(year,month+1,0)).getDate()
 }
 
+export function isSameTime(date1,date2){
+    if(isDate(date1) && isDate(date2)){
+        return  date1.getHours() === date2.getHours() && date1.getMinutes() === date2.getMinutes() && date1.getSeconds() === date2.getSeconds() 
+    }else{
+        return false
+    }
+}
+
 export function isSameDate(date1,date2){
     return  isSameYearAndMonth(date1,date2) && date1.getDate() === date2.getDate() 
 }
@@ -99,8 +107,8 @@ export function isBetween(date,minDate,maxDate){
     return result
 }
 
-export function getInitTime(){
-    let date = new Date
+export function getInitTime(date){
+    date = isDate(date) ? new Date(date) : new Date
 	date.setHours(0)
 	date.setMinutes(0)
 	date.setSeconds(0)
@@ -134,8 +142,8 @@ export function isOrderedDates(date1,date2){
 export function orderRange(startDate,endDate){
     if(isDate(startDate) && isDate(endDate) && !isOrderedDates(startDate,endDate)){
         let tmp = startDate
-        startDate = cloneDate(endDate)
-        endDate = cloneDate(tmp)
+        startDate = endDate
+        endDate = tmp
     }
     return {startDate,endDate}
 }
@@ -154,10 +162,13 @@ export function getYearRange(date){
     return {startYear,endYear}
 }
 
-export function cloneDate(date){
-    if(isDate(date)){
-        return new Date(date)
-    }else{
-        return date
+export function cloneDate(...dates){
+    let len = dates.length
+    for(let i = 0; i < len; i ++){
+        let date = dates[i]
+        if(isDate(date)){
+            return new Date(date)
+        }
     }
+    return null
 }
