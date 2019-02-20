@@ -73,6 +73,26 @@ class App extends React.Component {
 					<div style={{height : '20px'}}></div>
 					<DateRange startDate={startDate} endDate={endDate}  onChange={this.handlerRangeChange.bind(this)} />
 				</div>
+				<div style={{height : '20px'}}></div>
+				<div>
+					<p>英文</p>
+					<DateRange language="en" 
+						time 
+						confirm 
+						ranges={defaultRanges} 
+						startDate={startDate} 
+						endDate={endDate} 
+						onChange={this.handlerRangeChange.bind(this)}
+						onConfirm={this.handlerRangeChange.bind(this)} />
+					<div style={{height : '20px'}}></div>
+					<DateRange language="en" ranges={defaultRanges} startDate={startDate} endDate={endDate} time onChange={this.handlerRangeChange.bind(this)} />
+					<div style={{height : '20px'}}></div>
+					<DateRange language="en" startDate={startDate} endDate={endDate} time onChange={this.handlerRangeChange.bind(this)} />
+					<div style={{height : '20px'}}></div>
+					<DateRange language="en" startDate={startDate} endDate={endDate} time second={false} onChange={this.handlerRangeChange.bind(this)} />
+					<div style={{height : '20px'}}></div>
+					<DateRange language="en" startDate={startDate} endDate={endDate}  onChange={this.handlerRangeChange.bind(this)} />
+				</div>
 			
 			</div>
 		)

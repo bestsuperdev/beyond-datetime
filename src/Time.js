@@ -7,7 +7,7 @@ filter(hour,time,second){
 
 import React, { Component } from 'react'
 import {selectPrefix as prefix} from './utils/consts'
-import {getInitTime, isDate, cloneDate, isSameTime} from './utils/DateHelper'
+import {getInitTime, isDate, cloneDate,languages} from './utils/DateHelper'
 function toDoubleDigits(number){
 	return number < 10 ? `0${number}` : number
 }
@@ -68,7 +68,7 @@ export default class Time extends Component {
 	}
 
 	render() { 
-		let {second : supportSecond,confirm,filter,disabled} = this.props
+		let {second : supportSecond,confirm,filter,disabled,language} = this.props
 		const date = this.props.date || this.state.date
 		const hour = date.getHours()
 		const minute = date.getMinutes()
@@ -98,7 +98,7 @@ export default class Time extends Component {
 				)}
 				{confirm && (
 					<div className={`${prefix}-cell`}>
-						<button type="button" onClick={this.handlerConfirm.bind(this)} className={`${prefix}-confirm-btn`}>确定</button>
+						<button type="button" onClick={this.handlerConfirm.bind(this)} className={`${prefix}-confirm-btn`}>{languages[language].ok}</button>
 					</div>
 				)}
 			</div>
@@ -110,6 +110,7 @@ export default class Time extends Component {
 Time.defaultProps = {
 	second : true,
 	disabled : false,
+	language : 'cn',
 	__type : 'Time'
 	// hideOnConfirm : true
 }

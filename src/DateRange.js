@@ -142,7 +142,8 @@ export default class DateRange extends Component {
 	}
 
 	render() {
-		const {ranges, minDate, maxDate, invalidDates, time,timeFilter,startTimeFilter,endTimeFilter, second, confirm} = this.props
+		const {ranges, minDate, maxDate, invalidDates, time,timeFilter,startTimeFilter,endTimeFilter, second, confirm,language} = this.props
+		const currentRanges = typeof ranges === 'function' ? ranges(this.props) :  ranges
 		const {hoverDate} = this.state
 		const {startShownDate,endShownDate} = this.getShownDate()
 		const {startDate,endDate} = this.getDate()
@@ -156,6 +157,7 @@ export default class DateRange extends Component {
 				filter = endTimeFilter || timeFilter
 			}
 			let props = {
+				language,
 				shownDate,
 				key,
 				range : {startDate,endDate},
@@ -183,8 +185,8 @@ export default class DateRange extends Component {
 
 		return (
 			<div className={dateRangePrefix}>
-				{ranges && <PredefinedRanges
-						ranges={ ranges }
+				{currentRanges && <PredefinedRanges
+						ranges={currentRanges}
 						startDate={startDate}
 						endDate={endDate}
 						onSelect={this.handlerRangeChange.bind(this)}
@@ -201,5 +203,6 @@ export default class DateRange extends Component {
 }
 
 DateRange.defaultProps = {
-	__type : 'DateRange'
+	__type : 'DateRange',
+	language : 'cn',
 }

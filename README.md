@@ -128,6 +128,7 @@ class MyComponent extends Component {
 | time        | boolean   | 是否显示时间选择     | false |
 | second      | boolean   |   是否显示秒选择    |  true |
 | timeFilter      | Array/Function   |   时间过滤    |  - |
+| language      |  string ('en','cn')    |   时间过滤    |  'cn' |
 
 
 ### DateRange
@@ -220,7 +221,7 @@ class MyComponent extends Component {
 | timeFilter      | Array/Function   |   时间过滤    |  - |
 | startTimeFilter      | Array/Function   |   开始日期时间过滤，优先级高于 timeFilter    |  - |
 | endTimeFilter      | Array/Function   |   结束日期时间过滤，优先级高于 timeFilter    |  - |
-
+| language      |  string ('en','cn')    |   时间过滤    |  'cn' |
 
 ### Time
 
@@ -259,10 +260,10 @@ class MyComponent extends Component {
 | date    | Date   | 设定日期值  | - |
 | onChange |  Function  | 改变日期/时间事件 | - |
 | onConfirm |  Function  | 通过确定按钮改变日期/时间事件 | - |
-| confirm |  boolean  | 显示确定按钮 | - |
+| confirm |  boolean  | 显示按钮 | - |
 | second      | boolean   |   是否显示秒选择    |  true |
 | filter      | Array/Function   |   时间过滤    |  - |
-
+| language      |  string ('en','cn')    |   时间过滤    |  'cn' |
 
 
 ### Trigger

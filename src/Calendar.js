@@ -103,10 +103,12 @@ export default class Calendar extends Component {
 	}
 
 	renderMonthAndYear() {
+		const {language} = this.props
 		const shownDate = this.getShownDate()
 		const currentShownYear = shownDate.getFullYear()
 		const prefix = `${calendarPrefix}-month-and-year`
 		const years = []
+		const months = language === 'cn' ? DateHelper.Months : DateHelper.GlobalMonths
 		let {startYear,endYear} = DateHelper.getYearRange()
 
 
@@ -132,7 +134,7 @@ export default class Calendar extends Component {
 				<div className={`${prefix}-months`}>
 					<button type="button" className={prevClassName} onClick={this.handlerChangeShownDate.bind(this,'month', -1)}></button>
 					<select onChange={this.handlerChangeShownDate.bind(this,'month')} value={shownDate.getMonth()}>
-						{DateHelper.Months.map((month,i)=> <option key={i+''} value={i}>{month}</option> )}
+						{months.map((month,i)=> <option key={i+''} value={i}>{month}</option> )}
 					</select>
 					<button type="button" className={nextClassName} onClick={this.handlerChangeShownDate.bind(this,'month', 1)}></button>
 				</div>
@@ -141,10 +143,11 @@ export default class Calendar extends Component {
 	}
 
 	renderWeekdays() {
-
+		const {language} = this.props
+		const weeks = language === 'cn' ? DateHelper.Weeks : DateHelper.GlobalWeeks
 		return (
 			<div className={`${calendarPrefix}-weekdays`}>
-				{DateHelper.Weeks.map((week,i)=> <span key={i+''}>{week}</span> )}
+				{weeks.map((week,i)=> <span key={i+''}>{week}</span> )}
 			</div>
 		)
 	}
@@ -221,13 +224,14 @@ export default class Calendar extends Component {
 	}
 
 	renderBtns(){
-		let {confirm,today} = this.props
+		let {confirm,today,language} = this.props
+		const texts = DateHelper.languages[language]
 		let btns = []
 		if(today){
-			btns.push(<button onClick={this.handlerToggelToday.bind(this)} key="today" className="bdt-btn bdt-btn-today" type="button">今天</button>)
+			btns.push(<button onClick={this.handlerToggelToday.bind(this)} key="today" className="bdt-btn bdt-btn-today" type="button">{texts.today}</button>)
 		}
 		if(confirm){
-			btns.push(<button onClick={this.handlerConfirm.bind(this)} key="confirm" className="bdt-btn" type="button">确定</button>)
+			btns.push(<button onClick={this.handlerConfirm.bind(this)} key="confirm" className="bdt-btn" type="button">{texts.ok}</button>)
 		}
 		if(btns.length > 0){
 			return <div style={{padding : 4, textAlign : 'right'}}>{btns}</div>
@@ -253,5 +257,6 @@ Calendar.defaultProps = {
 	time : false,
 	second : false,
 	today : true,
+	language : 'cn',
 	__type : 'Calendar'
 }

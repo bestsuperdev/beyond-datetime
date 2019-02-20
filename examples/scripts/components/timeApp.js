@@ -70,6 +70,16 @@ class App extends React.Component {
 					<Time date={time3} filter={filter} onChange={this.log}  />
 					<Time filter={index % 2 === 0 ? [[3]] : [[6]]} confirm onConfirm={this.log}  />
 				</div>
+				<div>
+					<p> 英文 </p>
+					<Time language="en" date={time1} filter={filter} second={false} onChange={this.handlerChange.bind(this,'time1')} />
+					<Time language="en" date={time2} filter={index % 2 === 0 ? [[3]] : [[6]]} 
+						confirm
+						onChange={this.handlerChange.bind(this,'time2')}
+						onConfirm={this.handlerChange.bind(this,'time2')} />
+					<Time language="en" date={time3} filter={filter} onChange={this.log}  />
+					<Time language="en" filter={index % 2 === 0 ? [[3]] : [[6]]} confirm onConfirm={this.log}  />
+				</div>
 			</div>
 		)
 	}
